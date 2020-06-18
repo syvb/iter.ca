@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Is your shift key pressed?</title>
+    <style>
+      body {
+        height: 720px;
+        height: 100vh;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      #is-it {
+        width: 100%;
+        text-align: center;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      #yes-no {
+        font-size: 8em;
+      }
+      #question {
+        font-size: 2.5em;
+        color: #757575;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="is-it">
+      <div id="question">Is your shift key pressed?</div>
+      <div id="yes-no">No</div>
+      <noscript>Javascript is required to detect your shift key</noscript>
+    </div>
+    <script>
+      var pressed = false;
+      
+      function update() {
+        document.getElementById("yes-no").innerText = pressed ? "Yes" : "No";
+      }      
+      
+      onkeydown = function (e) {
+        console.log(e);
+        if (e.key === "Shift") pressed = true;
+        update();
+      };
+      onkeypress = function (e) {
+        console.log(e);
+        if (e.key === "Shift") pressed = true;
+        update();
+      };
+      onkeyup = function (e) {
+        console.log(e);
+        if (e.key === "Shift") pressed = false;
+        update();
+      };
+    </script>
+  </body>
+</html>

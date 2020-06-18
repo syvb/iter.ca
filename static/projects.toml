@@ -1,0 +1,58 @@
+[[project]]
+name = "Smitop.com"
+link = "https://smitop.com"
+desc = "A website about me, listing my projects and social profiles."
+weight = 5
+
+[[project]]
+name = "My blog"
+link = "https://blog.smitop.com"
+desc = "A blog where I blog about random things."
+weight = 7
+
+[[project]]
+name = "SpeakScribe"
+link = "https://speakscribe.com"
+desc = "A website where you can dictate things to your computer, and have them transcribed to text."
+weight = 17
+
+[[project]]
+name = "LearnLake"
+link = "https://learnlake.com"
+desc = "An educational website with various lessons."
+
+[[project]]
+name = "Nini"
+link = "https://nini.smitop.com"
+desc = "A website with various tools for the Nimiq blockchain"
+weight = 3
+
+[[project]]
+name = "Steem Monsters block explorer"
+link = "https://sm.smitop.com"
+desc = "A block explorer for Steem Monsters"
+search-terms = "splinterlands sm packs card transaction username"
+inactive = true
+non-functional = true
+
+[[project]]
+name = "Upload2IPFS"
+link = "https://upload2ipfs.smitop.com"
+desc = "A tool to upload files to the IPFS network."
+weight = 5
+
+[[project]]
+name = "Nimiq Webtip"
+link = "https://webtip.smitop.com"
+desc = "A Chrome extension to tip NIM to supporting websites."
+search-terms = [ "Nimiq" ]
+
+[[project]]
+name = """View your opponent's pending SM team"""
+link = "https://smcheat.smitop.com"
+desc = """Abuse an optimization in Steem Monsters to view your opponent's pending team if they don't wait to reveal their team."""
+
+[[project]]
+name = "Is your shift key pressed?"
+desc = "Tells you if your shift key is pressed."
+link = "https://smitop.com/shift-key"

@@ -1,0 +1,8 @@
+Hi from smitop.com
+<script>
+ if (self !== top) {
+    top.location = self.location; 
+ } else if (location.hostname !== "smitop.com") {
+    location.href = "https://smitop.com/framebust";
+ }
+</script>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Smitop</title>
+    <meta name="description" content="Hi, I'm Smitop, and I'm a human. This is my website.">
+    <meta name="rating" content="General">
+    <link rel="stylesheet" href="/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Barlow|Mukta+Vaani" rel="stylesheet">
+    <meta name="google-site-verification" content="LGtQWHbgC8bJSz0orWP71nxayoCJV2F-XH8y0HUFAJ4" />
+    <link rel="me" href="https://github.com/smittyvb" type="text/html">
+    <link rel="me" href="https://news.ycombinator.com/user?id=smitop" type="text/html">
+    <link rel="me" href="https://reddit.com/u/smitop" type="text/html">
+    <link rel="me" href="https://opengameart.org/users/smitop" type="text/html">
+    <link rel="me" href="https://archive.org/details/@smitop" type="text/html">
+    <link rel="me" href="https://scratch.mit.edu/users/smitop/" type="text/html">
+    <link rel="me" href="https://github.com/smittyvb" type="text/html">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}">
+</head>
+
+<body>
+    <div id="hi-message">
+        Hi, I'm <span class="smitop">Smitop</span>. <span id="wave-emoji">👋</span>
+    </div>
+    <div id="homepage-grid">
+        <div id="my-websites">
+            <h2>My websites</h2>
+            <ul>
+                <li><a href="https://pixel.auction">PixelAuction</a> - online game where you place pixels</li>
+                <li><a href="https://speakscribe.com">SpeakScribe</a> - dictation website</li>
+                <li><a href="https://smitop.com">This page</a> (duh)</li>
+                <li><a href="https://blog.smitop.com">My blog</a> - my blog</li>
+                <li><a href="https://smitop.com/shift-key">Is your shift key pressed?</a></li>
+                <li><a href="https://learnlake.com">LearnLake</a> - educational website</li>
+                <li><a href="https://nini.smitop.com">Nini</a> - utilities for the Nimiq blockchain</li>
+                <li><a href="https://sm.smitop.com">Steem Monsters block explorer</a> - does what it says on the tin</li>
+                <li><a href="https://upload2ipfs.smitop.com/">Upload2IPFS</a> - upload files to the IPFS network easily</li>
+                <li><a href="https://smitop.com/square-game/">Square Game</a> - a game that involves squares</a>
+                </li>
+                <li><a href="https://smitop.com/no-friction/">0friction</a> - a game with slippery controls</a>
+                </li>
+            </ul>
+        </div>
+        <div id="blog-posts">
+            <h2>Blog posts</h2>
+            <ul>
+                {{ range .Site.RegularPages }}
+                    <li>
+                        <a href="{{.Permalink}}">{{.Title}} ({{ .Date.Format "Jan 2, 2006" }})</a>
+                        {{ if (.Draft) }}(DRAFT){{end}}
+                    </li>
+                {{ end }}
+            </ul>
+        </div>
+        <div id="me-links">
+            <h2>Me</h2>
+            <p>These are all me:</p>
+            <ul>
+                <li>Twitter: <a href="https://twitter.com/_smitop">@_smitop</a></li>
+                <li>Discord: @smitop#9929</li>
+                <li>Telegram: @smitop</li>
+                <li>Steem: <a href="https://steemd.com/@smitop">@smitop</a></li>
+                <li>Github: <a href="https://github.com/smittyvb">@Smittyvb</a></li>
+                <li>Hacker News: <a href="https://news.ycombinator.com/user?id=smitop">@smitop</a></li>
+                <li>OpenGameArt: <a href="https://opengameart.org/users/smitop">@smitop</a></li>
+                <li>archive.org: <a href="https://archive.org/details/@smitop">@smitop</a></li>
+                <li>Scratch: <a href="https://scratch.mit.edu/users/smitop/">@smitop</a></li>
+            </ul>
+        </div>
+        <div id="things-i-like">
+            <h2>Things I like</h2>
+            <p>In a random order:</p>
+            <ul>
+                <li><a href="https://wikidata.org">Wikidata</a> - like Wikipedia but for linked data</li>
+                <li><a href="https://nimiq.com">Nimiq</a> - a browser-based blockchain and cryptocurrency</li>
+                <li><a href="https://nim-lang.org">Nim</a> - a programming language (not related to Nimiq at all, just a weird coincidence)</li>
+                <li><a href="https://glitch.com">Glitch</a> - web-based programming IDE</li>
+                <li><a href="https://splinterlands.io">Splinterlands</a> - blockchain-based card game</li>
+                <li><a href="https://voice.mozilla.org">Common Voice</a> - project to allow people to donate their voice, to create a CC0 voice recogintion training dataset</li>
+                <li><a href="https://steem.com">Steem</a> - browser-based social network and cryptocurrency</li>
+                <li><a href="https://forestry.io">Forestry</a> - CMS for static sites</li>
+                <li><a href="https://nearlyfreespeech.net">NearlyFreeSpeech</a> - web host</li>
+                <li><a href="https://www.remarkbox.com">Remarkbox</a> - hosted comments</li>
+            </ul>
+        </div>
+    </div>
+    <div id="scroll-info">
+        Scroll to the right for more...
+    </div>
+    <script async defer src="https://cdn.simpleanalytics.io/hello.js"></script>
+    <noscript><img src="https://api.simpleanalytics.io/hello.gif" alt=""></noscript>
+</body>
+
+</html>

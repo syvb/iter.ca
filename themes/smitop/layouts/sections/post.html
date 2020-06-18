@@ -1,0 +1,12 @@
+{{ partial "header.html" . }}
+<main>
+  <div>
+    <h1><a href="https://smitop.com">Smitop</a>'s blog</h1>
+      <ul>
+        {{ range .Pages }}
+          {{ .Render "li"}}
+        {{ end }}
+      </ul>
+  </div>
+</main>
+{{ partial "footer.html" . }}

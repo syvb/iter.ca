@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Mova</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+      canvas {
+        border: 4px solid black;
+      }
+      #pause {
+        position: absolute;
+        width: 550px;
+        height: 550px;
+        border: 4px solid transparent;
+        background: #dfdfdfd9;
+      }
+      h1 {
+        font-family: sans-serif;
+        padding-left: 1.5rem;
+      }
+      #pause-info, #by {
+        margin-left: 1.5rem;
+        font-size: 1.1rem;
+        font-family: sans-serif;
+        margin-bottom: 1.35rem;
+      }
+      #play {
+        font-size: 1.25rem;
+        margin-left: 1.5rem;
+      }
+    </style>
+
+    <script>
+      // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-v3-or-Later
+      
+      var player = {
+        x: 400,
+        y: 400,
+      };
+
+      var enemies = [];
+
+      var SPEED = 0.265;
+      var ENEMY_SPEED = 0.135;
+
+      var PLAYER_SIDE_LENGTH = 15;
+      var ENEMY_SIDE_LENGTH = 4;
+
+      var canvas;
+      var ctx;
+
+      function genEnemy() {
+        enemies.push({x: 10, y: 10, xMove: (Math.random() * 2) - 1, yMove: (Math.random() * 2) - 1, speed: ENEMY_SPEED + (Math.random() * 0.1)});
+      }
+
+      var enemies = [];
+
+      var totalTime = 0;
+      var enemiesAdded = 0;
+      
+      var keys = [];
+      
+      onkeydown = function (e) {
+        if (keys.indexOf(e.code) === -1) {
+          keys.push(e.code);
+        }
+      };
+      onkeyup = function (e) {
+        if (keys.indexOf(e.code) > -1) {
+          keys.splice(keys.indexOf(e.code), 1);
+        }
+      };
+      
+      function pressed(id) {
+        return keys.indexOf(id) > -1;
+      }
+      
+      function checkRectCollision(aX, aY, aHeight, aWidth, bX, bY, bHeight, bWidth) {
+        return !(
+          ((aY + aHeight) < (bY)) ||
+          (aY > (bY + bHeight)) ||
+          ((aX + aWidth) < bX) ||
+          (aX > (bX + bWidth))
+        );
+      }
+      
+      function showPause() {
+        document.getElementById("pause").style.display = "block";
+      }
+      function hidePause() {
+        document.getElementById("pause").style.display = "none";
+      }
+      
+      var health = 1;
+      var paused = true;
+      
+      setInterval(() => {
+        if (!paused) return;
+        
+        var shouldUnpause = false;
+        var gamepads = navigator.getGamepads();
+        Array.from(navigator.getGamepads()).forEach(pad => {
+          if (!pad) return;
+          pad.buttons.forEach(button => {
+            if (button.pressed) shouldUnpause = true;
+          })
+        });
+        if (shouldUnpause) {
+          paused = false;
+          startTime = Date.now();
+          hidePause();
+        }
+      }, 35);
+      
+      var vibStart = 0;
+      var vibStop = 0;
+      
+      function draw(delta) {
+        if (paused) return;
+        
+        totalTime += delta;
+        var expectedEnemies = Math.floor(totalTime / 77);
+        if (expectedEnemies > 135) expectedEnemies = 135;
+        var addedEnemies = expectedEnemies - enemiesAdded;
+        for (var i = 0; i < addedEnemies; i++) genEnemy();
+        enemiesAdded = expectedEnemies;
+        
+        var up = pressed("KeyW") || pressed("ArrowUp");
+        var left = pressed("KeyA") || pressed("ArrowLeft");
+        var right = pressed("KeyD") || pressed("ArrowRight");
+        var down = pressed("KeyS") || pressed("ArrowDown");
+        var keyboardUsed = up || left || right || down;
+        if (keyboardUsed) {
+          var addAmount = SPEED * delta;
+          if ([up, left, right, down].filter(l => l).length > 1) {
+            addAmount = SPEED * Math.SQRT1_2 * delta;
+          }
+          if (up) player.y -= addAmount;
+          if (down) player.y += addAmount;
+          if (left) player.x -= addAmount;
+          if (right) player.x += addAmount;
+        } else {
+          var gamepads = navigator.getGamepads();
+          for (var i = 0; i < gamepads.length; i++) {
+            var gamepad = gamepads[i];
+            if (!gamepad) continue;
+            if (!gamepad.axes) continue;
+            var x = gamepad.axes[0];
+            var y = gamepad.axes[1];
+            if (x === undefined) continue;
+            if (y === undefined) continue;
+            if (x === 0 && y === 0) continue;
+            player.x += SPEED * x * delta;
+            player.y += SPEED * y * delta;
+            break;
+          }
+        }
+        if (player.x > (canvas.width - PLAYER_SIDE_LENGTH)) player.x = canvas.width - PLAYER_SIDE_LENGTH;
+        if (player.x < 0) player.x = 0;
+        if (player.y > (canvas.height - PLAYER_SIDE_LENGTH)) player.y = (canvas.height) - PLAYER_SIDE_LENGTH;
+        if (player.y < 0) player.y = 0;
+        
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = "#ffb0b0";
+        ctx.fillRect(0, 0, canvas.width * health, 30);
+        
+        enemies.forEach(e => {
+          ctx.fillStyle = "#d01515";
+          e.x += delta * e.xMove * ENEMY_SPEED;
+          e.y += delta * e.yMove * ENEMY_SPEED;
+          if (e.x < 0 || e.y < 0 || e.x > (canvas.width - ENEMY_SIDE_LENGTH) || e.y > (canvas.height - ENEMY_SIDE_LENGTH)) {
+            e.xMove = -e.xMove + Math.random() * 0.18;
+            e.yMove = -e.yMove + Math.random() * 0.18;
+          }
+          ctx.fillRect(e.x, e.y, ENEMY_SIDE_LENGTH, ENEMY_SIDE_LENGTH);
+          var col = checkRectCollision(player.x, player.y, PLAYER_SIDE_LENGTH, PLAYER_SIDE_LENGTH, e.x, e.y, ENEMY_SIDE_LENGTH, ENEMY_SIDE_LENGTH)
+          if (col) {
+            health -= 0.005 * delta;
+            vibStop = Date.now() + 80;
+            vibStart = Date.now();
+          }
+        });
+        ctx.fillStyle = "blue";
+        ctx.fillRect(player.x, player.y, PLAYER_SIDE_LENGTH, PLAYER_SIDE_LENGTH);
+        
+        if (Date.now() < vibStop) {
+          var fracDone = -((Date.now() - vibStop) / (vibStop - vibStart));
+          Array.from(navigator.getGamepads()).forEach(function (pad) {
+            if (!pad) return;
+            if (pad.vibrationActuator && pad.vibrationActuator.type === "dual-rumble") {
+              pad.vibrationActuator.playEffect("dual-rumble", {
+                duration: delta * 2.5,
+                strongMagnitude: Math.min(fracDone * 1.5, 1),
+                weakMagnitude: Math.min(fracDone * 1.5, 1)
+              });
+            }
+          });
+        }
+        
+        health += 0.000014 * delta;
+        if (health < 0) {
+          Array.from(navigator.getGamepads()).forEach(function (pad) {
+            if (!pad) return;
+            if (pad.vibrationActuator && pad.vibrationActuator.type === "dual-rumble") {
+              pad.vibrationActuator.playEffect("dual-rumble", {
+                duration: 135,
+                strongMagnitude: 1,//fracDone,
+                weakMagnitude: 1,//fracDone
+              });
+            }
+          });
+          document.getElementById("pause-title").textContent = "Mova: Game over";
+          document.getElementById("pause-info").textContent = "You lasted for " + (totalTime / 1000).toFixed(1) + " seconds.";
+          document.getElementById("play").textContent = "Try again";
+          paused = true;
+          showPause();
+          enemies = [];
+          player.x = 400;
+          player.y = 400;
+          health = 1;
+          enemiesAdded = 0;
+          totalTime = 0;
+        }
+        if (health > 1) health = 1;
+      }
+
+      var lastRender;
+      var DELTA_STEP = 16.667;
+      function eachFrame() {
+        var now = Date.now();
+        var delta = now - lastRender;
+        if (delta > 17) {
+          while (true) {
+            draw(DELTA_STEP);
+            delta -= DELTA_STEP;
+            if (delta < DELTA_STEP) break;
+          }
+          draw(delta);
+        } else {
+          draw(delta);
+        }
+        lastRender = now;
+        requestAnimationFrame(eachFrame);
+      }
+      var startTime;
+      onload = () => {
+        canvas = document.getElementById("game-canvas");
+        ctx = canvas.getContext("2d");
+        lastRender = Date.now();
+        requestAnimationFrame(eachFrame);
+        document.getElementById("play").onclick = () => {
+          paused = false;
+          startTime = Date.now();
+          hidePause();
+        }
+      };
+      
+      // @license-end
+    </script>
+  </head>
+  <body>
+    <div id="pause">
+      <h1 id="pause-title">Mova</h1>
+      <div id="pause-info">
+        <div>
+          Touching red reduces your health.
+        </div>
+        <div>
+          You can plug in a USB game controller, or connect a bluetooth one (I have tested with Joycons, make sure you hold them sideways), and use that to control. You can also use WASD.
+        </div>
+      </div>
+      <div id="by">
+        By <a href="https://smitop.com" target="_blank">Smitop</a>
+      </div>
+      <button id="play">Play</button>
+    </div>
+    <canvas id="game-canvas" width="550" height="550"></canvas>
+  </body>
+</html>

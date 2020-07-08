@@ -1,7 +1,6 @@
 +++
 date = "2020-07-08T05:00:00+00:00"
 description = "But hey, at least Reddit gets less ad fraud!"
-draft = true
 tags = ["internet", "whiteops", "reddit"]
 title = "Reddit's website uses DRM for fingerprinting"
 +++

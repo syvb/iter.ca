@@ -3,5 +3,5 @@ languageCode = "en-CA"
 title = "Smitop's Blog"
 author = "Smitop"
 
-taxonomies:
-  tag: tags
+[taxonomies]
+  tag = "tags"

@@ -2,3 +2,6 @@ baseURL = "/"
 languageCode = "en-CA"
 title = "Smitop's Blog"
 author = "Smitop"
+
+taxonomies:
+  tag: tags

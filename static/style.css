@@ -13,6 +13,7 @@ h2 {
 
 p, ul {
     margin: 0;
+    padding-bottom: 1rem;
 }
 
 h2 {
@@ -38,6 +39,7 @@ h2 {
 
 img {
     display: block;
+    margin-bottom: 1rem;
 }
 
 kbd {

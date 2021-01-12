@@ -1,3 +1,3 @@
-# smitop-blog
+# smitop.com
 
-This is the private repo that generates the smitop.com root domain. It is synced with [a public repo](https://github.com/Smittyvb/smitop.com) (with some stuff like drafts and some static files removed).
+This is the source code for my blog. It's automatically generated from a private repo (to removes drafts and the like).

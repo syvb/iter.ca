@@ -10,7 +10,9 @@
     <link href="https://fonts.googleapis.com/css?family=Barlow|Mukta+Vaani" rel="stylesheet">
     <style>
       img {
-        max-width: 100vw;
+        max-width: calc(100vw - 16px);
+        position: relative;
+        left: -8px;
       }
     </style>
     {{- block "sitewide" . }}{{- end }}

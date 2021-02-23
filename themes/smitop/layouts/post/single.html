@@ -18,9 +18,10 @@
         </ul>
       {{ end }}
       {{ with .Params.tags }}
+      Tags:
         <div id="tags">
           {{ range . }}
-          <a href="{{ "tags/" | absURL }}{{ . | urlize }}">{{ . }}</a>
+          <a href="{{ "tags/" | absURL }}{{ . | urlize }}">{{ . }}</a>,
           {{ end }}
         </div>
       {{ end }}

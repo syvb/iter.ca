@@ -1,3 +1,11 @@
-{{ range $.Site.Data.data }}
-a
+{{ range sort $.Site.Data.data "date" "desc" }}
+    <div class="stream-item">
+        <h2>{{ .title }}</h2>
+        {{ if (isset . "html") }}
+            {{ .html }}
+        {{ end }}
+        {{ if (isset . "thumb") }}
+            <img src="{{ .thumb }}" width="200" />
+        {{ end }}
+    </div>
 {{ end }}

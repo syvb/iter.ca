@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Barlow|Mukta+Vaani" rel="stylesheet">
 </head>
 <body>
+    <a href="/">Back to homepage</a>
     {{ $items := .Site.RegularPages | append $.Site.Data.data }}
     {{ range (sort $items ".Date.Unix" "desc") }}
         {{ partial "streamitem.html" . }}

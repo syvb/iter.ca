@@ -1,3 +1,19 @@
-{{ range sort $.Site.Data.data "date" "desc" }}
-    {{ partial "streamitem.html" . }}
-{{ end }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smitop's post stream</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Things Smitop has made and done">
+    <meta name="rating" content="General">
+    <link rel="stylesheet" href="/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Barlow|Mukta+Vaani" rel="stylesheet">
+</head>
+<body>
+    {{ range ((.Site.RegularPages) | append (sort $.Site.Data.data "date" "desc")) }}
+        {{ partial "streamitem.html" . }}
+    {{ end }}
+</body>
+</html>

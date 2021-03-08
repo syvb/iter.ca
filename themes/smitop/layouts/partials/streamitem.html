@@ -8,7 +8,7 @@
             </a>
         {{ end }}
             <div>
-                at {{ dateFormat "January 2, 2006" (int .Date.Unix) }}
+                {{ dateFormat "January 2, 2006" (int .Date.Unix) }}
             </div>
         {{ if (isset . "Uri") }}
             <a href="{{ .Uri }}">
@@ -29,7 +29,7 @@
     {{ else }}
         <div>
             <h2><a href="{{.Permalink}}">{{.Title}} {{ if (.Draft) }}(DRAFT){{end}}</a></h2>
-            <div>at {{ .Date.Format "Jan 2, 2006" }}</div>
+            <div>{{ .Date.Format "Jan 2, 2006" }}</div>
             <div class="summary">
                 {{ .Description }}
             </div>

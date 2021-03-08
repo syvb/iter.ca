@@ -4,14 +4,27 @@
             <a href="{{ .uri }}">
         {{ end }}
             <h2>{{ .title }}</h2>
+        {{ if (isset . "uri") }}
+            </a>
+        {{ end }}
+            <div>
+                at {{ dateFormat "January 2, 2006" (int (div .date 1000)) }}
+            </div>
+        {{ if (isset . "uri") }}
+            <a href="{{ .uri }}">
+        {{ end }}
             {{ if (isset . "thumb") }}
-                <img src="{{ .thumb }}" width="200" />
+                <div>
+                    <img src="{{ .thumb }}" width="200" />
+                </div>
             {{ end }}
         {{ if (isset . "uri") }}
             </a>
         {{ end }}
         {{ if (isset . "html") }}
-            {{ .html }}
+            <div>
+                {{ .html }}
+            </div>
         {{ end }}
     </div>
 {{ end }}

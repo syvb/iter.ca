@@ -1,29 +1,29 @@
 <div class="stream-item">
-    {{ if (isset . "type")}}
-        {{ if (isset . "uri") }}
-            <a href="{{ .uri }}">
+    {{ if (isset . "Type")}}
+        {{ if (isset . "Uri") }}
+            <a href="{{ .Uri }}">
         {{ end }}
             <h2>{{ .title }}</h2>
-        {{ if (isset . "uri") }}
+        {{ if (isset . "Uri") }}
             </a>
         {{ end }}
             <div>
-                at {{ dateFormat "January 2, 2006" (int (div .date 1000)) }}
+                at {{ dateFormat "January 2, 2006" (int .Date.Unix) }}
             </div>
-        {{ if (isset . "uri") }}
-            <a href="{{ .uri }}">
+        {{ if (isset . "Uri") }}
+            <a href="{{ .Uri }}">
         {{ end }}
-            {{ if (isset . "thumb") }}
+            {{ if (isset . "Thumb") }}
                 <div>
-                    <img src="{{ .thumb }}" width="200" />
+                    <img src="{{ .Thumb }}" width="200" />
                 </div>
             {{ end }}
-        {{ if (isset . "uri") }}
+        {{ if (isset . "Uri") }}
             </a>
         {{ end }}
-        {{ if (isset . "html") }}
+        {{ if (isset . "Text") }}
             <div>
-                {{ .html }}
+                {{ .Text }}
             </div>
         {{ end }}
     {{ else }}

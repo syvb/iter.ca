@@ -12,10 +12,10 @@ ids.forEach(async id => {
         }
     })).text();
     console.log(JSON.stringify({
-        type: "video",
-        thumb: data.thumbnail_url,
-        uri: `https://youtube.com/watch?v=${id}`,
-        title: data.title,
-        date: (new Date(wpage.match(/<meta itemprop="uploadDate" content="([\d-]+)">/)[1])).valueOf()
+        Type: "video",
+        Thumb: data.thumbnail_url,
+        Uri: `https://youtube.com/watch?v=${id}`,
+        Title: data.title,
+        Date: { Unix: (new Date(wpage.match(/<meta itemprop="uploadDate" content="([\d-]+)">/)[1])).valueOf() / 1000 },
     }));
 });

@@ -6,7 +6,7 @@ notes.forEach(id => {
     let text = "";
     let inHeader = true;
     let header = {
-        type: "note",
+        Type: "note",
     };
     data.split("\n").forEach(line => {
         if (!inHeader) {
@@ -24,11 +24,11 @@ notes.forEach(id => {
             return;
         }
     });
-    if (header.date) header.date = (new Date(header.date)).valueOf();
-    if (header.name) {
-        header.title = header.name;
-        delete header.name;
+    if (header.Date) header.Date = { Unix: (new Date(header.Date)).valueOf() / 1000 };
+    if (header.Name) {
+        header.Title = header.Name;
+        delete header.Name;
     }
-    header.html = text;
+    header.Text = text;
     console.log(JSON.stringify(header));
 });

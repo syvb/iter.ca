@@ -30,5 +30,5 @@ notes.forEach(id => {
         delete header.name;
     }
     header.html = text;
-    console.log(header);
+    console.log(JSON.stringify(header));
 });

@@ -1,0 +1,4 @@
+date=March 8 2021
+title=First note
+
+If you are reading this, then I've sucessfully set up my notes system. This is for notes with less content than full blog posts.

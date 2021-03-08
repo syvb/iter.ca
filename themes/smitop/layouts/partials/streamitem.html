@@ -22,7 +22,7 @@
             </a>
         {{ end }}
         {{ if (isset . "Text") }}
-            <div>
+            <div class="summary">
                 {{ .Text }}
             </div>
         {{ end }}
@@ -30,7 +30,9 @@
         <div>
             <h2><a href="{{.Permalink}}">{{.Title}} {{ if (.Draft) }}(DRAFT){{end}}</a></h2>
             <div>at {{ .Date.Format "Jan 2, 2006" }}</div>
-            
+            <div class="summary">
+                {{ .Description }}
+            </div>
         </div>
     {{ end }}
 </div>

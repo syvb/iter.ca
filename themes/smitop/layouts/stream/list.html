@@ -1,30 +1,3 @@
 {{ range sort $.Site.Data.data "date" "desc" }}
-    <div class="stream-item">
-        {{ if (isset . "uri") }}
-            <a href="{{ .uri }}">
-        {{ end }}
-            <h2>{{ .title }}</h2>
-        {{ if (isset . "uri") }}
-            </a>
-        {{ end }}
-            <div>
-                at {{ dateFormat "January 2, 2006" (int (div .date 1000)) }}
-            </div>
-        {{ if (isset . "uri") }}
-            <a href="{{ .uri }}">
-        {{ end }}
-            {{ if (isset . "thumb") }}
-                <div>
-                    <img src="{{ .thumb }}" width="200" />
-                </div>
-            {{ end }}
-        {{ if (isset . "uri") }}
-            </a>
-        {{ end }}
-        {{ if (isset . "html") }}
-            <div>
-                {{ .html }}
-            </div>
-        {{ end }}
-    </div>
+    {{ partial "streamitem.html" . }}
 {{ end }}

@@ -3,6 +3,7 @@ date = "2020-07-08T04:00:00+00:00"
 description = "A long list of data collected by WhiteOps"
 tags = ["internet", "whiteops", "reddit"]
 title = "Data WhiteOps collects"
+
 +++
 
 Today I noticed [New Reddit](https://reddit.com/) was asking to use DRM. So I went on a source code analysis journey! See the [main post](/post/reddit-whiteops.md) for more details.

@@ -1,8 +1,9 @@
 +++
-date = 2020-07-04T00:00:00Z
+date = "2020-07-04T00:00:00Z"
 description = "Gmail's loading progress bar doesn't *actually* measure the progress of loading."
 tags = ["google"]
 title = "Gmail's fake loading indicator"
+
 +++
 
 Whenever I visit Gmail, I see its loading indicator for a fraction of a second before it loads:

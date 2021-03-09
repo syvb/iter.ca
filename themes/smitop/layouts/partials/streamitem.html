@@ -1,7 +1,24 @@
 <div class="stream-item{{if (isset . "Featured")}} featured{{ end }}" id="stream-item-{{ .scr.Get "idx" }}">
+    {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
+    <div class="stream-item-type">
+        {{ if (isset .Item "Type")}}
+            {{ if (eq .Item.Type "note")}}
+                {{ if (eq .Item.NoteType "Site")}}
+                    Website
+                {{ else }}
+                    Note
+                {{ end }}
+            {{ else if (eq .Item.Type "video")}}
+                Video
+            {{ else }}
+                Note
+            {{ end }}
+        {{ else }}
+            Blog post
+        {{ end }}
+    </div>
     {{ if (isset .Item "Type")}}
         <h2>
-            {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
             {{ if (isset .Item "Uri") }}
                 <a href="{{ .Item.Uri }}">
             {{ end }}
@@ -32,7 +49,6 @@
     {{ else }}
         <div>
             <h2>
-                {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
                 <a href="{{.Item.Permalink}}">{{.Item.Title}} {{ if (.Item.Draft) }}(DRAFT){{end}}</a>
             </h2>
             <div>{{ .Item.Date.Format "Jan 2, 2006" }}</div>

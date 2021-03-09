@@ -1,15 +1,18 @@
-<div class="stream-item">
+<div class="stream-item{{if (isset . "Featured")}} featured{{ end }}">
     {{ if (isset . "Type")}}
-        {{ if (isset . "Uri") }}
-            <a href="{{ .Uri }}">
-        {{ end }}
-            <h2>{{ .Title }}</h2>
-        {{ if (isset . "Uri") }}
-            </a>
-        {{ end }}
-            <div>
-                {{ dateFormat "January 2, 2006" (int .Date.Unix) }}
-            </div>
+        <h2>
+            {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" width="20">{{ end }}
+            {{ if (isset . "Uri") }}
+                <a href="{{ .Uri }}">
+            {{ end }}
+                {{ .Title }}
+            {{ if (isset . "Uri") }}
+                </a>
+            {{ end }}
+        </h2>
+        <div>
+            {{ dateFormat "January 2, 2006" (int .Date.Unix) }}
+        </div>
         {{ if (isset . "Uri") }}
             <a href="{{ .Uri }}">
         {{ end }}

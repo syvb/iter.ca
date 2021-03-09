@@ -18,7 +18,10 @@
     <h1>Full stream</h1>
     {{ $items := .Site.RegularPages | append $.Site.Data.data }}
     <div class="stream">
-        {{ range (sort $items ".Date.Unix" "desc") }}
+        {{ range (sort (where $items "Featured" "!=" nil) ".Date.Unix" "desc") }}
+            {{ partial "streamitem.html" . }}
+        {{ end }}
+        {{ range (sort (where $items "Featured" "==" nil) ".Date.Unix" "desc") }}
             {{ partial "streamitem.html" . }}
         {{ end }}
     </div>

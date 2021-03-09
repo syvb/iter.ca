@@ -15,7 +15,7 @@
         {{ end }}
             {{ if (isset . "Thumb") }}
                 <div>
-                    <img src="{{ .Thumb }}" width="200" />
+                    <img src="{{ .Thumb }}" width="300" />
                 </div>
             {{ end }}
         {{ if (isset . "Uri") }}
@@ -32,6 +32,7 @@
             <div>{{ .Date.Format "Jan 2, 2006" }}</div>
             <div class="summary">
                 {{ .Description }}
+                <a class="cont-reading" href="{{.Permalink}}">(continue reading)</a>
             </div>
         </div>
     {{ end }}

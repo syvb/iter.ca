@@ -1,4 +1,4 @@
-NoteType=Site
+NoteType=Game
 Date=Jan 3 2020
 Uri=https://smitop.com/mova.html
 Title=Mova

@@ -3,8 +3,8 @@
     <div class="stream-item-type">
         {{ if (isset .Item "Type")}}
             {{ if (eq .Item.Type "note")}}
-                {{ if (eq .Item.NoteType "Site")}}
-                    Website
+                {{ if (isset .Item "NoteType")}}
+                    {{ .Item.NoteType }}
                 {{ else }}
                     Note
                 {{ end }}

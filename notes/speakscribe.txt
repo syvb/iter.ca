@@ -1,4 +1,4 @@
-NoteType=Site
+NoteType=Web app
 Date=2019-06-27
 Uri=https://speakscribe.com/
 Title=SpeakScribe

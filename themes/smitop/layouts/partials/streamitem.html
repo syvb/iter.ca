@@ -27,7 +27,7 @@
                 </a>
             {{ end }}
         </h2>
-        <div>
+        <div class="stream-item-date">
             {{ dateFormat "January 2, 2006" (int .Item.Date.Unix) }}
         </div>
         {{ if (isset .Item "Uri") }}
@@ -51,7 +51,7 @@
             <h2>
                 <a href="{{.Item.Permalink}}">{{.Item.Title}} {{ if (.Item.Draft) }}(DRAFT){{end}}</a>
             </h2>
-            <div>{{ .Item.Date.Format "Jan 2, 2006" }}</div>
+            <div class="stream-item-date">{{ .Item.Date.Format "January 2, 2006" }}</div>
             <div class="summary">
                 {{ .Item.Description }}
                 <a class="cont-reading" href="{{.Item.Permalink}}">(continue reading)</a>

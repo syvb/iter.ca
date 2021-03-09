@@ -13,7 +13,7 @@ ids.forEach(async id => {
     })).text();
     console.log(JSON.stringify({
         Type: "video",
-        Thumb: `https://i.ytimg.com/vi/${id}/mqdefault.jpg`,
+        Thumb: `/yt-thumbs/${id}.jpg`,
         Uri: `https://youtube.com/watch?v=${id}`,
         Title: data.title,
         Date: { Unix: (new Date(wpage.match(/<meta itemprop="uploadDate" content="([\d-]+)">/)[1])).valueOf() / 1000 },

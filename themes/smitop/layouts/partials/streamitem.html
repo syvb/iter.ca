@@ -1,41 +1,41 @@
-<div class="stream-item{{if (isset . "Featured")}} featured{{ end }}">
-    {{ if (isset . "Type")}}
+<div class="stream-item{{if (isset .Item "Featured")}} featured{{ end }}" id="stream-item-{{ .scr.Get "idx" }}">
+    {{ if (isset .Item "Type")}}
         <h2>
-            {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
-            {{ if (isset . "Uri") }}
-                <a href="{{ .Uri }}">
+            {{if (isset .Item "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
+            {{ if (isset .Item "Uri") }}
+                <a href="{{ .Item.Uri }}">
             {{ end }}
-                {{ .Title }}
-            {{ if (isset . "Uri") }}
+                {{ .Item.Title }}
+            {{ if (isset .Item "Uri") }}
                 </a>
             {{ end }}
         </h2>
         <div>
-            {{ dateFormat "January 2, 2006" (int .Date.Unix) }}
+            {{ dateFormat "January 2, 2006" (int .Item.Date.Unix) }}
         </div>
-        {{ if (isset . "Uri") }}
-            <a href="{{ .Uri }}">
+        {{ if (isset .Item "Uri") }}
+            <a href="{{ .Item.Uri }}">
         {{ end }}
-            {{ if (isset . "Thumb") }}
+            {{ if (isset .Item "Thumb") }}
                 <div>
-                    <img src="{{ .Thumb }}" width="300" />
+                    <img src="{{ .Item.Thumb }}" width="300" />
                 </div>
             {{ end }}
-        {{ if (isset . "Uri") }}
+        {{ if (isset .Item "Uri") }}
             </a>
         {{ end }}
-        {{ if (isset . "Text") }}
+        {{ if (isset .Item "Text") }}
             <div class="summary">
-                {{ .Text }}
+                {{ .Item.Text }}
             </div>
         {{ end }}
     {{ else }}
         <div>
-            <h2><a href="{{.Permalink}}">{{.Title}} {{ if (.Draft) }}(DRAFT){{end}}</a></h2>
-            <div>{{ .Date.Format "Jan 2, 2006" }}</div>
+            <h2><a href="{{.Permalink}}">{{.Item.Title}} {{ if (.Item.Draft) }}(DRAFT){{end}}</a></h2>
+            <div>{{ .Item.Date.Format "Jan 2, 2006" }}</div>
             <div class="summary">
-                {{ .Description }}
-                <a class="cont-reading" href="{{.Permalink}}">(continue reading)</a>
+                {{ .Item.Description }}
+                <a class="cont-reading" href="{{.Item.Permalink}}">(continue reading)</a>
             </div>
         </div>
     {{ end }}

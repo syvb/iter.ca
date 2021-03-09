@@ -18,11 +18,15 @@
     <h1>Full stream</h1>
     {{ $items := .Site.RegularPages | append $.Site.Data.data }}
     <div class="stream">
+        {{ $scr := newScratch }}
+        {{ $scr.Set "idx" 0 }}
         {{ range (sort (where $items "Featured" "!=" nil) ".Date.Unix" "desc") }}
-            {{ partial "streamitem.html" . }}
+            {{ $scr.Add "idx" 1 }}
+            {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
         {{ end }}
         {{ range (sort (where $items "Featured" "==" nil) ".Date.Unix" "desc") }}
-            {{ partial "streamitem.html" . }}
+            {{ $scr.Add "idx" 1 }}
+            {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
         {{ end }}
     </div>
 </body>

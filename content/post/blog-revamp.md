@@ -3,7 +3,6 @@ date = "2020-06-16T04:00:00+00:00"
 description = "How I improved this blog a bunch."
 tags = ["meta", "hugo"]
 title = "How I improved this blog"
-featured = 1
 +++
 
 I've recently made many improvements to this blog. This post will go into those changes, and how I implemented them.

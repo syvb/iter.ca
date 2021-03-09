@@ -35,7 +35,7 @@
         {{ end }}
             {{ if (isset .Item "Thumb") }}
                 <div>
-                    <img src="{{ .Item.Thumb }}" width="300" />
+                    <img src="{{ .Item.Thumb }}" width="300" class="stream-item-thumb" />
                 </div>
             {{ end }}
         {{ if (isset .Item "Uri") }}

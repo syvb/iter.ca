@@ -62,34 +62,9 @@
         </div>
     </div>
     <div id="homepage-grid">
-        <div id="my-websites">
-            <h2>Things I made</h2>
-            <ul>
-                <li><a href="https://ttw.smitop.com">TagTime Web</a> - stochastic time tracking</li>
-                <li><a href="https://speakscribe.com">SpeakScribe</a> - dictation website</li>
-                <li><a href="https://smitop.com">This page</a> (duh)</li>
-                <li><a href="https://smitop.com/shift-key.html">Is your shift key pressed?</a></li>
-                <li><a href="https://learnlake.com">LearnLake</a> - educational website</li>
-                <li><a href="https://nini.smitop.com">Nini</a> - utilities for the Nimiq blockchain</li>
-                <li><a href="https://upload2ipfs.smitop.com/">Upload2IPFS</a> - upload files to the IPFS network easily</li>
-                <li><a href="https://smitop.com/square-game">Square Game</a> - a game that involves squares</a>
-                </li>
-                <li><a href="https://smitop.com/no-friction.html">0friction</a> - a game with slippery controls</a>
-                </li>
-                <li><a href="https://smitop.com/mova.html">Mova</a> - a game where you avoid tiny squares</a>
-                </li>
-            </ul>
-        </div>
         <div id="blog-posts">
-            <h2>Things I wrote</h2>
-            <ul>
-                {{ range .Site.RegularPages }}
-                    <li>
-                        <a href="{{.Permalink}}">{{.Title}} ({{ .Date.Format "Jan 2, 2006" }})</a>
-                        {{ if (.Draft) }}(DRAFT){{end}}
-                    </li>
-                {{ end }}
-            </ul>
+            <h2>Things I've done</h2>
+            {{ partial "stream.html" (dict "Items" (.Site.RegularPages | append $.Site.Data.data))}}
         </div>
         <div id="things-i-like">
             <h2>Things I like</h2>

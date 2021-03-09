@@ -1,7 +1,7 @@
 <div class="stream-item{{if (isset . "Featured")}} featured{{ end }}">
     {{ if (isset . "Type")}}
         <h2>
-            {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" width="20">{{ end }}
+            {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
             {{ if (isset . "Uri") }}
                 <a href="{{ .Uri }}">
             {{ end }}

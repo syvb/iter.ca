@@ -33,7 +33,7 @@
         <div>
             <h2>
                 {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
-                <a href="{{.Permalink}}">{{.Item.Title}} {{ if (.Item.Draft) }}(DRAFT){{end}}</a>
+                <a href="{{.Item.Permalink}}">{{.Item.Title}} {{ if (.Item.Draft) }}(DRAFT){{end}}</a>
             </h2>
             <div>{{ .Item.Date.Format "Jan 2, 2006" }}</div>
             <div class="summary">

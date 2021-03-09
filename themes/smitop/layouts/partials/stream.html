@@ -1,0 +1,12 @@
+<div class="stream">
+    {{ $scr := newScratch }}
+    {{ $scr.Set "idx" 0 }}
+    {{ range (sort ((where .Items "Featured" "!=" nil) | append (where .Items "Params.featured" "!=" nil)) ".Date.Unix" "desc") }}
+        {{ $scr.Add "idx" 1 }}
+        {{ partial "streamitem.html" (dict "Item" . "scr" $scr "Featured" 1)}}
+    {{ end }}
+    {{ range (sort (where .Items "Featured" "==" nil) ".Date.Unix" "desc") }}
+        {{ $scr.Add "idx" 1 }}
+        {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
+    {{ end }}
+</div>

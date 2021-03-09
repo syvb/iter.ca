@@ -16,18 +16,6 @@
         <a href="/">Back to homepage</a>
     </div>
     <h1>Full stream</h1>
-    {{ $items := .Site.RegularPages | append $.Site.Data.data }}
-    <div class="stream">
-        {{ $scr := newScratch }}
-        {{ $scr.Set "idx" 0 }}
-        {{ range (sort ((where $items "Featured" "!=" nil) | append (where $items "Params.featured" "!=" nil)) ".Date.Unix" "desc") }}
-            {{ $scr.Add "idx" 1 }}
-            {{ partial "streamitem.html" (dict "Item" . "scr" $scr "Featured" 1)}}
-        {{ end }}
-        {{ range (sort (where $items "Featured" "==" nil) ".Date.Unix" "desc") }}
-            {{ $scr.Add "idx" 1 }}
-            {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
-        {{ end }}
-    </div>
+    {{ partial "stream.html" (dict "Items" (.Site.RegularPages | append $.Site.Data.data))}}
 </body>
 </html>

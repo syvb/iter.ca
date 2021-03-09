@@ -1,0 +1,6 @@
+NoteType=Site
+Date=2019-06-27
+Uri=https://speakscribe.com/
+Title=SpeakScribe
+
+A dictation website that uses Web APIs.

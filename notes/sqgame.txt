@@ -1,0 +1,6 @@
+NoteType=Site
+Date=Sept 1, 2019
+Uri=https://smitop.com/square-game/
+Title=Square game
+
+A game that involves squares.

@@ -1,0 +1,5 @@
+Title=Nini
+Date=Jan 14, 2019
+Uri=https://nini.smitop.com/
+NoteType=Site
+Tools for the Nimiq blockchain.

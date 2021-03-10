@@ -7,6 +7,7 @@ notes.forEach(id => {
     let inHeader = true;
     let header = {
         Type: "note",
+        Id: `note-${id}`,
     };
     data.split("\n").forEach(line => {
         if (!inHeader) {

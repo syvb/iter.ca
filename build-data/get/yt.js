@@ -17,5 +17,6 @@ ids.forEach(async id => {
         Uri: `https://youtube.com/watch?v=${id}`,
         Title: data.title,
         Date: { Unix: (new Date(wpage.match(/<meta itemprop="uploadDate" content="([\d-]+)">/)[1])).valueOf() / 1000 },
+        Id: `yt-vid-${id}`,
     }));
 });

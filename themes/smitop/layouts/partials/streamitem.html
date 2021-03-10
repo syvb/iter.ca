@@ -1,6 +1,13 @@
 <div class="stream-item{{if (isset . "Featured")}} featured{{ end }}" id="{{ if (isset .Item "Id")}}stream-item-{{ .Item.Id }}{{ else }}stream-item-post-{{ .Item.File.UniqueID }}{{ end }}">
     {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
-    <div class="stream-item-type">
+    {{ if .Item.Title}}
+        <div class="stream-item-type">
+    {{ else }}
+        <h2 class="stream-item-type">
+        {{ if (isset .Item "Uri") }}
+            <a href="{{ .Item.Uri }}">
+        {{ end }}
+    {{ end }}
         {{ if (isset .Item "Type")}}
             {{ if (eq .Item.Type "note")}}
                 {{ if (isset .Item "NoteType")}}
@@ -10,23 +17,34 @@
                 {{ end }}
             {{ else if (eq .Item.Type "video")}}
                 Video
+            {{ else if (eq .Item.Type "hn")}}
+                HN {{ .Item.HNType }}
             {{ else }}
                 Note
             {{ end }}
         {{ else }}
             Blog post
         {{ end }}
-    </div>
-    {{ if (isset .Item "Type")}}
-        <h2>
-            {{ if (isset .Item "Uri") }}
-                <a href="{{ .Item.Uri }}">
-            {{ end }}
-                {{ .Item.Title }}
-            {{ if (isset .Item "Uri") }}
-                </a>
-            {{ end }}
+    {{ if .Item.Title}}
+        </div>
+    {{ else }}
+        {{ if (isset .Item "Uri") }}
+            </a>
+        {{ end }}
         </h2>
+    {{ end }}
+    {{ if (isset .Item "Type")}}
+        {{ if (isset .Item "Title")}}
+            <h2>
+                {{ if (isset .Item "Uri") }}
+                    <a href="{{ .Item.Uri }}">
+                {{ end }}
+                    {{ .Item.Title }}
+                {{ if (isset .Item "Uri") }}
+                    </a>
+                {{ end }}
+            </h2>
+        {{ end }}
         <div class="stream-item-date">
             {{ dateFormat "January 2, 2006" (int .Item.Date.Unix) }}
         </div>
@@ -43,7 +61,8 @@
         {{ end }}
         {{ if (isset .Item "Text") }}
             <div class="summary">
-                {{ .Item.Text }}
+                <!-- rely on HN to provide safe HTML here -->
+                {{ .Item.Text | safeHTML | truncate 100 }}
             </div>
         {{ end }}
     {{ else }}

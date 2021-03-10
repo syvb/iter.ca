@@ -66,7 +66,7 @@
     <div id="homepage-grid">
         <div id="blog-posts">
             <h2>Things I've done</h2>
-            {{ partial "stream.html" (dict "Items" (.Site.RegularPages | append $.Site.Data.data))}}
+            {{ partial "stream.html" (dict "Items" (where (.Site.RegularPages | append $.Site.Data.data) "Verbose" "!=" 1))}}
         </div>
         <div id="things-i-like">
             <h2>Things I like</h2>

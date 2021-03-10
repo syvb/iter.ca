@@ -2,5 +2,5 @@ Title=TagTime Web
 Uri=https://ttw.smitop.com/
 NoteType=Web app
 Date=Aug 20 2020
-Featured=1
+Verbose=-1
 Time tracking that randomly samples you.

@@ -25,6 +25,11 @@ notes.forEach(id => {
         }
     });
     if (header.Date) header.Date = { Unix: (new Date(header.Date)).valueOf() / 1000 };
+    if (header.Verbose) {
+        header.Verbose = parseInt(header.Verbose, 10);
+    } else {
+        header.Verbose = 0;
+    }
     if (header.Name) {
         header.Title = header.Name;
         delete header.Name;

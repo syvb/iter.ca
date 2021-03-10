@@ -1,4 +1,4 @@
-<div class="stream-item{{if (isset . "Featured")}} featured{{ end }}" id="stream-item-{{ .scr.Get "idx" }}">
+<div class="stream-item{{if (isset . "Featured")}} featured{{ end }}" id="{{ if (isset .Item "Id")}}stream-item-{{ .Item.Id }}{{ else }}stream-item-post-{{ .Item.File.UniqueID }}{{ end }}">
     {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
     <div class="stream-item-type">
         {{ if (isset .Item "Type")}}

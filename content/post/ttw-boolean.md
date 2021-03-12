@@ -1,6 +1,6 @@
 +++
-date = "2021-03-14T05:00:00Z"
-publishDate = "2021-03-14T05:00:00Z"
+date = "2021-03-15T05:00:00Z"
+publishDate = "2021-03-15T05:00:00Z"
 description = ""
 tags = ["internet", "programming", "ttw", "rust"]
 title = "Writing a boolean expression parser in Rust"

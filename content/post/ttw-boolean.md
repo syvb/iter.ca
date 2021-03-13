@@ -15,7 +15,7 @@ Here are some example queries, each with different syntax, demonstrate the range
 
 My main goal with the query design was to make it very simple to understand how querying works -- I didn't want to make users read a long document before writing simple queries. I also wanted to write it in [Rust](https://www.rust-lang.org/), because I like Rust. It can be run in the browser via [WebAssembly](https://webassembly.org/), and since I was running WASM in the browser already I wasn't going to lose any more browser support than I already have. Rust is also pretty fast, which is a good thing, especially on devices with less computing power like phones (although I don't think it made much of a difference in this case).
 
-Let's dive in to the code. It's open source, so you can follow along with [the source code](https://github.com/Smittyvb/ttw/blob/master/taglogic/src/bool.rs) if you want. I won't go over every line of code, but I will explain all of the important parts. There are three main phases in the system: lexing, parsing, and evaluation.
+Let's dive in to the code. It's open source, so you can follow along with [the source code](https://github.com/Smittyvb/ttw/blob/master/taglogic/src/bool.rs) if you want, but note that I explain the code a bit differently then the order of the actual source code. There are three main phases in the system: lexing, parsing, and evaluation.
 
 ### Lexing
 In the [lexing phase](https://en.wikipedia.org/wiki/Lexical_analysis), we convert raw text to a series of tokens that are easier to deal with. In this phase, different syntaxical ways to write the same thing will be merged. `&` and `and` will be repersented with the same token. Lexing won't do any validation that the provided tokens are sensical though: this phase is completely fine with unmatched brackets and operators without inputs. Here's what the interface is going to look like:
@@ -184,7 +184,7 @@ enum AstNode {
 }
 ```
 
-We use `Box` to indirectly point to other AstNodes and prevent infinite recursion errors. The important `fn` here is `munch_tokens`, which takes a list of tokens and converts it to a `AstNode`.
+We use `Box` to store AstNodes on the heap, preventing infinite recursion. The important `fn` here is `munch_tokens`, which takes a list of tokens and converts it to a `AstNode`.
 
 #### Munching tokens
 Let's implement the core of the parsing system that converts a stream of `Token` to a single `AstNode` (probably with more `AstNode`s nested). Here's the signature of that:
@@ -192,15 +192,144 @@ Let's implement the core of the parsing system that converts a stream of `Token`
 ```rust
 impl AstNode {
     fn munch_tokens(tokens: &mut VecDeque<Token>, depth: u16) -> Result<Self, &'static str> {
+        if depth == 0 {
+            return Err("expression too deep");
+        }
         // ...
     }
 }
 ```
 
-Notice that if there was an error parsing a statically defined string is returned. Most lexers/parsers would include more detailled information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for minimal performance gains
+Notice that if there was an error parsing a statically defined string is returned. Most lexers/parsers would include more detailled information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for fairly minimal performance gains. We also use `depth` to keep track of how deep we are going, and error if we get too deep to limit the amount of computation we do.
+
+Now let's write the core token munching loop:
+
+```rust
+loop {
+    let next = match tokens.get(0) {
+        Some(x) => x,
+        None => return Err("unexpected end of expression"),
+    };
+    // ...
+}
+```
+
+TODO(convert to `while let`?)
+
+Now for each token, we'll match against it, and decide what to do. For some tokens, we can just error at that point
+
+```rust
+match next {
+    // some tokens can't happen here
+    Token::CloseBracket => return Err("Unexpected closing bracket"),
+    Token::BinaryOp(_) => return Err("Unexpected binary operator"),
+    // ...
+}
+```
+
+For tag names, we need to disambiguate between two cases: is the token being used by itself, or with a boolean operator? When binary operators are between tokens we need to look ahead to figure out this context. If we were to use [Reverse Polish Notation](TODO(link)) then we wouldn't have this problem, but alas we are stuck with harder to parse infix notation. If the parser sees such amgiuity, it fixes it by adding implict opening and closing brackets, and trying again:
+
+```rust
+match next {
+    // <snip>
+    Token::Name { text } => {
+        // could be the start of the binary op or just a lone name
+        match tokens.get(1) {
+            Some(Token::BinaryOp(_)) => {
+                // convert to unambiguous form and try again
+                tokens.insert(1, Token::CloseBracket);
+                tokens.insert(0, Token::OpenBracket);
+                return Self::munch_tokens(tokens, depth - 1);
+            }
+            Some(Token::CloseBracket) | None => {
+                // lone token
+                let text = text.clone();
+                tokens.remove(0);
+                return Ok(AstNode::Name(text));
+            }
+            Some(_) => return Err("name followed by invalid token"),
+        }
+    }
+}
+```
+
+Next, let's implement opening brackets. We munch the tokens inside the bracket, remove the closing bracket, then do the same binary operation checks as with tag names.
+```rust
+match next {
+    Token::OpenBracket => {
+        tokens.remove(0); // open bracket
+        let result = Self::munch_tokens(tokens, depth - 1)?;
+        match tokens.remove(0) {
+            // remove closing bracket
+            Some(Token::CloseBracket) => {}
+            _ => return Err("expected closing bracket"),
+        };
+        // check for binary op afterwards
+        return match tokens.get(0) {
+            Some(Token::BinaryOp(op)) => {
+                let op = op.clone();
+                tokens.remove(0).unwrap(); // remove binary op
+                let ret = Ok(AstNode::Binary(
+                    op,
+                    Box::new(result),
+                    Box::new(Self::munch_tokens(tokens, depth - 1)?),
+                ));
+                ret
+            }
+            Some(Token::CloseBracket) | None => Ok(result),
+            Some(_) => Err("invald token after closing bracket"),
+        };
+    }
+}
+```
+
+Okay, one operator left: the `!` operator, which negates its contents. I've made the design decision not to allow expressions with double negatives like `!!foo`, since there's no good reason to do that.
+
+```rust
+Token::Invert => {
+    tokens.remove(0);
+    // invert exactly the next token
+    // !a & b -> (!a) & b
+    match tokens.get(0) {
+        Some(Token::OpenBracket) => {
+            return Ok(AstNode::Invert(Box::new(Self::munch_tokens(
+                tokens,
+                depth - 1,
+            )?)));
+        }
+        Some(Token::Name { text }) => {
+            // is it like "!abc" or "!abc & xyz"
+            let inverted = AstNode::Invert(Box::new(AstNode::Name(text.clone())));
+            match tokens.get(1) {
+                Some(Token::BinaryOp(_)) => {
+                    // "!abc & xyz"
+                    // convert to unambiguous form and try again
+                    tokens.insert(0, Token::OpenBracket);
+                    tokens.insert(1, Token::Invert);
+                    tokens.insert(2, Token::OpenBracket);
+                    tokens.insert(4, Token::CloseBracket);
+                    tokens.insert(5, Token::CloseBracket);
+                    return Self::munch_tokens(tokens, depth - 1);
+                }
+                None | Some(Token::CloseBracket) => {
+                    // "!abc"
+                    tokens.remove(0); // remove name
+                    return Ok(inverted);
+                }
+                Some(_) => return Err("invalid token after inverted name"),
+            }
+        }
+        Some(Token::Invert) => {
+            return Err("can't double invert, that would be pointless")
+        }
+        Some(_) => return Err("expected expression"),
+        None => return Err("expected token to invert, got EOF"),
+    }
+}
+```
 
 ### Evaluation
-Thanks to the way `AstNode` is written, evaluating `AstNode`s against some tags is easy:
+Thanks to the way `AstNode` is written, evaluating `AstNode`s against some tags is really easy. By design, we can just recursively evaluate AST nodes.
 ```rust
 impl AstNode {
     fn matches(&self, tags: &[&str]) -> bool {
@@ -217,7 +346,63 @@ impl AstNode {
 The only weird thing here is `&&**name`, which looks really weird but is the right combination of symbols needed to convert a `&String` to a `&&str` (it goes `&String` -> `String` -> `str` -> `&str` -> `&&str`).
 
 ### Putting it all together
-We don't want to expose all of these implementation details to users. Let's wrap all of this behind a struct that takes care of calling the lexer and building an AST for our users. If we decide to completly change our implementation in the future, nobody will know since we'll have a very small API surface.
+We don't want to expose all of these implementation details to users. Let's wrap all of this behind a struct that takes care of calling the lexer and building an AST for our users. If we decide to completly change our implementation in the future, nobody will know since we'll have a very small API surface. There's one more case we want to handle here: the empty input. `AstNode` can't handle empty input, so we'll implement that in our wrapper. This seems like it would work:
 
+```rust
+pub enum ExprData {
+    Empty,
+    HasNodes(AstNode),
+}
+```
+
+But if you try that you'll get a compile error.
+
+```
+TODO(compile error)
+```
+
+In Rust, data stored in `enum` variants is always implictly `pub`. We can work around that by wrapping our wrapper:
+
+```rust
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ExprData {
+    Empty,
+    HasNodes(AstNode),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Expr(ExprData);
+```
+
+Now let's implement some public `fn`s that wrap the underlying `AstNode`:
+
+```rust
+const MAX_RECURSION: u16 = 20;
+
+impl Expr {
+    pub fn from_string(s: &str) -> Result<Self, &'static str> {
+        // lex and convert to a deque
+        let mut tokens: VecDeque<Token> = lex(s).into_iter().collect();
+        if tokens.is_empty() {
+            // no tokens
+            return Ok(Self(ExprData::Empty));
+        }
+
+        let ast = AstNode::munch_tokens(&mut tokens, MAX_RECURSION)?;
+        if !tokens.is_empty() {
+            return Err("expected EOF, found extra tokens");
+        }
+
+        Ok(Self(ExprData::HasNodes(ast)))
+    }
+
+    pub fn matches(&self, tags: &[&str]) -> bool {
+        match &self.0 {
+            ExprData::Empty => true,
+            ExprData::HasNodes(node) => node.matches(tags),
+        }
+    }
+}
+```
 
 That's it! If you want some more Boolean expression content, check out the [test suite](https://github.com/Smittyvb/ttw/blob/f77fa34e62739b0225847317d243fc1a4ab29b96/taglogic/src/bool.rs#L271) for some more moderately interesting tests.

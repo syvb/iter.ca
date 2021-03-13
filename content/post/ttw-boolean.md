@@ -1,7 +1,7 @@
 +++
 date = "2021-03-15T05:00:00Z"
 publishDate = "2021-03-15T05:00:00Z"
-description = "Let's write some Rust to parse and evaluate Boolean expressions"
+description = "Let's write some Rust to parse and evaluate Boolean expressions."
 tags = ["internet", "programming", "ttw", "rust"]
 title = "Writing a Boolean expression parser in Rust"
 +++
@@ -202,19 +202,14 @@ impl AstNode {
 
 Notice that if there was an error parsing a statically defined string is returned. Most lexers/parsers would include more detailled information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for fairly minimal performance gains. We also use `depth` to keep track of how deep we are going, and error if we get too deep to limit the amount of computation we do.
 
-Now let's write the core token munching loop:
+Now let's write the core token munching loop using a `while let` expression:
 
 ```rust
-loop {
-    let next = match tokens.get(0) {
-        Some(x) => x,
-        None => return Err("unexpected end of expression"),
-    };
+while let Some(next) = tokens.get(0) {
     // ...
 }
+Err("unexpected end of expression")
 ```
-
-TODO(convert to `while let`?)
 
 Now for each token, we'll match against it, and decide what to do. For some tokens, we can just error at that point
 
@@ -227,7 +222,7 @@ match next {
 }
 ```
 
-For tag names, we need to disambiguate between two cases: is the token being used by itself, or with a boolean operator? When binary operators are between tokens we need to look ahead to figure out this context. If we were to use [Reverse Polish Notation](TODO(link)) then we wouldn't have this problem, but alas we are stuck with harder to parse infix notation. If the parser sees such amgiuity, it fixes it by adding implict opening and closing brackets, and trying again:
+For tag names, we need to disambiguate between two cases: is the token being used by itself, or with a boolean operator? When binary operators are between tokens we need to look ahead to figure out this context. If we were to use [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) then we wouldn't have this problem, but alas we are stuck with harder to parse infix notation. If the parser sees such amgiuity, it fixes it by adding implict opening and closing brackets, and trying again:
 
 ```rust
 match next {
@@ -357,11 +352,18 @@ pub enum ExprData {
 
 But if you try that you'll get a compile error.
 
-```
-TODO(compile error)
+```markdown
+error[E0446]: private type `AstNode` in public interface
+  --> src/lib.rs:16:14
+   |
+8  | enum AstNode {
+   | ------------ `AstNode` declared as private
+...
+16 |     HasNodes(AstNode),
+   |              ^^^^^^^ can't leak private type
 ```
 
-In Rust, data stored in `enum` variants is always implictly `pub`. We can work around that by wrapping our wrapper:
+In Rust, data stored in `enum` variants is always implictly `pub`, so this wrapper could allow users access to internal implementation detailsm, which we don't want. We can work around that by wrapping our wrapper:
 
 ```rust
 #[derive(Debug, Clone, PartialEq, Eq)]

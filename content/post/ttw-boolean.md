@@ -1,9 +1,9 @@
 +++
 date = "2021-03-15T05:00:00Z"
 publishDate = "2021-03-15T05:00:00Z"
-description = ""
+description = "Let's write some Rust to parse and evaluate Boolean expressions"
 tags = ["internet", "programming", "ttw", "rust"]
-title = "Writing a boolean expression parser in Rust"
+title = "Writing a Boolean expression parser in Rust"
 +++
 
 While using my time tracking system, [TagTime Web](https://ttw.smitop.com/), I have on a few occasions wanted to use some complex logic to select pings across my database. My first implementation of this just had a simple way to include and exclude pings, but this later proved to be insufficent for my needs. I considered implementing a more complex system at first, but I decided it was a good idea to wait until the need actually arised before building a more complex system like this. Here, I will explain how I implemented this new system.
@@ -186,7 +186,18 @@ enum AstNode {
 
 We use `Box` to indirectly point to other AstNodes and prevent infinite recursion errors. The important `fn` here is `munch_tokens`, which takes a list of tokens and converts it to a `AstNode`.
 
-Notice that if there was an error parsing a statically defined string is returned. Most lexers/parsers would include more detailled information here about where the error occured, but to reduce complexity I haven't implemented any such logic.
+#### Munching tokens
+Let's implement the core of the parsing system that converts a stream of `Token` to a single `AstNode` (probably with more `AstNode`s nested). Here's the signature of that:
+
+```rust
+impl AstNode {
+    fn munch_tokens(tokens: &mut VecDeque<Token>, depth: u16) -> Result<Self, &'static str> {
+        // ...
+    }
+}
+```
+
+Notice that if there was an error parsing a statically defined string is returned. Most lexers/parsers would include more detailled information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for minimal performance gains
 
 ### Evaluation
 Thanks to the way `AstNode` is written, evaluating `AstNode`s against some tags is easy:
@@ -209,4 +220,4 @@ The only weird thing here is `&&**name`, which looks really weird but is the rig
 We don't want to expose all of these implementation details to users. Let's wrap all of this behind a struct that takes care of calling the lexer and building an AST for our users. If we decide to completly change our implementation in the future, nobody will know since we'll have a very small API surface.
 
 
-That's it! If you want some more boolean expression content, check out the [test suite](https://github.com/Smittyvb/ttw/blob/f77fa34e62739b0225847317d243fc1a4ab29b96/taglogic/src/bool.rs#L271) for some more moderately interesting tests.
+That's it! If you want some more Boolean expression content, check out the [test suite](https://github.com/Smittyvb/ttw/blob/f77fa34e62739b0225847317d243fc1a4ab29b96/taglogic/src/bool.rs#L271) for some more moderately interesting tests.

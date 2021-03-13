@@ -191,7 +191,10 @@ Let's implement the core of the parsing system that converts a stream of `Token`
 
 ```rust
 impl AstNode {
-    fn munch_tokens(tokens: &mut VecDeque<Token>, depth: u16) -> Result<Self, &'static str> {
+    fn munch_tokens(
+        tokens: &mut VecDeque<Token>,
+        depth: u16,
+    ) -> Result<Self, &'static str> {
         if depth == 0 {
             return Err("expression too deep");
         }
@@ -222,7 +225,7 @@ match next {
 }
 ```
 
-For tag names, we need to disambiguate between two cases: is the token being used by itself, or with a boolean operator? When binary operators are between tokens we need to look ahead to figure out this context. If we were to use [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) then we wouldn't have this problem, but alas we are stuck with harder to parse infix notation. If the parser sees such amgiuity, it fixes it by adding implict opening and closing brackets, and trying again:
+For tag names, we need to disambiguate between two cases: is the token being used by itself, or with a Boolean operator? When binary operators are between tokens we need to look ahead to figure out this context. If we were to use [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) then we wouldn't have this problem, but alas we are stuck with harder to parse infix notation. If the parser sees such amgiuity, it fixes it by adding implict opening and closing brackets, and trying again:
 
 ```rust
 match next {

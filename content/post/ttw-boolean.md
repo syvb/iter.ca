@@ -6,7 +6,7 @@ tags = ["internet", "programming", "ttw", "rust"]
 title = "Writing a Boolean expression parser in Rust"
 +++
 
-While using my time tracking system, [TagTime Web](https://ttw.smitop.com/), I have on a few occasions wanted to use some complex logic to select pings across my database. My first implementation of this just had a simple way to include and exclude pings, but this later proved to be insufficent for my needs. I considered implementing a more complex system at first, but I decided it was a good idea to wait until the need actually arised before building a more complex system like this. Here, I will explain how I implemented this new system.
+While using my time tracking system, [TagTime Web](https://ttw.smitop.com/), I have on many occasions wanted to use some complex logic to select pings. My first implementation of this just had a simple way to include and exclude pings, but this later proved to be insufficent for my needs. I considered implementing a more complex system at first, but I decided it was a good idea to wait until the need actually arised before building a more complex system like this. Here, I will explain how I implemented this new system. Well, after using TagTime Web for a while, the need has arrised, at least for me, so I built such a query system.
 
 Here are some example queries, each with different syntax, demonstrate the range of ways queries can be formulated:
 - To find time I'm distracted on social media, I can use a query like `distracted and (hn or twitter or fb)`
@@ -15,7 +15,7 @@ Here are some example queries, each with different syntax, demonstrate the range
 
 My main goal with the query design was to make it very simple to understand how querying works -- I didn't want to make users read a long document before writing simple queries. I also wanted to write it in [Rust](https://www.rust-lang.org/), because I like Rust. It can be run in the browser via [WebAssembly](https://webassembly.org/), and since I was running WASM in the browser already I wasn't going to lose any more browser support than I already have. Rust is also pretty fast, which is a good thing, especially on devices with less computing power like phones (although I don't think it made much of a difference in this case).
 
-Let's dive in to the code. It's open source, so you can follow along with [the source code](https://github.com/Smittyvb/ttw/blob/master/taglogic/src/bool.rs) if you want, but note that I explain the code a bit differently then the order of the actual source code. There are three main phases in the system: lexing, parsing, and evaluation.
+Let's dive in to the code. You can follow along with [the source code](https://github.com/Smittyvb/ttw/blob/master/taglogic/src/bool.rs) if you want, but note that I explain the code a bit differently than the order of the actual source code. There are three main phases in the system: lexing, parsing, and evaluation.
 
 ### Lexing
 In the [lexing phase](https://en.wikipedia.org/wiki/Lexical_analysis), we convert raw text to a series of tokens that are easier to deal with. In this phase, different syntaxical ways to write the same thing will be merged. `&` and `and` will be repersented with the same token. Lexing won't do any validation that the provided tokens are sensical though: this phase is completely fine with unmatched brackets and operators without inputs. Here's what the interface is going to look like:
@@ -50,7 +50,7 @@ enum Token {
 }
 ```
 
-Instead of having two different tokens for `&`/`and` and `|`/`or`, I've created a [single `BinaryOp` token type](https://github.com/Smittyvb/ttw/blob/f77fa34e62739b0225847317d243fc1a4ab29b96/taglogic/src/bool.rs#L7-L11) since the two types of tokens can be treated the same in most cirumstances. It's just an `enum` with two variants:
+Instead of having two different tokens for `&`/`and` and `|`/`or`, I've created a single `BinaryOp` token type since the two types of tokens can be treated the same in most cirumstances. It's just an `enum` with two variants, although I could easily add more if I decide so in the future:
 
 ```rust
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -203,7 +203,7 @@ impl AstNode {
 }
 ```
 
-Notice that if there was an error parsing a statically defined string is returned. Most lexers/parsers would include more detailled information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for fairly minimal performance gains. We also use `depth` to keep track of how deep we are going, and error if we get too deep to limit the amount of computation we do.
+Notice that if there was an error doing parsing, a static string is returned. Most lexers/parsers would include more detailed information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for fairly minimal performance gains. We also use `depth` to keep track of how deep we are going, and error if we get too deep to limit the amount of computation we do, since we might be evaulating an expression with untrusted user input.
 
 Now let's write the core token munching loop using a `while let` expression:
 
@@ -366,7 +366,7 @@ error[E0446]: private type `AstNode` in public interface
    |              ^^^^^^^ can't leak private type
 ```
 
-In Rust, data stored in `enum` variants is always implictly `pub`, so this wrapper could allow users access to internal implementation detailsm, which we don't want. We can work around that by wrapping our wrapper:
+In Rust, data stored in `enum` variants are always implictly `pub`, so this wrapper would allow users access to internal implementation details, which we don't want. We can work around that by wrapping our wrapper:
 
 ```rust
 #[derive(Debug, Clone, PartialEq, Eq)]

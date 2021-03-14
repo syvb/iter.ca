@@ -13,12 +13,12 @@ Here are some example queries, each with different syntax, demonstrate the range
 - To find time I'm programming something other than TagTime Web, I can do `code & !ttw`
 - To find time I'm using GitHub but *not* for programming or working on TagTime Web, I can do `gh AND !(code OR ttw)`
 
-My main goal with the query design was to make it very simple to understand how querying works -- I didn't want to make users read a long document before writing simple queries. I also wanted to write it in [Rust](https://www.rust-lang.org/), because I like Rust. It can be run in the browser via [WebAssembly](https://webassembly.org/), and since I was running WASM in the browser already I wasn't going to lose any more browser support than I already have. Rust is also pretty fast, which is a good thing, especially on devices with less computing power like phones (although I don't think it made much of a difference in this case).
+My main goal with the query design was to make it very simple to understand how querying works -- I didn't want to make users read a long document before writing simple queries. I also wanted to write it in [Rust](https://www.rust-lang.org/), because I like Rust. It can be run in the browser via [WebAssembly](https://webassembly.org/), and since I was running WASM in the browser already I wasn't going to lose any more browser support than I already had. Rust is also pretty fast, which is a good thing, especially on devices with less computing power like phones (although I don't think it made much of a difference in this case).
 
 Let's dive in to the code. You can follow along with [the source code](https://github.com/Smittyvb/ttw/blob/master/taglogic/src/bool.rs) if you want, but note that I explain the code a bit differently than the order of the actual source code. There are three main phases in the system: lexing, parsing, and evaluation.
 
 ### Lexing
-In the [lexing phase](https://en.wikipedia.org/wiki/Lexical_analysis), we convert raw text to a series of tokens that are easier to deal with. In this phase, different syntaxical ways to write the same thing will be merged. `&` and `and` will be repersented with the same token. Lexing won't do any validation that the provided tokens are sensical though: this phase is completely fine with unmatched brackets and operators without inputs. Here's what the interface is going to look like:
+In the [lexing phase](https://en.wikipedia.org/wiki/Lexical_analysis), we convert raw text to a series of tokens that are easier to deal with. In this phase, different syntaxical ways to write the same thing will be merged. For example, `&` and `and` will be repersented with the same token. Lexing won't do any validation that the provided tokens are sensical though: this phase is completely fine with unmatched brackets and operators without inputs. Here's what the interface is going to look like:
 ```rust
 let tokens = lex("foo and !(bar | !baz)").unwrap();
 assert_eq!(
@@ -50,7 +50,7 @@ enum Token {
 }
 ```
 
-Instead of having two different tokens for `&`/`and` and `|`/`or`, I've created a single `BinaryOp` token type since the two types of tokens can be treated the same in most cirumstances. It's just an `enum` with two variants, although I could easily add more if I decide so in the future:
+Instead of having two different tokens for `&`/`and` and `|`/`or`, I've created a single `BinaryOp` token type, since the two types of tokens will be treated the same after the lexing phase. It's just an `enum` with two variants, although I could easily add more if I decide so in the future:
 
 ```rust
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -85,7 +85,7 @@ Did you know that you can define an `enum` inside a `fn`? This is pretty neat: i
 for c in s.chars() {
 ```
 
-Okay, time for the fun part: let's build tokens out of these characters. I've added enough comments for it to be fairly self-descriptive:
+Okay, time for the fun part: let's build tokens out of these characters.
 
 ```rust
 // the last token was "|" or "&", which has some special logic
@@ -193,10 +193,8 @@ enum AstNode {
 }
 ```
 
-We use `Box` to store AstNodes on the heap, preventing infinite recursion. The important `fn` here is `munch_tokens`, which takes a list of tokens and converts it to a `AstNode`.
-
 #### Munching tokens
-Let's implement the core of the parsing system that converts a stream of `Token` to a single `AstNode` (probably with more `AstNode`s nested). Here's the signature of that:
+Let's implement the core of the parsing system that converts a stream of `Token` to a single `AstNode` (probably with more `AstNode`s nested). It's called `munch_tokens` because it munches tokens until it's done parsing the expression it sees. When it encounters brackets, it recursively evaluates the tokens in the brackets until it's done with the stuff in brackets. If there are still tokens left after the top level call, then there are extra tokens at the end: an error. Here's the declaration of `munch_tokens`:
 
 ```rust
 impl AstNode {
@@ -212,9 +210,9 @@ impl AstNode {
 }
 ```
 
-Notice that if there was an error doing parsing, a static string is returned. Most lexers/parsers would include more detailed information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we pop tokens off the top often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for fairly minimal performance gains. We also use `depth` to keep track of how deep we are going, and error if we get too deep to limit the amount of computation we do, since we might be evaulating an expression with untrusted user input.
+Notice that if there was an error doing parsing, a static string is returned. Most parsers would include more detailed information here about where the error occured, but to reduce complexity I haven't implemented any such logic. Also note that the input is a `VecDeque` instead of a normal `Vec`, which will make it faster when we take tokens off the front often. I could also have implemented this by having the token input be reversed, and then manipulating the back of the token list, but it would make the code more complicated for fairly minimal performance gains. We also use `depth` to keep track of how deep we are going, and error if we get too deep to limit the amount of computation we do, since we might be evaulating an expression with untrusted user input.
 
-Now let's write the core token munching loop using a `while let` expression:
+Now let's write the core token munching loop using a `while let` expression. We can't use a normal `for` loop here, since the `tokens` will be mutated in the loop.
 
 ```rust
 while let Some(next) = tokens.get(0) {
@@ -223,7 +221,7 @@ while let Some(next) = tokens.get(0) {
 Err("unexpected end of expression")
 ```
 
-Now for each token, we'll match against it, and decide what to do. For some tokens, we can just error at that point
+Now for each token, we'll match against it, and decide what to do. For some tokens, we can just error at that point.
 
 ```rust
 match next {
@@ -263,6 +261,7 @@ match next {
 Next, let's implement opening brackets. We munch the tokens inside the bracket, remove the closing bracket, then do the same binary operation checks as with tag names.
 ```rust
 match next {
+    // <snip>
     Token::OpenBracket => {
         tokens.remove(0); // open bracket
         let result = Self::munch_tokens(tokens, depth - 1)?;
@@ -293,44 +292,47 @@ match next {
 Okay, one operator left: the `!` operator, which negates its contents. I've made the design decision not to allow expressions with double negatives like `!!foo`, since there's no good reason to do that.
 
 ```rust
-Token::Invert => {
-    tokens.remove(0);
-    // invert exactly the next token
-    // !a & b -> (!a) & b
-    match tokens.get(0) {
-        Some(Token::OpenBracket) => {
-            return Ok(AstNode::Invert(Box::new(Self::munch_tokens(
-                tokens,
-                depth - 1,
-            )?)));
-        }
-        Some(Token::Name { text }) => {
-            // is it like "!abc" or "!abc & xyz"
-            let inverted = AstNode::Invert(Box::new(AstNode::Name(text.clone())));
-            match tokens.get(1) {
-                Some(Token::BinaryOp(_)) => {
-                    // "!abc & xyz"
-                    // convert to unambiguous form and try again
-                    tokens.insert(0, Token::OpenBracket);
-                    tokens.insert(1, Token::Invert);
-                    tokens.insert(2, Token::OpenBracket);
-                    tokens.insert(4, Token::CloseBracket);
-                    tokens.insert(5, Token::CloseBracket);
-                    return Self::munch_tokens(tokens, depth - 1);
-                }
-                None | Some(Token::CloseBracket) => {
-                    // "!abc"
-                    tokens.remove(0); // remove name
-                    return Ok(inverted);
-                }
-                Some(_) => return Err("invalid token after inverted name"),
+match next {
+    // <snip>
+    Token::Invert => {
+        tokens.remove(0);
+        // invert exactly the next token
+        // !a & b -> (!a) & b
+        match tokens.get(0) {
+            Some(Token::OpenBracket) => {
+                return Ok(AstNode::Invert(Box::new(Self::munch_tokens(
+                    tokens,
+                    depth - 1,
+                )?)));
             }
+            Some(Token::Name { text }) => {
+                // is it like "!abc" or "!abc & xyz"
+                let inverted = AstNode::Invert(Box::new(AstNode::Name(text.clone())));
+                match tokens.get(1) {
+                    Some(Token::BinaryOp(_)) => {
+                        // "!abc & xyz"
+                        // convert to unambiguous form and try again
+                        tokens.insert(0, Token::OpenBracket);
+                        tokens.insert(1, Token::Invert);
+                        tokens.insert(2, Token::OpenBracket);
+                        tokens.insert(4, Token::CloseBracket);
+                        tokens.insert(5, Token::CloseBracket);
+                        return Self::munch_tokens(tokens, depth - 1);
+                    }
+                    None | Some(Token::CloseBracket) => {
+                        // "!abc"
+                        tokens.remove(0); // remove name
+                        return Ok(inverted);
+                    }
+                    Some(_) => return Err("invalid token after inverted name"),
+                }
+            }
+            Some(Token::Invert) => {
+                return Err("can't double invert, that would be pointless")
+            }
+            Some(_) => return Err("expected expression"),
+            None => return Err("expected token to invert, got EOF"),
         }
-        Some(Token::Invert) => {
-            return Err("can't double invert, that would be pointless")
-        }
-        Some(_) => return Err("expected expression"),
-        None => return Err("expected token to invert, got EOF"),
     }
 }
 ```

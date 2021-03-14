@@ -170,9 +170,7 @@ tokens
 ```
 
 ### Parsing
-Here, we'll take the stream of tokens and build it into an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). Here's an example diagram:
-
-<!-- https://q.uiver.app/?q=WzAsOSxbMiwwLCJcXGNvbG9ye2JsdWV9XFx0ZXh0e3Jvb3R9Il0sWzEsMSwiXFxjb2xvcntibHVlfSBcXHRleHR7bm90fSJdLFsxLDIsIlxcY29sb3J7Ymx1ZX1cXHRleHR7b3J9Il0sWzAsMywiXFx0ZXh0e2Zvb30iXSxbMiwzLCJcXHRleHR7YmFyfSJdLFs0LDEsIlxcY29sb3J7Ymx1ZX1cXHRleHR7YW5kfSJdLFszLDIsIlxcdGV4dHtiYXp9Il0sWzUsMiwiXFxjb2xvcntibHVlfVxcdGV4dHtub3R9Il0sWzUsMywiXFx0ZXh0e3F1eH0iXSxbMCwxXSxbMSwyXSxbMiwzXSxbMiw0XSxbMCw1XSxbNSw2XSxbNSw3XSxbNyw4XV0= -->
+Here, we'll take the stream of tokens and build it into an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). Here's an example diagram ([edit on quiver](https://q.uiver.app/?q=WzAsOSxbMiwwLCJcXGNvbG9ye2JsdWV9XFx0ZXh0e3Jvb3R9Il0sWzEsMSwiXFxjb2xvcntibHVlfSBcXHRleHR7bm90fSJdLFsxLDIsIlxcY29sb3J7Ymx1ZX1cXHRleHR7b3J9Il0sWzAsMywiXFx0ZXh0e2Zvb30iXSxbMiwzLCJcXHRleHR7YmFyfSJdLFs0LDEsIlxcY29sb3J7Ymx1ZX1cXHRleHR7YW5kfSJdLFszLDIsIlxcdGV4dHtiYXp9Il0sWzUsMiwiXFxjb2xvcntibHVlfVxcdGV4dHtub3R9Il0sWzUsMywiXFx0ZXh0e3F1eH0iXSxbMCwxXSxbMSwyXSxbMiwzXSxbMiw0XSxbMCw1XSxbNSw2XSxbNSw3XSxbNyw4XV0=)):
 
 {{< rawhtml >}}
 <!-- Hugo doesn't support sizing images inserted in Markdown -->

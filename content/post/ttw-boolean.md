@@ -1,6 +1,5 @@
 +++
 date = "2021-03-15T05:00:00Z"
-publishDate = "2021-03-15T05:00:00Z"
 description = "Let's write some Rust to parse and evaluate Boolean expressions."
 tags = ["internet", "programming", "ttw", "rust"]
 title = "Writing a Boolean expression parser in Rust"

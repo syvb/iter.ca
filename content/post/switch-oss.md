@@ -6,9 +6,13 @@ tags = ["programming"]
 title = "Interesting things in Nintendo's OSS code"
 +++
 
-The Nintendo Switch (called the Nintendo NX during development) has some open source parts, and Nintendo very kindly allows the source code for these parts to be viewed. They don't make it easy though: you have to download [a ZIP file from a Japanese website](https://www.nintendo.co.jp/support/oss/), but I've [put it on GitHub](https://github.com/Smittyvb/switch-oss) if you want to take a look easily. The source code is almost entirely just the code behind the browser in the Nintendo Switch, although it's not exactly easy to load this browser in the first place without [instructions on how to do so](https://www.lifewire.com/access-nintendo-switch-web-browser-4583984). I'm fairly suprised that Nintendo went through all the effort to include a whole browser in the Switch despite only being used when someone's on a Wi-Fi network that require login -- not exactly a common scenario, given that most of the time Switches will be connected to personal networks without any such weird portals. The Switch browser isn't the offical name though: according to the source code, it's "NetFront Browser NX".
+The Nintendo Switch (called the Nintendo NX during development and called the NX in the source code) has some open source parts, and Nintendo very kindly allows the source code for these parts to be viewed. They don't make it easy though: you have to download [a ZIP file from a Japanese website](https://www.nintendo.co.jp/support/oss/), but I've [put it on GitHub](https://github.com/Smittyvb/switch-oss) if you want to take a look easily. The source code is almost entirely just the code behind the browser in the Nintendo Switch, although it's not exactly easy to load this browser in the first place without [instructions on how to do so](https://www.lifewire.com/access-nintendo-switch-web-browser-4583984). I'm fairly suprised that Nintendo went through all the effort to include a whole browser in the Switch despite only being used when someone's on a Wi-Fi network that require login -- not exactly a common scenario, given that most of the time Switches will be connected to personal networks without any such weird portals. The Switch browser isn't the offical name though: according to the source code, it's "NetFront Browser NX".
+
+It's not actually possible to run the NetFront Browser NX locally, because it depends on the Switch SDK, which you have to sign an NDA with Nintendo to even get a chance of being able to use.
 
 I've picked out some things that are at least moderately interesting from the OSS source code. Most of the changes Nintendo has done are really mundane, and I've left those out. These mundane things are mostly renaming `main` functions to Nintendo's preferred naming convention (I think they have some sort of testing framework that looks for `testMain`).
+
+Something that happens across all these directories is the use of the `nxLog*` family of functions, which are like `printf` but slightly different to suit the Switch's needs.
 
 ## `src_0.16.0` and `src_1.16.10`
 I'm not actually sure what or why these directories were included. All of the files in these directories start with a licence that is definitely *not* open-source:
@@ -67,7 +71,7 @@ static PRUint64 genPsRandXorShiftStar() {
 The only interesting things here are that the CSS media queries `-webkit-nintendo-switch-device-console` and `-webkit-nintendo-switch-device-handheld` are added. They can be used to detect the if the switch is docked or not. Neat!
 
 ## `WKC_0.16.0`/`WKC_1.16.10`
-This appears to be the code that takes the libraries and makes them into an actual browser. It looks like many of the files here were written for the sole purpose of being used in the Switch browser. Searching for most of the lines in these files turns up only repos with the Switch source code.
+This appears to be the code that takes the libraries and makes them into an actual browser. It looks like many of the files here were written for the sole purpose of being used in the Switch browser. Searching for most of the lines in these files turns up only repos with the Switch source code. They have a lot of code `ifdef`ed behind things like `WKC_CUSTOMER_PATCH_0304674`: it appears that NetFront has other clients, and these patches are just for Nintendo (or maybe Nintendo and also some other clients?)
 
 Looks like they're taking a step in the right direction here and disabling support for the outdated SSLv2 and SSLv3 protocols at compile time!
 ```cpp
@@ -82,6 +86,3 @@ Looks like they're taking a step in the right direction here and disabling suppo
 ```
 
 The Switch browser appears to be one of the first with support for Web NFC, presumably using the NFC reader in the Switch. Neat!
-
-## TODO
-- try searching for "NX"

@@ -1,6 +1,6 @@
 +++
-date = "2021-03-14T05:00:00Z"
-description = ""
+date = "2021-03-25T05:00:00Z"
+description = "The Nintendo Switch has some open source parts, and Nintendo very kindly allows the source code for these parts to be viewed."
 tags = ["programming"]
 title = "Interesting things in Nintendo's OSS code"
 +++

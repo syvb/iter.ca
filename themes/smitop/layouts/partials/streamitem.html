@@ -19,6 +19,10 @@
                 Video
             {{ else if (eq .Item.Type "hn")}}
                 HN {{ .Item.HNType }}
+            {{ else if (eq .Item.Type "scrproj")}}
+                Scratch project
+            {{ else if (eq .Item.Type "SePost")}}
+                Stack Exchange post
             {{ else }}
                 Note
             {{ end }}

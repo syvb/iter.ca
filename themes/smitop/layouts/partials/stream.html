@@ -2,7 +2,7 @@
     {{ $scr := newScratch }}
     {{ $scr.Set "idx" 0 }}
     {{ $scr.Set "verboseMax" .VerboseMax }}
-    {{ $scr.Set "overrides" (index .Overrides 0) }}
+    {{ $scr.Set "overrides" .Overrides }}
     {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
         {{ $scr.Set "verbose" 0 }}
         {{ if (eq .Params nil) }}

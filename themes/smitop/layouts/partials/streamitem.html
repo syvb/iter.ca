@@ -65,8 +65,11 @@
         {{ end }}
         {{ if (isset .Item "Text") }}
             <div class="summary">
-                <!-- rely on HN to provide safe HTML here -->
-                {{ .Item.Text | safeHTML | truncate 100 }}
+                {{ if (eq .Item.Type "note") }}
+                    {{ .Item.Text | safeHTML }}
+                {{ else }}
+                    {{ .Item.Text | truncate 150 | markdownify | plainify }}
+                {{ end }}
             </div>
         {{ end }}
     {{ else }}

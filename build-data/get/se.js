@@ -17,7 +17,8 @@ const fetch = require("node-fetch");
         }
         siteId = siteId.api_site_parameter;
         // TODO: paginate
-        const posts = await (await fetch(`https://api.stackexchange.com/2.2/users/${acc.user_id}/posts?order=desc&sort=activity&site=${siteId}&filter=!bM6xzJQ)Ks7W6-&pagesize=100`)).json();
+        // filter is unsafe! okay because we escape later
+        const posts = await (await fetch(`https://api.stackexchange.com/2.2/users/${acc.user_id}/posts?order=desc&sort=activity&site=${siteId}&filter=4F_y7HR4C9TWBKXX&pagesize=100`)).json();
         posts.items.forEach(post => {
             console.log(JSON.stringify({
                 Type: "SePost",

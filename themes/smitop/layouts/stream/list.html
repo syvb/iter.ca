@@ -15,6 +15,6 @@
         <a href="/">Back to homepage</a>
     </div>
     <h1>Full stream</h1>
-    {{ partial "stream.html" (dict "Items" (.Site.RegularPages | append $.Site.Data.data))}}
+    {{ partial "stream.html" (dict "VerboseMax" 10 "Data" $.Site.Data.data "Overrides" $.Site.Data.voverrides)}}
 </body>
 </html>

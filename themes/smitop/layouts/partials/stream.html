@@ -1,12 +1,36 @@
 <div class="stream">
     {{ $scr := newScratch }}
     {{ $scr.Set "idx" 0 }}
-    {{ range (sort ((where .Items "Verbose" "==" -1) | append (where .Items "Params.featured" "!=" nil)) ".Date.Unix" "desc") }}
-        {{ $scr.Add "idx" 1 }}
-        {{ partial "streamitem.html" (dict "Item" . "scr" $scr "Featured" 1)}}
+    {{ $scr.Set "verboseMax" .VerboseMax }}
+    {{ $scr.Set "overrides" (index .Overrides 0) }}
+    {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
+        {{ $scr.Set "verbose" .Verbose }}
+        {{ if (ne .Params.Featured nil) }}
+            {{ $.Set "verbose" -1 }}
+        {{ end }}
+        {{ if (ne .Id nil) }}
+            {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
+                {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
+            {{ end }}
+        {{ end }}
+        {{ if (and (le ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
+            {{ $scr.Add "idx" 1 }}
+            {{ partial "streamitem.html" (dict "Item" . "scr" $scr "Featured" true) }}
+        {{ end }}
     {{ end }}
-    {{ range (sort (where .Items "Verbose" "!=" -1) ".Date.Unix" "desc") }}
-        {{ $scr.Add "idx" 1 }}
-        {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
+    {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
+        {{ $scr.Set "verbose" .Verbose }}
+        {{ if (ne .Params.Featured nil) }}
+            {{ $.Set "verbose" -1 }}
+        {{ end }}
+        {{ if (ne .Id nil) }}
+            {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
+                {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
+            {{ end }}
+        {{ end }}
+        {{ if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
+            {{ $scr.Add "idx" 1 }}
+            {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
+        {{ end }}
     {{ end }}
 </div>

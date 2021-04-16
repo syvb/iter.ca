@@ -4,13 +4,20 @@
     {{ $scr.Set "verboseMax" .VerboseMax }}
     {{ $scr.Set "overrides" (index .Overrides 0) }}
     {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
-        {{ $scr.Set "verbose" .Verbose }}
+        {{ $scr.Set "verbose" 0 }}
+        {{ if (eq .Params nil) }}
+            {{ if (ne .Verbose nil) }}
+                {{ $scr.Set "verbose" .Verbose }}
+            {{ end }}
+        {{ end }}
         {{ if (ne .Params.Featured nil) }}
             {{ $.Set "verbose" -1 }}
         {{ end }}
-        {{ if (ne .Id nil) }}
-            {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
-                {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
+        {{ if (eq .Params nil) }}
+            {{ if (ne .Id nil) }}
+                {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
+                    {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
+                {{ end }}
             {{ end }}
         {{ end }}
         {{ if (and (le ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
@@ -19,13 +26,20 @@
         {{ end }}
     {{ end }}
     {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
-        {{ $scr.Set "verbose" .Verbose }}
+        {{ $scr.Set "verbose" 0 }}
+        {{ if (eq .Params nil) }}
+            {{ if (ne .Verbose nil) }}
+                {{ $scr.Set "verbose" .Verbose }}
+            {{ end }}
+        {{ end }}
         {{ if (ne .Params.Featured nil) }}
             {{ $.Set "verbose" -1 }}
         {{ end }}
-        {{ if (ne .Id nil) }}
-            {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
-                {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
+        {{ if (eq .Params nil) }}
+            {{ if (ne .Id nil) }}
+                {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
+                    {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
+                {{ end }}
             {{ end }}
         {{ end }}
         {{ if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}

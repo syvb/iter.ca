@@ -69,7 +69,7 @@
     <div id="homepage-content">
         <div id="blog-posts">
             <h2>Things I've done</h2>
-            {{ partial "stream.html" (dict "VerboseMax" 0 "Data" $.Site.Data.data "Overrides" $.Site.Data.voverrides)}}
+            {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
         </div>
     </div>
     <a href="https://github.com/smittyvb/smitop.com" class="source-link">

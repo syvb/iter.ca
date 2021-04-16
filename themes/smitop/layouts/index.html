@@ -28,7 +28,7 @@
         Hi, I'm <span class="smitop p-nickname">Smitop</span>. <span id="wave-emoji">👋</span>
     </div>
     <div id="about">
-        I'm interested in programming and technology. This is my website.
+        I'm interested in programming and technology. This is my website. See the <a href="/uses/">things I use</a>.
     </div>
     <div id="sidebar">
         <div id="me-links-mobile">
@@ -67,27 +67,10 @@
             </ul>
         </div>
     </div>
-    <div id="homepage-grid">
+    <div id="homepage-content">
         <div id="blog-posts">
             <h2>Things I've done</h2>
             {{ partial "stream.html" (dict "Items" (where (.Site.RegularPages | append $.Site.Data.data) "Verbose" "!=" 1))}}
-        </div>
-        <div id="things-i-like">
-            <h2>Things I like</h2>
-            <ul>
-                <li><a href="https://desmos.com">Desmos</a> - graphing calculator</li>
-                <li><a href="https://wikidata.org">Wikidata</a> - like Wikipedia but for linked data</li>
-                <li><a href="https://nimiq.com">Nimiq</a> - a browser-based blockchain and cryptocurrency</li>
-                <li><a href="https://nim-lang.org">Nim</a> - a programming language (not related to Nimiq at all, just a weird coincidence)</li>
-                <li><a href="https://glitch.com">Glitch</a> - web-based programming IDE</li>
-                <li><a href="https://splinterlands.io">Splinterlands</a> - blockchain-based card game</li>
-                <li><a href="https://voice.mozilla.org">Common Voice</a> - project to allow people to donate their voice, to create a CC0 voice recogintion training dataset</li>
-                <li><a href="https://hive.blog">Hive</a> - browser-based social network and cryptocurrency</li>
-                <li><a href="https://forestry.io">Forestry</a> - CMS for static sites</li>
-                <li><a href="https://nearlyfreespeech.net">NearlyFreeSpeech</a> - web host</li>
-                <li><a href="https://www.remarkbox.com">Remarkbox</a> - hosted comments</li>
-                <li><a href="https://mailinabox.email/">Mail-in-a-box</a> - simple self-hosted email</li>
-            </ul>
         </div>
     </div>
     <a href="https://github.com/smittyvb/smitop.com" class="source-link">

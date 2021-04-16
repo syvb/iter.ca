@@ -1,6 +1,6 @@
 # Things I use
 
-*Things I use, inspired by [uses.tech](https://uses.tech/)*
+*Inspired by [uses.tech](https://uses.tech/)*
 
 ## Software
 

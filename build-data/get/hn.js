@@ -12,6 +12,7 @@ const fetch = require("node-fetch");
             Date: { Unix: post.time },
             Comments: post.descendants || 0,
             Uri: `https://news.ycombinator.com/item?id=${postId}`,
+            Id: `hn-post-${postId}`,
         }
         if (post.title) data.Title = post.title;
         if (post.score) data.Score = post.score;

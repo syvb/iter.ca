@@ -23,6 +23,8 @@
                 Scratch project
             {{ else if (eq .Item.Type "SePost")}}
                 Stack Exchange post
+            {{ else if (eq .Item.Type "itch")}}
+                Itch {{ .Item.ItchType }}
             {{ else }}
                 Note
             {{ end }}

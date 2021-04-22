@@ -5,6 +5,8 @@ node notes.js | sed 's/$/,/'
 node yt.js | sed 's/$/,/'
 >&2 echo "Generating HN data"
 node hn.js | sed 's/$/,/'
+>&2 echo "Generating Itch data"
+node itch.js | sed 's/$/,/'
 >&2 echo "Generating Scratch project data"
 node scrprojs.js | sed 's/$/,/'
 >&2 echo "pngcrushing Scratch thumbnails"

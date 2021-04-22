@@ -58,8 +58,16 @@
             <a href="{{ .Item.Uri }}">
         {{ end }}
             {{ if (isset .Item "Thumb") }}
-                <div>
-                    <img src="{{ .Item.Thumb }}" width="300" class="stream-item-thumb" />
+                <div class="stream-item-thumb-wrapper">
+                    <img
+                        src="{{ .Item.Thumb }}"
+                        {{ if (eq .Item.Type "itch")}}
+                            height="135" width="170.1"
+                        {{ else }}
+                            height="135" width="240"
+                        {{ end }}
+                        class="stream-item-thumb"
+                        loading="lazy" />
                 </div>
             {{ end }}
         {{ if (isset .Item "Uri") }}

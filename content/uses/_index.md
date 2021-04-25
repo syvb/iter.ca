@@ -33,3 +33,5 @@
   * 500GB SSD
   * 3 attached monitors, one 24" and two 22" 
   * Pressure sensitive drawing tablet for drawing things
+* Phone:
+  * [Pinephone Beta edition](https://pine64.com/product/pinephone-beta-edition-with-convergence-package-linux-smartphone-open-for-preorder-soon/?v=0446c16e2e66)

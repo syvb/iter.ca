@@ -10,15 +10,8 @@
   </section>
   <aside id="meta">
     <div>
-      {{ with .Params.topics }}
-        <ul id="topics">
-          {{ range . }}
-          <li><a href="{{ "topics" | absURL}}{{ . | urlize }}">{{ . }}</a> </li>
-          {{ end }}
-        </ul>
-      {{ end }}
       {{ with .Params.tags }}
-      Tags:
+        Tags:
         <div id="tags">
           {{ range . }}
           <a href="{{ "tags/" | absURL }}{{ . | urlize }}">{{ . }}</a>,
@@ -28,14 +21,11 @@
     </div>
     <div>
       {{ with .PrevInSection }}
-      Previous: <a class="previous" href="{{.Permalink}}">{{.Title}}</a>
+        Previous: <a class="previous" href="{{.Permalink}}">{{.Title}}</a>
       {{ end }}
       {{ with .NextInSection }}
-      Next: <a class="next" href="{{.Permalink}}">{{.Title}}</a>
+        Next: <a class="next" href="{{.Permalink}}">{{.Title}}</a>
       {{ end }}
-    </div>
-    <div id="license-info">
-      <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
     </div>
     <div id="remarkbox-div">
       <noscript>
@@ -77,24 +67,8 @@
         document.getElementById("remarkbox-iframe")
       );
     </script>
-    <div id="cryptoc">
-      Cryptocurrency addresses:
-      <table class="crypto-table">
-        <tbody>
-            <tr>
-                <td>Bitcoin (Bech32)</td>
-                <td>bc1q72wh647ryl9ygshsac9f57a9sr9pmuxyju6fup</td>
-            </tr>
-            <tr>
-                <td>Bitcoin (legacy)</td>
-                <td>1NUtKvewdvMFvCfiF2ytRirEwvkohCBZFZ</td>
-            </tr>
-            <tr>
-                <td>Nimiq</td>
-                <td>NQ61 YLU8 R4M5 RR4L AHP2 BX7S 3FJB UNLL 3EGH</td>
-            </tr>
-        </tbody>
-      </table>
-    </div>
+    <div id="license-info">
+      This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    </div>    
   </aside>
 {{ end }}

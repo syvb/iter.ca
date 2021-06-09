@@ -161,6 +161,15 @@ li > ul {
     border-radius: 2rem;
 }
 
+.highlight > pre {
+    margin: 0;
+}
+
+a.playground {
+    font-size: 1rem;
+    margin: 0;
+}
+
 @media (max-width: 400px) {
     #wave-emoji {
         display: none;

@@ -8,7 +8,7 @@ title = "Data WhiteOps collects"
 
 *Edit: White Ops has recently rebranded to HUMAN.*
 
-Today I noticed [New Reddit](https://reddit.com/) was asking to use DRM. So I went on a source code analysis journey! See the [main post](/post/reddit-whiteops.md) for more details.
+Today I noticed [New Reddit](https://reddit.com/) was asking to use DRM. So I went on a source code analysis journey! See the [main post](/post/reddit-whiteops) for more details.
 
 It appears Reddit uses [White Ops](https://whiteops.com) for fingerprinting and ad fraud prevention (but only sometimes, I think it's an A/B test). See this beautified code:
 ```js

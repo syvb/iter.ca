@@ -3,6 +3,8 @@
     {{ $scr.Set "idx" 0 }}
     {{ $scr.Set "verboseMax" .VerboseMax }}
     {{ $scr.Set "overrides" .Overrides }}
+    {{ $scr.Set "selfOnly" .SelfOnly }}
+    <!-- featured posts are shown even when SelfOnly would supress them -->
     {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
         {{ $scr.Set "verbose" 0 }}
         {{ if (eq .Params nil) }}
@@ -40,6 +42,9 @@
                 {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
                     {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
                 {{ end }}
+            {{ end }}
+            {{ if (and (eq .HNType "story") ($scr.Get "selfOnly")) }}
+                {{ $scr.Set "verbose" 100 }}
             {{ end }}
         {{ end }}
         {{ if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}

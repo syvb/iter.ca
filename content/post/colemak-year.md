@@ -11,8 +11,8 @@ Around a year ago, I decided to try using the  [Colemak](https://colemak.com/) k
 Most operating systems have support for Colemak built in. Some notes:
 - The Debian 10 installer doesn't have an option in the installer but you can change it once installed
 - GNOME and Plasma both support Colemak
-- ChromeOS supports Colemak, and even allows remapping the search key to backspace (but there is no way to install non-standard layouts like DH mod)
-- Windows doesn't have Colemak support built in, you have to QWERTY your way through the setup process, then install Colemak :(
+- ChromeOS supports Colemak, and even allows remapping the search key to backspace
+- Windows doesn't have Colemak support built in, you have to QWERTY your way through the setup process, then install Colemak from the Internet :(
 
 ## Learning Colemak
 While I was able to type fairly fast with QWERTY, I never learned to touch type the "proper" way. I just kinda let my fingers sprawl across the keyboard, and my fingers didn't return the home row. I was forced to learn to properly touch type with Colemak, since I couldn't look at the keyboard while typing -- the letters on the keyboard were unrelated to the actual letters they typed!

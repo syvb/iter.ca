@@ -4,13 +4,16 @@
 
 ## Software
 
-* OS: [Pop_OS! 20.10](https://pop.system76.com/)
+* OS: [Pop_OS! 21.04](https://pop.system76.com/)
 * IDE: [VSCodium](https://vscodium.com/)
   * [rust-analyzer](https://rust-analyzer.github.io/) addon for working with [Rust](https://www.rust-lang.org/) code
   * [GitLens](https://gitlens.amod.io/) addon for inline Git metadata
 * Main browser: [Firefox](https://www.mozilla.org/en-CA/firefox/new/)
+  * The [multi-account containers](https://addons.mozilla.org/en-CA/firefox/addon/multi-account-containers/) extension is awesome
+  * [uBlock Origin](https://ublockorigin.com/) extension
 * Browser for front-end development work: [Chromium](https://www.chromium.org/)
-* [Blender](https://www.blender.org/) for 2D/3D graphic and animations
+  * I prefer the devloper tools in Chromium, but prefer Firefox for everyday browsing
+* [Blender](https://www.blender.org/) for 2D/3D graphics and animations
 * [Krita](https://krita.org/en/) for 2D art
 * [Anki](https://apps.ankiweb.net/) for memorization
 * [Flameshot](https://flameshot.org/) for screenshots
@@ -24,6 +27,7 @@
 * [Remarkbox](https://www.remarkbox.com/) for the comments on this website
 * [Glitch](https://glitch.com/) for doing some front-end development work
 * [Desmos](https://desmos.com/) for math
+* [Element](https://element.io/) for chatting over Matrix
 
 ## Hardware
 

@@ -1,5 +1,5 @@
 {{ define "main" }}
-    {{ partial "topbar" "all" }}
+    {{ partial "topbar" .Params.topbar_id }}
     <h1>{{ .Title }}</h1>
     {{ .Content }}
     {{ partial "stream.html" (dict "VerboseMax" 10 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides "SelfOnly" 1)}}

@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smitop's post stream</title>
+    <title>Things I use</title>
     <meta charset="utf-8" />
-    <meta name="description" content="Things Smitop has made and done">
+    <meta name="description" content="Various things I use">
     <meta name="rating" content="General">
     <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-    <div>
-        <a href="/">Back to homepage</a>
-    </div>
-    <h1>Full stream</h1>
-    This is every public thing that my stream system knows about. My homepage is generated as a filtered version of this.
-    {{ partial "stream.html" (dict "VerboseMax" 10 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides "SelfOnly" 1)}}
+    {{ partial "topbar" "streams" }}
+    <h2>Streams</h2>
+    {{ range .Pages }}
+        <li><a href="{{.Permalink}}">{{.Title}}</a></li>
+    {{ end }}
 </body>
 </html>

@@ -21,6 +21,12 @@
                     {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
                 {{ end }}
             {{ end }}
+            {{ if (and (eq .HNType "story") ($scr.Get "selfOnly")) }}
+                {{ $scr.Set "verbose" 100 }}
+            {{ end }}
+        {{ end }}
+        {{ if (ne .Params.Verbose nil) }}
+            {{ $scr.Set "verbose" .Params.Verbose }}
         {{ end }}
         {{ if (and (le ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
             {{ $scr.Add "idx" 1 }}
@@ -46,6 +52,9 @@
             {{ if (and (eq .HNType "story") ($scr.Get "selfOnly")) }}
                 {{ $scr.Set "verbose" 100 }}
             {{ end }}
+        {{ end }}
+        {{ if (ne .Params.Verbose nil) }}
+            {{ $scr.Set "verbose" .Params.Verbose }}
         {{ end }}
         {{ if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
             {{ $scr.Add "idx" 1 }}

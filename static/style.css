@@ -2,11 +2,6 @@ body {
     font-family: sans-serif;
 }
 
-#content {
-    /* blog post */
-    font-size: 1.1rem;
-}
-
 #content pre {
     margin-top: 0;
     padding: 0.5rem;

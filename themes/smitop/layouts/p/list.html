@@ -11,7 +11,10 @@
     <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-    {{ partial "topbar" "uses" }}
-    {{ .Content }}
+    {{ partial "topbar" "pages" }}
+    <h2>Pages</h2>
+    {{ range .Pages }}
+        <li><a href="{{.Permalink}}">{{.Title}}</a></li>
+    {{ end }}
 </body>
 </html>

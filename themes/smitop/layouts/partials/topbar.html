@@ -1,0 +1,19 @@
+<div id="topbar">
+    {{ if (eq . "home")}}
+        Home
+    {{ else }}
+        Smitop: <a href="/">Home</a>
+    {{ end }}
+    •
+    <!-- {{ if (eq . "about")}}
+        About
+    {{ else }}
+        <a href="/p/about">About</a>
+    {{ end }}
+    • -->
+    {{ if (eq . "uses")}}
+        Uses
+    {{ else }}
+        <a href="/uses">Uses</a>
+    {{ end }}
+</div>

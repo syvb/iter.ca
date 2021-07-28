@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Smitop</title>
-    <meta name="description" content="Hi, I'm Smitop, and I'm a human. This is my website.">
+    <meta name="description" content="I'm interested in programming and technology. This is my website.">
     <meta name="rating" content="General">
     <link rel="stylesheet" href="/style.css" />
     <meta name="google-site-verification" content="LGtQWHbgC8bJSz0orWP71nxayoCJV2F-XH8y0HUFAJ4" />
@@ -24,11 +24,12 @@
 </head>
 
 <body>
+    {{ partial "topbar.html" "home" }}
     <div id="hi-message">
         Hi, I'm <span class="smitop p-nickname">Smitop</span>. <span id="wave-emoji">👋</span>
     </div>
     <div id="about">
-        I'm interested in programming and technology. This is my website. See the <a href="/uses/">things I use</a>.
+        I'm interested in programming and technology. This is my website.
     </div>
     <div id="sidebar">
         <div id="me-links-mobile">

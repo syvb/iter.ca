@@ -1,0 +1,15 @@
+{{ define "main" }}
+  <section itemscope itemtype="http://schema.org/Article" id="content" id="main">
+    {{ partial "topbar" .Params.topbar_id }}
+    <div>
+      <article itemprop="articleBody" id="content">
+        {{ .Content }}
+      </article>
+    </div>
+  </section>
+  <aside id="meta">
+    <div id="license-info">
+      This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    </div>    
+  </aside>
+{{ end }}

@@ -13,8 +13,12 @@
 <body>
     {{ partial "topbar" "streams" }}
     <h2>Streams</h2>
-    {{ range .Pages }}
-        <li><a href="{{.Permalink}}">{{.Title}}</a></li>
-    {{ end }}
+    I have a stream system that takes in data from many sources, and generates one really big stream from those. That stream is then filtered in various ways to generate multiple pages. You can see <a href="https://github.com/Smittyvb/smitop.com/tree/master/build-data/get">the code</a> that generates these streams, if you are curious.
+    <ul>
+        <li><a href="/">Homepage stream</a></li>
+        {{ range .Pages }}
+            <li><a href="{{.Permalink}}">{{.Title}}</a></li>
+        {{ end }}
+    </ul>
 </body>
 </html>

@@ -1,0 +1,24 @@
+<!-- based on https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/_default/rss.xml -->
+<!-- using XML declarationg doesn't work with hugo, transforms leading < -->
+<!-- <?xml version="1.0" encoding="utf-8" standalone="yes"?> -->
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Smitop's Blog</title>
+        <link>{{ .Permalink }}</link>
+        <description>Recent blog posts on Smitop's Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>{{ .Site.LanguageCode }}</language>
+        <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+        <atom:link href="https://smitop.com/index.xml" rel="self" type="application/rss+xml"/>
+        {{ range (where (where .Site.Pages "Kind" "page") "Params.Verbose" "==" nil) }}
+            <item>
+                <title>{{ .Title }}</title>
+                <link>{{ .Permalink }}</link>
+                <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+                {{ with .Site.Author.email }}<author>{{.}}{{ with $.Site.Author.name }} ({{.}}){{end}}</author>{{end}}
+                <guid>{{ .Permalink }}</guid>
+                <description>{{ .Summary | html }}</description>
+            </item>
+        {{ end }}
+    </channel>
+</rss>

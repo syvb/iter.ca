@@ -165,6 +165,10 @@ a.playground {
     margin: 0;
 }
 
+#about {
+    max-width: 58rem;
+}
+
 @media (max-width: 400px) {
     #wave-emoji {
         display: none;

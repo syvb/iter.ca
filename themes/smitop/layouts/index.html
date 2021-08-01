@@ -25,14 +25,9 @@
 
 <body>
     {{ partial "topbar.html" "home" }}
-    <div id="hi-message">
-        Hi, I'm <span class="smitop p-nickname">Smitop</span>. <span id="wave-emoji">👋</span>
-    </div>
-    <div id="about">
-        I'm interested in programming and technology. This is my website.
-    </div>
     <div id="sidebar">
-        <div id="me-links-mobile">
+        <!-- link to /p/accounts should suffice? -->
+        <!-- <div id="me-links-mobile">
             You can reach me at
             <a href="mailto:me@smitop.com">me@smitop.com</a>, or find me on
             <a href="https://sr.ht/~smitop/">sr.ht</a>,
@@ -43,7 +38,7 @@
             <a href="https://stackexchange.com/users/17341075/smitop?tab=accounts">Stack Exchange</a>,
             <a href="https://t.me/smitop">Telegram</a>,
             or Discord as <code>@smitop#9929</code>
-        </div>
+        </div> -->
         <div id="me-links">
             <a href="avatar/"><img src="/avatar/a256.png" alt="Smitop" id="avatar" width="160" height="160" loading="lazy"></a>
             <ul>
@@ -60,7 +55,13 @@
             </ul>
         </div>
     </div>
+    <div id="hi-message">
+        Hi, I'm <span class="smitop p-nickname">Smitop</span>. <span id="wave-emoji">👋</span>
+    </div>
     <div id="homepage-content">
+        <div id="about">
+            {{ (.Site.GetPage "/p/about").Content }}
+        </div>
         <div id="blog-posts">
             <h2>Things I've done</h2>
             {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}

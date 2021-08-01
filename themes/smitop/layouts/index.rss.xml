@@ -11,7 +11,7 @@
         <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
         <copyright>Copyright 2019-{{ .Date.Year }}. This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</copyright>
         <atom:link href="https://smitop.com/index.xml" rel="self" type="application/rss+xml"/>
-        {{ range (where (where .Site.Pages "Kind" "page") "Params.Verbose" "==" nil) }}
+        {{ range (where .Site.Pages "File.Dir" "post/") }}
             <item>
                 <title>{{ .Title }}</title>
                 <link>{{ .Permalink }}</link>

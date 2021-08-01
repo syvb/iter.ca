@@ -1,5 +1,4 @@
 +++
-topbar_id = "ttw_changelog"
 Title = "TagTime Web changelog"
 Verbose = 1
 +++

@@ -25,6 +25,8 @@
                 Stack Exchange post
             {{ else if (eq .Item.Type "itch")}}
                 Itch {{ .Item.ItchType }}
+            {{ else if (eq .Item.Type "gh-pr")}}
+                Pull request
             {{ else }}
                 Note
             {{ end }}
@@ -52,6 +54,9 @@
             </h2>
         {{ end }}
         <div class="stream-item-date">
+            {{ if (eq .Item.Type "gh-pr")}}
+                merged
+            {{ end }}
             {{ dateFormat "January 2, 2006" (int .Item.Date.Unix) }}
         </div>
         {{ if (isset .Item "Uri") }}

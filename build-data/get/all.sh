@@ -1,6 +1,8 @@
 echo [
 >&2 echo "Generating notes"
 node notes.js | sed 's/$/,/'
+>&2 echo "Generating GitHub data"
+node gh.js | sed 's/$/,/'
 >&2 echo "Generating YT data"
 node yt.js | sed 's/$/,/'
 >&2 echo "Generating HN data"

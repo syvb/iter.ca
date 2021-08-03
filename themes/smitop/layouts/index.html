@@ -63,7 +63,7 @@
             {{ (.Site.GetPage "/p/about").Content }}
         </div>
         <div id="blog-posts">
-            <h2>Things I've done</h2>
+            <h2>Things I've done <a href="/stream/me/">(more)</a></h2>
             {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
         </div>
     </div>

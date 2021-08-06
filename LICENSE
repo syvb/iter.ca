@@ -1,4 +1,4 @@
-All blog posts, located in the content directory, are licensed under CC-BY-SA 4.0:
+All pages in the content/ directory, and all files with a .png or .svg or .kra extension in the static/ directory, are licensed under CC-BY-SA 4.0:
 Attribution-ShareAlike 4.0 International
 
 =======================================================================
@@ -428,7 +428,7 @@ public licenses.
 Creative Commons may be contacted at creativecommons.org.
 
 
-Everything in the themes, layouts, and config directory is licensed under Apache 2.0:
+Everything in the themes, layouts, build-data, and config directory is licensed under Apache 2.0:
 
                                  Apache License
                            Version 2.0, January 2004
@@ -606,3 +606,5 @@ Everything in the themes, layouts, and config directory is licensed under Apache
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS
+   
+For licensing information about other files, please check if the file contains licensing information. If not, contact me for licensing information.

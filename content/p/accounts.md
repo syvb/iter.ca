@@ -18,6 +18,7 @@ Email to me@smitop.com is the best way to reach me, do feel free to contact me. 
 - crates.io: [@Smittyvb](https://crates.io/users/Smittyvb)
 
 ### Social media
+- Twitch: [@smitop2](https://twitch.tv/smitop2)
 - Mastodon: [@smitop@mas.to](https://mas.to/@smitop)
 - Hive: [@smitop](https://hiveblocks.com/@smitop)
 - Hacker News: [@smitop](https://news.ycombinator.com/user?id=smitop)

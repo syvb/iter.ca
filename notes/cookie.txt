@@ -1,0 +1,6 @@
+NoteType=Art
+Title=Cookie
+Date=2017-12-08
+Uri=https://archive.org/details/Cookie_vector
+Thumb=/cookie.svg
+Verbose=1

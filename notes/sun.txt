@@ -1,0 +1,6 @@
+NoteType=Art
+Title=Sun
+Date=2021-08-15
+Uri=https://opengameart.org/content/sun-1
+Thumb=/sun.png
+Verbose=1

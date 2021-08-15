@@ -1,0 +1,6 @@
+NoteType=Art
+Title=Stylized tree
+Date=2021-08-15
+Uri=https://opengameart.org/content/stylized-tree
+Thumb=/tree.png
+Verbose=1

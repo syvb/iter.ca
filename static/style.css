@@ -1,5 +1,15 @@
 body {
-    font-family: sans-serif;
+    /*
+        AAkar? too small
+        Abyssinica SIL? meh
+        C059? good
+        Century Schoolbook? too bold
+        Nimbus Roman? too Times-ish
+        Noto Serif? almost there, still a bit too Times-ish
+        P052?
+        Utopia?
+    */
+    font-family: P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, serif;
 }
 
 #content pre {
@@ -50,6 +60,9 @@ kbd {
 
 #content {
     max-width: 45rem;
+    text-align: justify;
+    line-height: 1.5;
+    font-size: 103%;
 }
 
 

@@ -1,0 +1,6 @@
+NoteType=Art
+Title=Battle/fight icon
+Date=2019-03-07
+Uri=https://opengameart.org/content/battlefight-icon-with-two-swords-svg-vector
+Thumb=/fight.svg
+Verbose=1

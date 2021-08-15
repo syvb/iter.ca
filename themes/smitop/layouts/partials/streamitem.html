@@ -87,6 +87,8 @@
                     {{ .Item.Text | safeHTML }}
                 {{ else if (eq .Item.Type "hn")}}
                     {{ .Item.Text | safeHTML | truncate 150 }}
+                {{ else if (eq .Item.Type "gh-pr")}}
+                    {{ .Item.Text | safeHTML | markdownify | plainify | htmlUnescape | truncate 150 }}
                 {{ else }}
                     {{ .Item.Text | truncate 150 | markdownify | plainify | htmlUnescape | safeHTML }}
                 {{ end }}

@@ -169,6 +169,36 @@ a.playground {
     max-width: 58rem;
 }
 
+#TableOfContents {
+    background: rgb(231, 231, 231);
+    border: 1px solid gray;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    width: max-content;
+    margin-right: 1em;
+    padding-right: 1em;
+    padding-top: 1em;
+    float: left;
+}
+
+/* https://stackoverflow.com/questions/4098195/can-ordered-list-produce-result-that-looks-like-1-1-1-2-1-3-instead-of-just-1 */
+
+#TableOfContents ul {
+    counter-reset: item;
+    padding-inline-start: 1em;
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+#TableOfContents li {
+    display: block;
+}
+
+#TableOfContents li:before {
+    content: counters(item, ".") ". ";
+    counter-increment: item;
+}
+
 @media (max-width: 400px) {
     #wave-emoji {
         display: none;

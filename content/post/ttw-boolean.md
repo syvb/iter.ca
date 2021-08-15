@@ -3,6 +3,7 @@ date = "2021-03-15T05:00:00Z"
 description = "Let's write some Rust to parse and evaluate Boolean expressions."
 tags = ["internet", "programming", "ttw", "rust"]
 title = "Writing a Boolean expression parser in Rust"
+toc = 1
 +++
 
 While using my time tracking system, [TagTime Web](https://ttw.smitop.com/), I have on many occasions wanted to use some complex logic to select pings. My first implementation of this just had a simple way to include and exclude pings, but this later proved to be insufficent for my needs. I considered implementing a more complex system at first, but I decided it was a good idea to wait until the need actually arised before building a more complex system like this. Here, I will explain how I implemented this new system. Well, after using TagTime Web for a while, the need has arrised, at least for me, so I built such a query system.
@@ -16,7 +17,7 @@ My main goal with the query design was to make it very simple to understand how 
 
 Let's dive in to the code. You can follow along with [the source code](https://github.com/Smittyvb/ttw/blob/master/taglogic/src/bool.rs) if you want, but note that I explain the code a bit differently than the order of the actual source code. There are three main phases in the system: lexing, parsing, and evaluation.
 
-### Lexing
+## Lexing
 In the [lexing phase](https://en.wikipedia.org/wiki/Lexical_analysis), we convert raw text to a series of tokens that are easier to deal with. In this phase, different syntaxical ways to write the same thing will be merged. For example, `&` and `and` will be repersented with the same token. Lexing won't do any validation that the provided tokens are sensical though: this phase is completely fine with unmatched brackets and operators without inputs. Here's what the interface is going to look like:
 ```rust
 let tokens = lex("foo and !(bar | !baz)").unwrap();
@@ -168,7 +169,7 @@ if !cur_name.is_empty() {
 tokens
 ```
 
-### Parsing
+## Parsing
 Here, we'll take the stream of tokens and build it into an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). Here's an example diagram ([edit on quiver](https://q.uiver.app/?q=WzAsOSxbMiwwLCJcXGNvbG9ye2JsdWV9XFx0ZXh0e3Jvb3R9Il0sWzEsMSwiXFxjb2xvcntibHVlfSBcXHRleHR7bm90fSJdLFsxLDIsIlxcY29sb3J7Ymx1ZX1cXHRleHR7b3J9Il0sWzAsMywiXFx0ZXh0e2Zvb30iXSxbMiwzLCJcXHRleHR7YmFyfSJdLFs0LDEsIlxcY29sb3J7Ymx1ZX1cXHRleHR7YW5kfSJdLFszLDIsIlxcdGV4dHtiYXp9Il0sWzUsMiwiXFxjb2xvcntibHVlfVxcdGV4dHtub3R9Il0sWzUsMywiXFx0ZXh0e3F1eH0iXSxbMCwxXSxbMSwyXSxbMiwzXSxbMiw0XSxbMCw1XSxbNSw2XSxbNSw3XSxbNyw4XV0=)):
 
 {{< rawhtml >}}
@@ -190,7 +191,7 @@ enum AstNode {
 }
 ```
 
-#### Munching tokens
+### Munching tokens
 Let's implement the core of the parsing system that converts a stream of `Token` to a single `AstNode` (probably with more `AstNode`s nested). It's called `munch_tokens` because it munches tokens until it's done parsing the expression it sees. When it encounters brackets, it recursively evaluates the tokens in the brackets until it's done with the stuff in brackets. If there are still tokens left after the top level call, then there are extra tokens at the end: an error. Here's the declaration of `munch_tokens`:
 
 ```rust
@@ -334,7 +335,7 @@ match next {
 }
 ```
 
-### Evaluation
+## Evaluation
 Thanks to the way `AstNode` is written, evaluating `AstNode`s against some tags is really easy. By design, we can just recursively evaluate AST nodes.
 ```rust
 impl AstNode {
@@ -351,7 +352,7 @@ impl AstNode {
 
 The only weird thing here is `&&**name`, which looks really weird but is the right combination of symbols needed to convert a `&String` to a `&&str` (it goes `&String` -> `String` -> `str` -> `&str` -> `&&str`).
 
-### Putting it all together
+## Putting it all together
 We don't want to expose all of these implementation details to users. Let's wrap all of this behind a struct that takes care of calling the lexer and building an AST for our users. If we decide to completly change our implementation in the future, nobody will know since we'll have a very small API surface. There's one more case we want to handle here: the empty input. `AstNode` can't handle empty input, so we'll implement that in our wrapper. This seems like it would work:
 
 ```rust

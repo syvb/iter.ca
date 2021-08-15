@@ -16,6 +16,8 @@ Email to me@smitop.com is the best way to reach me, do feel free to contact me. 
 - sr.ht: [~smitop](https://sr.ht/~smitop/)
 - GitHub: [@Smittyvb](https://github.com/Smittyvb/)
 - crates.io: [@Smittyvb](https://crates.io/users/Smittyvb)
+- Observable: [@Smittyvb](https://observablehq.com/@smittyvb)
+- Kaggle: [@smitop](https://www.kaggle.com/smitop)
 
 ### Social media
 - Twitch: [@smitop2](https://twitch.tv/smitop2)
@@ -26,6 +28,7 @@ Email to me@smitop.com is the best way to reach me, do feel free to contact me. 
 - Stack Exchange: [@smitop](https://stackexchange.com/users/17341075/smitop?tab=accounts)
 - Youtube: [smitop](https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/)
 - I have a Steem account ([@smitop](https://hiveblocks.com/@smitop)) but you should prefer the Hive fork instead
+- Dwitter: [@smitop](https://www.dwitter.net/u/Smitop)
 
 ### Chat
 - IRC: `@smitop` on [libera.chat](https://libera.chat/) and others
@@ -40,3 +43,5 @@ Email to me@smitop.com is the best way to reach me, do feel free to contact me. 
 - itch.io: [@smitop](https://smitop.itch.io/)
 - Scratch: [@smitop](https://scratch.mit.edu/users/smitop/)
 - Kongregate: [@smitop](https://www.kongregate.com/accounts/smitop)
+- Product Hunt: [@smitop](https://www.producthunt.com/@_smitop)
+- Soundcloud: [@smitop](https://soundcloud.com/smitop/unsuddenmovements)

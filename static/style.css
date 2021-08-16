@@ -212,6 +212,20 @@ a.playground {
     counter-increment: item;
 }
 
+blockquote {
+    border-left: 4px solid gray;
+    background: #eee;
+    margin: 0;
+    padding: 0;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin-bottom: 1em;
+}
+
+blockquote > p:last-child {
+    padding-bottom: 0;
+}
+
 @media (max-width: 400px) {
     #wave-emoji {
         display: none;

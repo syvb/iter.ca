@@ -1,0 +1,29 @@
+{{ .Inner }}
+{{ range .Site.Pages }}
+    {{ if (not (eq .Params.Title "Everything")) }}
+      <section itemscope itemtype="http://schema.org/Article" id="content" id="main">
+        <h2 itemprop="name" id="title">{{ .Title }}</h2>
+        By <span itemprop="author" itemscope itemtype="http://schema.org/Person"><a href="/#me-links"><span itemprop="name">Smitop</span></a></span> · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span> · {{ math.Ceil (mul .ReadingTime 1.333) }} minute read
+        <div>
+          <article itemprop="articleBody" id="content">
+            {{ if .Params.toc }}
+                {{ .TableOfContents }}
+            {{ end }}
+            {{ .Content }}
+          </article>
+        </div>
+      </section>
+      <aside id="meta">
+        <div>
+          {{ with .Params.tags }}
+            Tags:
+            <div id="tags">
+              {{ range . }}
+              <a href="{{ "tags/" | absURL }}{{ . | urlize }}">{{ . }}</a>,
+              {{ end }}
+            </div>
+          {{ end }}
+        </div>
+      </aside>
+    {{ end }}
+{{ end }}

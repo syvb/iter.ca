@@ -1,15 +1,6 @@
 body {
-    /*
-        AAkar? too small
-        Abyssinica SIL? meh
-        C059? good
-        Century Schoolbook? too bold
-        Nimbus Roman? too Times-ish
-        Noto Serif? almost there, still a bit too Times-ish
-        P052?
-        Utopia?
-    */
-    font-family: P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, serif;
+    /* windows has built-in serif fonts that look very good :( Sitka, Constantia, Cambria are at least decent */
+    font-family: P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, serif;
 }
 
 #content pre {

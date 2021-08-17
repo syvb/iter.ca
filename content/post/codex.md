@@ -57,7 +57,7 @@ toc = 1
                 display: inline;
             }
             .codex-run-fact::after {
-                content: ",";
+                content: ", ";
             }
             .codex-run-fact:last-child::after {
                 content: unset;

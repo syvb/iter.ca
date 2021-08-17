@@ -5,3 +5,9 @@ author = "Smitop"
 
 [taxonomies]
   tag = "tags"
+
+[markup]
+[markup.tableOfContents]
+endLevel = 10
+ordered = false
+startLevel = 2

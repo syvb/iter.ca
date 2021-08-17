@@ -1,0 +1,13 @@
+<div class="codex-run {{ .Get 6 }}">
+    <div class="codex-run-meta">
+        <div class="codex-run-fact">Model: <code>{{ .Get 0 }}</code></div>
+        <div class="codex-run-fact">Temperature: <code>{{ .Get 1 }}</code></div>
+        <div class="codex-run-fact">Top P: <code>{{ .Get 2 }}</code></div>
+        <div class="codex-run-fact">Frequency penalty: <code>{{ .Get 3 }}</code></div>
+        <div class="codex-run-fact">Presence penalty: <code>{{ .Get 4 }}</code></div>
+        {{ with (.Get 5) }}
+            <div class="codex-run-fact">{{ . }}</code></div>
+        {{ end }}
+    </div>
+    <code class="codex-gen"><span class="codex-gen-text"><span class="codex-input">{{.Inner}}</span></code>
+</div>

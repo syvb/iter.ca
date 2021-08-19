@@ -1182,4 +1182,6 @@ Perhaps there is some better way to prompt Codex to generate code in the middle 
 
 ## Conclusion
 
-That's it! I had a fun time exploring what Codex can do, and I can't wait to see what will happen next in the code generation space!
+(edit: see the introduction at the top for what you are looking for if you just jumped to the conclusion)
+
+That's it! I had a fun time exploring what Codex can do, and I can't wait to see what will happen next in the code generation space!.

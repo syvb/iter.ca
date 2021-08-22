@@ -17,3 +17,5 @@ for (const link in links) {
     }
     fs.writeFileSync(`${__dirname}/public/${link}/index.html`, `<!doctype html><html><head><meta charset="utf-8"><title>Redirecting...</title><link rel="canonical" href="${dest}"><meta http-equiv="refresh" content="0; url=${dest}"></head><body>Redirecting to <a href="${dest}">${dest}</a></body></html>`)
 }
+
+fs.copyFileSync(__dirname + "/index.html", __dirname + "/public/index.html")

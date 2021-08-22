@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -15,6 +15,17 @@
         left: -8px;
       }
     </style>
+    <meta name="twitter:site" content="@_smitop">
+    <meta name="twitter:creator" content="@_smitop">
+    <meta name="twitter:title" content="{{.Title}}">
+    <meta name="twitter:card" content="summary">
+    <meta property="og:title" content="{{.Title}}">
+    <meta property="og:site_name" content="Smitop">
+    {{ with .Description }}
+      <meta name="description" content="{{ . }}">
+      <meta name="twitter:description" content="{{ . }}">
+      <meta name="og:description" content="{{ . }}">
+    {{ end }}
     {{- block "sitewide" . }}{{- end }}
     {{- block "head" . }}{{- end }}
   </head>

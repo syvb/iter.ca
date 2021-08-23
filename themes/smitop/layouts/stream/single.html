@@ -3,5 +3,5 @@
     <h1>{{ .Title }}</h1>
     <div>{{ .Content }}</div>
     <!-- <div>Total items: {{ len ((.Site.RegularPages | append $.Site.Data.data)) }} </div> -->
-    {{ partial "stream.html" (dict "VerboseMax" 10 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides "SelfOnly" 1 "Count" 1)}}
+    {{ partial "stream.html" (dict "VerboseMax" 10 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides "SelfOnly" 1 "Count" 1 "Mini" .Params.mini)}}
 {{ end }}

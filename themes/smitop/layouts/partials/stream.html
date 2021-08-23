@@ -1,9 +1,10 @@
-<div class="stream">
+<div class="stream{{ if .Mini }} mini{{ end }}">
     {{ $scr := newScratch }}
     {{ $scr.Set "idx" 0 }}
     {{ $scr.Set "verboseMax" .VerboseMax }}
     {{ $scr.Set "overrides" .Overrides }}
     {{ $scr.Set "selfOnly" .SelfOnly }}
+    {{ $scr.Set "mini" .Mini }}
     <!-- featured posts are shown even when SelfOnly would supress them -->
     {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
         {{ $scr.Set "verbose" 0 }}

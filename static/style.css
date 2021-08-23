@@ -101,6 +101,20 @@ h1 {
     margin-top: 0.5rem;
 }
 
+.stream.mini {
+    display: inline-block;
+}
+
+.stream.mini > .stream-item {
+    vertical-align: middle;
+    display: inline-block;
+    max-width: 15rem;
+}
+
+.stream.mini .stream-item-date, .stream.mini h2 {
+    display: inline;
+}
+
 .stream-item {
     max-width: 20rem;
     border: 2px solid gray;

@@ -231,6 +231,10 @@ blockquote > p:last-child {
     padding-bottom: 0;
 }
 
+.related-posts .stream-item {
+    display: inline-block;
+}
+
 @media (max-width: 400px) {
     #wave-emoji {
         display: none;

@@ -11,3 +11,20 @@ author = "Smitop"
 endLevel = 10
 ordered = false
 startLevel = 2
+
+[related]
+includeNewer = true
+threshold = 30
+toLower = false
+[[related.indices]]
+name = 'description'
+weight = 80
+[[related.indices]]
+name = 'title'
+weight = 60
+[[related.indices]]
+name = 'tags'
+weight = 40
+[[related.indices]]
+name = 'date'
+weight = 5

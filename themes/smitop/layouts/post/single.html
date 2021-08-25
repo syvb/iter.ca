@@ -16,6 +16,16 @@
     </div>
   </section>
   <aside id="meta">
+
+  {{ with ((.Site.RegularPages.Related .) | first 5) }}
+    <div class="related-posts">
+      <h2>Related</h2>
+      {{ range . }}
+        {{ partial "streamitem.html" (dict "Item" .) }}
+      {{ end }}
+    </div>
+  {{ end }}
+
     <div>
       {{ with .Params.tags }}
         Tags:

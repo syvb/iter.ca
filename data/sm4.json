@@ -1,4 +1,18 @@
 {
   "uses": "https://smitop.com/uses",
-  "example": "https://example.com"
+  "example": "https://example.com",
+  "w": "https://smitop.com/",
+  "gh": "https://github.com/Smittyvb",
+  "tw": "https://twitter.com/_smitop",
+  "kag": "https://www.kaggle.com/smitop",
+  "se": "https://stackexchange.com/users/17341075/smitop?tab=accounts",
+  "so": "https://stackoverflow.com/users/14004262/smitop?tab=profile",
+  "yt": "https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/",
+  "mat": "https://matrix.to/#/@smitop2:matrix.org",
+  "scr": "https://scratch.mit.edu/users/smitop/",
+  "sc": "https://soundcloud.com/smitop",
+  "tg": "https://t.me/smitop",
+  "hn": "https://news.ycombinator.com/user?id=smitop",
+  "twitch": "https://www.twitch.tv/smitop2",
+  "ob": "https://observablehq.com/@smittyvb"
 }

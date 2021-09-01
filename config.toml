@@ -6,6 +6,10 @@ author = "Smitop"
 [taxonomies]
   tag = "tags"
 
+
+[markup.goldmark.renderer]
+unsafe = true # allow raw HTML in posts
+
 [markup]
 [markup.tableOfContents]
 endLevel = 10

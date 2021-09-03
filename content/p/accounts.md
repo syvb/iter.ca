@@ -6,10 +6,10 @@ Verbose = 1
 
 ## Accounts on various services
 
-Email to me@smitop.com is the best way to reach me, do feel free to contact me. Keep in mind that I don't actively use all of these accounts.
+Email to {{< email >}} is the best way to reach me, do feel free to contact me. Keep in mind that I don't actively use all of these accounts.
 
 ### Email
-- me@smitop.com is my preferred address
+- {{< email >}} is my preferred address
 - smitop2@gmail.com also works if the previous email doesn't work for you
 
 ### Programming

@@ -11,4 +11,4 @@ I'm interested in programming and technology. This is my personal website. I hav
 - Free/open-source smartphones, such as the [Pinephone](https://www.pine64.org/pinephone/), which are phones that can run software that is almost entirely FOSS. I find it really cool being able to use my phone as though it were any other device I can SSH into, and being able to send and recieve texts and phone calls from the command line is really cool, albeit not very useful.
 - Stochastic time tracking, which is a time tracking system that randomly samples what one is doing. I am the author of [TagTime Web](https://ttw.smitop.com/), which is FOSS web-based software that does exactly this, and is quite featureful.
 
-Feel free to contact me by emailing me@smitop.com, or one of the [many other ways](/p/accounts/) to contact me.
+Feel free to contact me by emailing {{< email >}}, or one of the [many other ways](/p/accounts/) to contact me.

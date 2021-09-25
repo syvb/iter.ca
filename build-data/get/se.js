@@ -24,7 +24,7 @@ const fetch = require("node-fetch");
                 Type: "SePost",
                 Id: `se-${siteId}-${post.post_id}`,
                 Title: post.title,
-                Uri: post.link,
+                Uri: post.link + "/14004262", // append user ID to get tracking right
                 Date: { Unix: post.creation_date },
                 Text: post.body_markdown,
                 Verbose: 1,

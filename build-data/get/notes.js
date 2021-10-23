@@ -1,3 +1,5 @@
+process.env.TZ = "Etc/Utc"; // don't have date differences on CI
+
 const fs = require("fs");
 
 const notes = fs.readdirSync(__dirname + "/../../notes").map(note => note.replace(/\.txt$/, ""));
@@ -25,12 +27,7 @@ notes.forEach(id => {
             return;
         }
     });
-    if (header.Date) {
-        // make timezone agnostic
-        let date = new Date(header.Date);
-        date = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-        header.Date = { Unix: date.valueOf() / 1000 };
-    }
+    if (header.Date) header.Date = { Unix: (new Date(header.Date)).valueOf() / 1000 };
     if (header.Verbose) {
         header.Verbose = parseInt(header.Verbose, 10);
     } else {

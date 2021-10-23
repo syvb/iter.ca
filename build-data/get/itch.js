@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 const fs = require("fs");
 
-const TOKEN = fs.readFileSync("tokens/itch.txt", "utf-8");
+const TOKEN = fs.readFileSync("tokens/itch.txt", "utf-8").trim();
 
 (async () => {
     const res = await (await fetch(`https://itch.io/api/1/${TOKEN}/my-games`)).json();

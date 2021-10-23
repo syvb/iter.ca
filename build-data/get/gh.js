@@ -147,7 +147,7 @@ const fetch = require("node-fetch");
     */
     // merged PRs
     for (let i = 0; i < 8; i++) { // never try to fetch too many pages, cause rate limits
-        const res = await (await fetch(`https://api.github.com/search/issues?page=${i}&per_page=1000&q=is:merged%20is:pr%20author:Smittyvb%20archived:false%20-user:Smittyvb`)).json();
+        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=1000&q=is:merged%20is:pr%20author:Smittyvb%20archived:false%20-user:Smittyvb`)).json();
         res.items.forEach(iss => {
             console.log(JSON.stringify({
                 Type: "gh-pr",

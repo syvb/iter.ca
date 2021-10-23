@@ -26,10 +26,9 @@ notes.forEach(id => {
         }
     });
     if (header.Date) {
-        // make timezone agnostic (https://stackoverflow.com/a/39209842/14004262)
+        // make timezone agnostic
         let date = new Date(header.Date);
-        const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-        date = new Date(date.getTime() - userTimezoneOffset);
+        date = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
         header.Date = { Unix: date.valueOf() / 1000 };
     }
     if (header.Verbose) {

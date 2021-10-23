@@ -11,12 +11,6 @@ node hn.js | sed 's/$/,/'
 node itch.js | sed 's/$/,/'
 >&2 echo "Generating Scratch project data"
 node scrprojs.js | sed 's/$/,/'
->&2 echo "pngcrushing Scratch thumbnails"
-for png in `ls ../../static/scr-thumbs/*.png`;
-do
-    pngcrush -brute "$png" temp.png 2> /dev/null
-    mv -f temp.png $png
-done;
 >&2 echo "Generating SE data"
 node se.js | sed 's/$/,/'
 >&2 echo "Writing final note"

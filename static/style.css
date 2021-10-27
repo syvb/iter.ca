@@ -1,6 +1,6 @@
 body {
     /* windows has built-in serif fonts that look very good :( Sitka, Constantia, Cambria are at least decent */
-    font-family: P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, serif;
+    font-family: "Source Serif Pro", P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, serif;
 }
 
 #content pre {

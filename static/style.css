@@ -235,6 +235,17 @@ blockquote > p:last-child {
     display: inline-block;
 }
 
+#topbar {
+    background: #e7e7e7;
+    border-bottom: 1px solid #c2c2c2;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    position: relative;
+    top: -0.5rem;
+    left: -0.5rem;
+    width: 100%;
+}
+
 @media (max-width: 400px) {
     #wave-emoji {
         display: none;

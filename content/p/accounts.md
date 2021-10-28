@@ -27,7 +27,6 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 - Twitter: [@_smitop](https://twitter.com/_smitop)
 - Stack Exchange: [@smitop](https://stackexchange.com/users/17341075/smitop?tab=accounts)
 - Youtube: [smitop](https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/)
-- I have a Steem account ([@smitop](https://hiveblocks.com/@smitop)) but you should prefer the Hive fork instead
 - Dwitter: [@smitop](https://www.dwitter.net/u/Smitop)
 
 ### Chat

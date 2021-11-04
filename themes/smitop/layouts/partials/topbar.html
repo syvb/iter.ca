@@ -16,4 +16,10 @@
     {{ else }}
         <a href="/uses">Uses</a>
     {{ end }}
+    •
+    {{ if (eq . "accounts")}}
+        Accounts
+    {{ else }}
+        <a href="/p/accounts">Accounts</a>
+    {{ end }}
 </div>

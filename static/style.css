@@ -1,5 +1,5 @@
 body {
-    /* windows has built-in serif fonts that look very good :( Sitka, Constantia, Cambria are at least decent */
+    /* windows has no built-in serif fonts that look very good :( Sitka, Constantia, Cambria are at least decent */
     font-family: "Source Serif Pro", P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, serif;
 }
 
@@ -243,7 +243,8 @@ blockquote > p:last-child {
     position: relative;
     top: -0.5rem;
     left: -0.5rem;
-    width: 100%;
+    width: 100vw;
+    font-size: 1rem;
 }
 
 @media (max-width: 400px) {

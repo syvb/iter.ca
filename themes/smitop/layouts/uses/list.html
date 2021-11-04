@@ -1,22 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Things I use</title>
-    <meta charset="utf-8" />
-    <meta name="description" content="Various things I use">
-    <meta name="rating" content="General">
-    <link rel="stylesheet" href="/style.css" />
-</head>
-<body>
-    {{ partial "topbar" "uses" }}
-    {{ .Content }}
-    <aside id="meta">
-        <div id="license-info">
-            This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-        </div>    
-    </aside>
-</body>
-</html>
+{{ define "main" }}
+  {{ partial "topbar" "uses" }}
+  <section itemscope itemtype="http://schema.org/Article" id="content">
+    <div>
+      <article itemprop="articleBody" id="content">
+        {{ .Content }}
+      </article>
+    </div>
+  </section>
+  <aside id="meta">
+    <div id="license-info">
+      This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    </div>
+  </aside>
+{{ end }}

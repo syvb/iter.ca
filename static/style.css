@@ -241,7 +241,7 @@ blockquote > p:last-child {
     position: relative;
     top: -0.5rem;
     left: -0.5rem;
-    width: 100vw;
+    width: calc(100vw - 1.75rem);
     font-size: 1rem;
 }
 

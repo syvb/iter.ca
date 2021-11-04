@@ -12,3 +12,7 @@ do
     pngcrush -brute "$png" temp.png 2> /dev/null
     mv -f temp.png $png
 done;
+>&2 echo "Getting Observable thumbnails"
+node observablethumbs.js
+>&2 echo "optimizng Observable thumbnails"
+jpegoptim -s ../../static/observablethumbs/*.jpg

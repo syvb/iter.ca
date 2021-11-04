@@ -17,6 +17,8 @@
                 {{ end }}
             {{ else if (eq .Item.Type "video")}}
                 Video
+            {{ else if (eq .Item.Type "observable")}}
+                Observable notebook
             {{ else if (eq .Item.Type "hn")}}
                 HN {{ .Item.HNType }}
             {{ else if (eq .Item.Type "scrproj")}}

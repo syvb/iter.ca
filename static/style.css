@@ -256,6 +256,10 @@ blockquote > p:last-child {
     display: inline;
 }
 
+#me-links {
+    line-height: 1.8;
+}
+
 @media (max-width: 470px) {
     .stream {
         display: block;

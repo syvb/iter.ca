@@ -27,7 +27,7 @@
 <body>
     {{ partial "topbar.html" "home" }}
     <div id="metop">
-        <a href="avatar/"><img src="/avatar/a256.png" alt="Smitop" id="avatar" width="160" height="160" loading="lazy"></a>
+        <a href="avatar/"><img src="/avatar/a256.png" alt="Smitop" id="avatar" width="160" height="160"></a>
         <div id="hi-message">
             <span class="smitop p-nickname">Smitop</span>
         </div>
@@ -45,7 +45,7 @@
 
     <div id="homepage-content">
         <div id="blog-posts">
-            <h2>Things I've done <a href="/stream/me/">(more)</a></h2>
+            <h2>Things from me <a href="/stream/me/">(more)</a></h2>
             {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
         </div>
     </div>

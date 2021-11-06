@@ -28,6 +28,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 - Stack Exchange: [@smitop](https://stackexchange.com/users/17341075/smitop?tab=accounts)
 - Youtube: [smitop](https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/)
 - Dwitter: [@smitop](https://www.dwitter.net/u/Smitop)
+- wasteof.money: [@smitop](https://wasteof.money/users/smitop)
 
 ### Chat
 - IRC: `@smitop` on [libera.chat](https://libera.chat/) and others

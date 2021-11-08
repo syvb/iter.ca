@@ -276,5 +276,17 @@ blockquote > p:last-child {
         margin-bottom: 1rem;
         box-sizing: border-box;
         height: unset;
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 0;
+    }
+    .stream-item h2 {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+    .stream-item img {
+        margin-bottom: 0;
+        width: 100%;
+        height: 100%;
     }
 }

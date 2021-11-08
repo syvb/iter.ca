@@ -261,6 +261,11 @@ blockquote > p:last-child {
     line-height: 1.8;
 }
 
+#about-summary {
+    font-family: sans-serif;
+    font-size: 150%;
+}
+
 @media (max-width: 470px) {
     .stream {
         display: block;

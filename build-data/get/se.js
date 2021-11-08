@@ -10,6 +10,7 @@ const fetch = require("node-fetch");
         // should implement delay between requests
         return;
     }
+    accs.push({site_url: "https://meta.stackoverflow.com", user_id: 14004262}); // https://meta.stackexchange.com/q/371659/828089
     for (const acc of accs) {
         let siteId = siteData.items.filter(site => site.site_url === acc.site_url)[0];
         if (!siteId) {

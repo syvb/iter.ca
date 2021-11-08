@@ -1,0 +1,7 @@
+# Feel free to contact me if you find any security issues in software from me.
+
+Contact: mailto:security@smitop.com
+# check:2021-02-20
+Expires: 2022-02-31T14:36:00.000Z
+Preferred-Languages: en
+Canonical: https://smitop.com/.well-known/security.txt

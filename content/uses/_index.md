@@ -24,7 +24,6 @@
 * [GNU Units](https://www.gnu.org/software/units/) for unit conversions and arithmetic
 
 ## Web-based software
-* [Remarkbox](https://www.remarkbox.com/) for the comments on this website
 * [Glitch](https://glitch.com/) for doing some front-end development work
 * [Desmos](https://desmos.com/) for math
 * [Element](https://element.io/) for chatting over Matrix

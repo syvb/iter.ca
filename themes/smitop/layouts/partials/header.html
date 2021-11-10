@@ -27,6 +27,29 @@
     {{ end }}
     {{- block "sitewide" . }}{{- end }}
     {{- block "head" . }}{{- end }}
+    {{ if .IsPage }}
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          {{ if (eq .Type "p") }}
+            "name": "Page",
+            {{ else }}
+            "name": "{{ .Type | title }}",
+          {{ end }}
+          "item": "{{ .Site.BaseURL }}{{ .Type }}/"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{.Title}}",
+          "item": "{{ .Permalink }}"
+        }]
+      }
+      </script>
+    {{ end }}
   </head>
   <body>
     <div class="container-fluid">

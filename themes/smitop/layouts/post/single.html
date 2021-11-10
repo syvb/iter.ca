@@ -2,7 +2,7 @@
   {{ partial "topbar" .Params.topbar_id }}
   <section itemscope itemtype="http://schema.org/Article" id="content">
     <h2 itemprop="name" id="title">{{ .Title }}</h2>
-    By <span itemprop="author" itemscope itemtype="http://schema.org/Person"><a href="/#me-links"><span itemprop="name">Smitop</span></a></span> · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span> · {{ math.Ceil (mul .ReadingTime 1.333) }} minute read
+    By <span itemprop="author" itemscope itemtype="http://schema.org/Person"><a href="/"><span itemprop="name">Smitop</span></a></span> · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span> · {{ math.Ceil (mul .ReadingTime 1.333) }} minute read
     <div>
       <article itemprop="articleBody" id="content">
         {{ if .Params.toc }}

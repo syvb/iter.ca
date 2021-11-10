@@ -2,6 +2,10 @@
   {{ partial "topbar" .Params.topbar_id }}
   <section itemscope itemtype="http://schema.org/Article" id="content">
     <div>
+      <h2>{{ .Title }}</h2>
+      <div id="lastmod-info">
+        Last updated <span itemprop="dateModified" content="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "Jan 2, 2006" }}</span>.
+      </div>
       <article itemprop="articleBody" id="content">
         {{ .Content }}
       </article>

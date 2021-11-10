@@ -3,6 +3,10 @@ body {
     font-family: "Source Serif Pro", P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, serif;
 }
 
+#lastmod-info {
+    color: rgb(77, 77, 77);
+}
+
 #content pre {
     margin-top: 0;
     padding: 0.5rem;

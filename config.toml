@@ -2,6 +2,11 @@ baseURL = "https://smitop.com/"
 languageCode = "en-CA"
 title = "Smitop's Blog"
 author = "Smitop"
+enableGitInfo = true
+
+[frontmatter]
+# https://www.andrewjstevens.com/posts/2021/03/last-modified-date-with-hugo/
+lastmod = ["lastmod", ":git", "date", "publishDate"]
 
 [taxonomies]
   tag = "tags"

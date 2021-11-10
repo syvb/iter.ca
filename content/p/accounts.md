@@ -1,10 +1,8 @@
 +++
 topbar_id = "accounts"
-Title = "Accounts"
+Title = "Accounts on various services"
 Verbose = 1
 +++
-
-## Accounts on various services
 
 Email to {{< email >}} is the best way to reach me, do feel free to contact me. Keep in mind that I don't actively use all of these accounts.
 

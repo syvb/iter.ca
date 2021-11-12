@@ -1,7 +1,7 @@
 +++
 date = "2021-11-30T00:00:00Z"
-description = "How visual voicemail systems work"
-tags = ["tailscale"]
+description = "An explanation of how visual voicemail systems work"
+tags = ["tel", "email"]
 title = "The Phone app has an email client"
 draft = true
 +++

@@ -30,7 +30,7 @@ Received: from msuic1 (10.106.145.31) by MIPS.SITE1 (MIPS Email Server) id 45879
 subject: voice mail
 MIME-Version: 1.0 (Voice Version 2.0)
 Message-Id: <31.24.2326006@msu31_24>
-Content-Type: Multipart/ voice-message; boundary="------------Boundary-00=_90NIQYRXFQQMYJ0CCJD0"
+Content-Type: Multipart/voice-message; boundary="------------Boundary-00=_90NIQYRXFQQMYJ0CCJD0"
 From: 771004@vi.com
 To: 771000@vi.com
 Content-Duration: 17

@@ -11,7 +11,7 @@ image_alt = "The app icon for the Phone app points to text that says \"actually 
 [_Zawinski's Law_](https://en.wikipedia.org/wiki/Jamie_Zawinski#Notable_quotes) states: 
 > Every program attempts to expand until it can read mail. Those programs which cannot so expand are replaced by ones which can.
 
-This is true of the _Phone_ apps on Android and iOS, both of which both have an integrated IMAP client which is used to interact with visual voicemail.
+This is true of the _Phone_ apps on [Android](https://source.android.com/devices/tech/config/voicemail) and [iOS](https://support.apple.com/en-ca/guide/iphone/iph3c99490e/ios), both of which both have an integrated IMAP client that's used to display and interact with visual voicemail. [Plasma Mobile](https://www.plasma-mobile.org/) [doesn't support it yet](https://invent.kde.org/plasma-mobile/plasma-dialer/-/issues/26).
 
 Mobile carriers support _forwarding numbers_[^fornum]: when a call isn't picked up after a certain number of rings, the call is forwarded to another number. This is how voicemail works on on mobile phones: on-device voicemail wouldn't be able to handle calls when the phone is turned off, so if you want to be able to get voicemail without an always-on phone you need to forward calls to an external service. Mobile carriers almost universally provide a voicemail service for their customers that works as such a forwarding number.
 [^fornum]: There are actually multiple types of forwarding that vary under what conditions the call is forwarded.

@@ -14,20 +14,32 @@
         position: relative;
       }
     </style>
-    <meta name="twitter:site" content="@_smitop">
-    <meta name="twitter:creator" content="@_smitop">
-    <meta name="twitter:title" content="{{.Title}}">
-    <meta name="twitter:card" content="summary">
-    <meta property="og:title" content="{{.Title}}">
-    <meta property="og:site_name" content="Smitop">
-    {{ with .Description }}
-      <meta name="description" content="{{ . }}">
-      <meta name="twitter:description" content="{{ . }}">
-      <meta name="og:description" content="{{ . }}">
-    {{ end }}
     {{- block "sitewide" . }}{{- end }}
     {{- block "head" . }}{{- end }}
     {{ if .IsPage }}
+      <meta name="twitter:site" content="@_smitop">
+      <meta name="twitter:creator" content="@_smitop">
+      <meta name="twitter:title" content="{{.Title}}">
+      <meta name="twitter:card" content="summary">
+      <meta property="og:title" content="{{.Title}}">
+      <meta property="og:site_name" content="Smitop">
+      <meta property="og:type" content="article" />
+      <meta property="og:url" content="{{.Permalink}}" />
+      <!-- https://ar.al/2018/06/17/formatting-an-iso-8601-date-stamp-in-hugo/ -->
+      <meta property="og:article:published_time" content="{{.Date.Format "2006-01-02T15:04:05Z0700"}}" />
+      {{ range .Params.Tags }}
+        <meta property="og:article:tags" content="{{.}}" />
+      {{ end }}
+      {{ with .Description }}
+        <meta name="description" content="{{ . }}">
+        <meta name="twitter:description" content="{{ . }}">
+        <meta name="og:description" content="{{ . }}">
+      {{ end }}
+      {{ with .Params.image }}
+        <meta name="twitter:image" content="{{ . }}">
+        <meta name="og:image" content="{{ . }}">
+      {{ end }}
+      <!-- TODO: image -->
       <script type="application/ld+json">
       {
         "@context": "https://schema.org",

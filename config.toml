@@ -24,7 +24,7 @@ startLevel = 2
 [related]
 includeNewer = true
 threshold = 30
-toLower = false
+toLower = true
 [[related.indices]]
 name = 'description'
 weight = 80

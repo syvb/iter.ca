@@ -39,9 +39,9 @@
         <meta name="twitter:description" content="{{ . }}">
         <meta name="og:description" content="{{ . }}">
       {{ end }}
-      {{ with .Params.image }}
-        <meta name="twitter:image" content="{{ . }}">
-        <meta name="og:image" content="{{ . }}">
+      {{ if (ne .Params.image nil) }}
+        <meta name="twitter:image" content="{{ .Site.BaseURL }}{{ .Params.image }}">
+        <meta name="og:image" content="{{ .Site.BaseURL }}{{ .Params.image }}">
       {{ end }}
       {{ with .Params.image_alt }}
         <meta name="twitter:image:alt" content="{{ . }}">

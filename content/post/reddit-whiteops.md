@@ -3,7 +3,8 @@ date = "2020-07-08T05:00:00+00:00"
 description = "But hey, at least Reddit gets less ad fraud!"
 tags = ["internet", "whiteops", "reddit"]
 title = "Reddit's website uses DRM for fingerprinting"
-
+image = "/reddit-drm.png"
+image_alt = "Reddit asking for permission to use DRM"
 +++
 
 Recently, I was using a page on Reddit (i.e. the main redesign domain, not [old.reddit.com](https://old.reddit.com)), when I saw a yellow bar from Firefox:

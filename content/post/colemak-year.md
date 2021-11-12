@@ -3,6 +3,7 @@ date = "2021-07-17T05:00:00Z"
 description = "Around a year ago, I started using Colemak, an alternative keyboard layout."
 tags = ["typing"]
 title = "Using Colemak for a year"
+image = "/colemak-2months.png"
 +++
 
 Around a year ago, I decided to try using the  [Colemak](https://colemak.com/) keyboard layout. It is an alternative to the standard QWERTY layout that is supposed to be faster to type with, and has better hand ergonomics. QWERTY is a very old keyboard layout that was designed for old typewriters, and as such the positioning of keys is less than ideal. Colemak is designed for modern keyboards, and positions keys to minimize the distance travelled by fingers. Unlike some other layouts (such as Dvorak), Colemak isn't completely different from QWERTY. Common keyboard shortcuts like CTRL-C, CTRL-V, CTRL-X, CTRL-A are kept in the same place, the bottom row is almost entirely unchanged, most keys are typed with the same hand as QWERTY, and many keys aren't even moved at all. This gives the benefits of a better keyboard layout while minimizing the amount that needs to be relearned from scratch.

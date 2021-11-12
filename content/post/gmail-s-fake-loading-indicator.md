@@ -3,8 +3,6 @@ date = "2020-07-04T00:00:00Z"
 description = "Gmail's loading progress bar doesn't *actually* measure the progress of loading."
 tags = ["google"]
 title = "Gmail's fake loading indicator"
-image = "/gmail-load-slow.gif"
-image_alt = "A looping image of an envelope opening, with the text \"Loading Gmail\" below it. A loading bar appears, which fills up quickly at first, but then slows down, and eventually stops moving entirely."
 +++
 
 Whenever I visit Gmail, I see its loading indicator for a fraction of a second before it loads:

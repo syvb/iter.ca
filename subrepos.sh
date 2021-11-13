@@ -16,6 +16,7 @@ rm -rf segmerepo
 cd ext
 wget https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circuit-playground-sideview.jpg/611px-Circuit-playground-sideview.jpg
 wget https://upload.wikimedia.org/wikipedia/commons/4/4a/Circuit-playground-sideview.jpg
+wget https://upload.wikimedia.org/wikipedia/commons/6/66/Adam7-mul.svg
 cd ..
 
 cd ..

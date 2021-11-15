@@ -19,4 +19,12 @@ wget https://upload.wikimedia.org/wikipedia/commons/4/4a/Circuit-playground-side
 wget https://upload.wikimedia.org/wikipedia/commons/6/66/Adam7-mul.svg
 cd ..
 
+rm -rf fmat
+mkdir -p fmat
+cd ../binformats
+BINFORMATS_URI_PREFIX="/fmat/" cargo run gen_png .
+cp -r public/* ../static/fmat/
+cd ../static
+rm fmat/*/index.html
+
 cd ..

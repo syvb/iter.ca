@@ -32,6 +32,10 @@ p, ul {
     padding-bottom: 1rem;
 }
 
+.h-card {
+    text-align: center;
+}
+
 .smitop {
     font-weight: bold;
     color: black;

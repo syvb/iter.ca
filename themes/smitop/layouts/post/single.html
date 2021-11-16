@@ -3,7 +3,7 @@
   <section itemscope itemtype="http://schema.org/Article" class="h-entry">
     <h2 itemprop="name" id="title" class="p-name">{{ .Title }}</h2>
     By
-    <span class="h-card">
+    <span class="p-author h-card">
       <span itemprop="author" itemscope itemtype="http://schema.org/Person">
         <a href="/" class="p-nickname u-url" rel="me">
           <img class="u-photo byline-avatar" width="24" height="24" src="https://smitop.com/avatar/vector.svg" alt="">
@@ -41,7 +41,7 @@
         <div id="tags">
           Tags:
           {{ range . }}
-          <a href="{{ "tags/" | absURL }}{{ . | urlize }}">{{ . }}</a>,
+          <a href="{{ "tags/" | absURL }}{{ . | urlize }}" class="p-category">{{ . }}</a>,
           {{ end }}
         </div>
       {{ end }}

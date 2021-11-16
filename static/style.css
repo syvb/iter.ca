@@ -276,6 +276,12 @@ blockquote > p:last-child {
     font-size: 150%;
 }
 
+.byline-avatar {
+    display: inline;
+    margin: 0;
+    vertical-align: top;
+}
+
 @media (max-width: 470px) {
     .stream {
         display: block;

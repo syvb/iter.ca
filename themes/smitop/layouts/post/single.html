@@ -2,7 +2,16 @@
   {{ partial "topbar" .Params.topbar_id }}
   <section itemscope itemtype="http://schema.org/Article" id="content">
     <h2 itemprop="name" id="title">{{ .Title }}</h2>
-    By <span itemprop="author" itemscope itemtype="http://schema.org/Person"><a href="/"><span itemprop="name">Smitop</span></a></span> · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span>
+    By
+    <span class="h-card">
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <a href="/" class="p-nickname u-url" rel="me">
+          <img class="u-photo byline-avatar" width="24" height="24" src="https://smitop.com/avatar/vector.svg" alt="">
+          <span itemprop="name">Smitop</span>
+        </a>
+      </span>
+    </span>
+    · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span>
     <div>
       <article itemprop="articleBody" id="content">
         {{ if .Params.toc }}

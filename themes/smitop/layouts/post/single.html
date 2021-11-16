@@ -1,7 +1,7 @@
 {{ define "main" }}
   {{ partial "topbar" .Params.topbar_id }}
-  <section itemscope itemtype="http://schema.org/Article">
-    <h2 itemprop="name" id="title">{{ .Title }}</h2>
+  <section itemscope itemtype="http://schema.org/Article" class="h-entry">
+    <h2 itemprop="name" id="title" class="p-name">{{ .Title }}</h2>
     By
     <span class="h-card">
       <span itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -11,9 +11,9 @@
         </a>
       </span>
     </span>
-    · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span>
+    · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}" class="dt-published">{{ .Date.Format "Jan 2, 2006" }}</span>
     <div>
-      <article itemprop="articleBody" id="content">
+      <article itemprop="articleBody" id="content" class="e-content">
         {{ if .Params.toc }}
             {{ .TableOfContents }}
         {{ end }}

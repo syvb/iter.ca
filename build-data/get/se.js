@@ -21,7 +21,7 @@ const fetch = require("node-fetch");
         // TODO: paginate
         // filter is unsafe! okay because we escape later
         const posts = await (await fetch(`https://api.stackexchange.com/2.2/users/${acc.user_id}/posts?order=desc&sort=activity&site=${siteId}&filter=4F_y7HR4C9TWBKXX&pagesize=100`)).json();
-        if (posts.backoff) await new Promise((resolve, reject) => setTimeout(resolve, backoff * 1000));
+        if (posts.backoff) await new Promise((resolve, reject) => setTimeout(resolve, posts.backoff * 1000));
         posts.items.forEach(post => {
             console.log(JSON.stringify({
                 Type: "SePost",

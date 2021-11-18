@@ -1,8 +1,8 @@
 +++
+title = "Everything in a PNG"
 date = "2021-11-20T05:00:00+00:00"
 description = "How the PNG file format works."
 tags = ["png", "fileformat"]
-title = "Every byte in a PNG"
 image = "/pngbug.png"
 image_alt = "A glitchly-looking multicolored letter S."
 fmat_id = "png"

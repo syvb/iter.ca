@@ -273,11 +273,11 @@ draft = true
         <img src="https://smitop.com/fmat/png/defiltered.png" alt="The example image" width="256" height="256" loading="lazy" />
     </div>
     <div>
-        <h2>Bonus: Interlacing</h2>
+        <h2>Interlacing</h2>
         <p>PNGs can optionally be <dfn>interlaced</dfn>, which splits the image into 7 different images, each of which cover a non-overlapping area of the image:</p>
         <img src="https://smitop.com/ext/Adam7-mul.svg" alt="Diagram of the 7 passes in an 8x8 area. The first is a single pixel in the top-left, and the seventh is every other row." width="400" height="400" loading="lazy" />
         <p>Each of the 7 images is loaded in sequence, adding more detail to the image as it is loaded. This sequence of images is called <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>.</p>
-        <p>The data for each of the 7 images is stored after each other in the image file. If we take the example image and enable interlacing, </p>
+        <p>The data for each of the 7 images is stored after each other in the image file. If we take the example image and enable interlacing, here's the raw uncompressed image data:</p>
         <img src="https://smitop.com/fmat/png/inter-idat.png" alt="Same as the earlier skewed letter S, but there are multiple stacked on top of each other. The bottom half has 2, the third above that has 2 more, and above that it increasingly looks like random noise." width="256" height="256" />
         <p>Here are the 7 passes that we can extract from that image data, which look like downscaled versions of the image:</p>
         <div class="inter-passes">

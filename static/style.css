@@ -257,9 +257,32 @@ blockquote > p:last-child {
 
 #metop {
     display: flex;
+    flex-direction: row;
+    font-family: sans-serif;
+    max-width: 60em;
+    margin-bottom: 1em;
+}
+
+#metop-left {
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-right: 1.5em;
+}
+
+#metop-right {
+    font-size: 1.3em;
+}
+
+#me-links {
+    margin-top: 1em;
+}
+
+#metop-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #avatar {
@@ -280,6 +303,15 @@ blockquote > p:last-child {
     display: inline;
     margin: 0;
     vertical-align: top;
+}
+
+@media (max-width: 900px) {
+    #metop {
+        flex-direction: column;
+    }
+    #metop-left {
+        margin-right: 0;
+    }
 }
 
 @media (max-width: 470px) {

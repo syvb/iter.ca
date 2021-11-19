@@ -32,11 +32,13 @@ All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appende
 
 ## The data
 
-I got all `ts.net` subdomains listed in certificate transparency logs on {{<rawhtml>}}<time datetime="2021-10-18">October 18, 2021</time>{{</rawhtml>}}, and ontologized all of them. The data includes the 312 Tailscale users who used `tailscale cert`, and a total of 464 hostnames. This means that the average user has 1.49 hostnames exposed using `tailscale cert`. The most is `tailnet-cdb8` with 26, and in second place is `corp` with 9. `corp` appears to be used for services internal to Tailscale Inc. It shouldn't be possible for the Tailnet part of the domain to be `corp` -- it doesn't fit the allowed name structures, but Tailscale gave themselves the one and only vanity name.[^corp] Here are those hostnames in `corp`: `builds`, `bradfitz`, `paintest`, `tshello`, `test-builder`, `tsdev`, `changelog`, `bronzong`, and `pain`. One hopes that `pain` refers to [the French meaning](https://www.wordreference.com/fren/pain#articleWRD), not the English one.
+I got all `ts.net` subdomains listed in certificate transparency logs on {{<rawhtml>}}<time datetime="2021-10-18">October 18, 2021</time>{{</rawhtml>}}, and ontologized all of them into a single category. In cases like `johnny-surface-laptop`, which include multiple categories, I used a category that combines the two: `OS+User` in this case. I probably have made some mistakes in collating the data. If you want to play with the data, you can grab [the spreadsheet as a CSV](/tsnet/ts.csv).
 
 [^corp]: More solid evidence for this: a Tailscale employee [explictly confirming this to be the case](https://github.com/tailscale/tailscale/pull/2709#issuecomment-905671082)
 
 ## Interesting results
+
+The data includes the 312 Tailscale users who used `tailscale cert`, and a total of 464 hostnames. This means that the average user has 1.49 hostnames exposed using `tailscale cert`. The most is `tailnet-cdb8` with 26, and in second place is `corp` with 9. `corp` appears to be used for services internal to Tailscale Inc. It shouldn't be possible for the Tailnet part of the domain to be `corp` -- it doesn't fit the allowed name structures, but Tailscale gave themselves the one and only vanity name.[^corp] Here are those hostnames in `corp`: `builds`, `bradfitz`, `paintest`, `tshello`, `test-builder`, `tsdev`, `changelog`, `bronzong`, and `pain`. One hopes that `pain` refers to [the French meaning](https://www.wordreference.com/fren/pain#articleWRD), not the English one.
 
 Here's what the most popular categories I assigned are:
 ![Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%.](/tsnet/category-pie.svg)

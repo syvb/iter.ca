@@ -9,7 +9,11 @@ let queue = [Deno.args[0]];
 function handleLinks(links: string[], origin: string) {
     links.forEach(link => {
         if (!link) return;
-        link = new URL(link, origin).href;
+        try {
+            link = new URL(link, origin).href;
+        } catch (e) {
+            return;
+        }
         if (!link.startsWith("http")) return;
         const alreadyQueued = Boolean(linkrefs[link]);
         linkrefs[link] = linkrefs[link] || [];

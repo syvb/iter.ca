@@ -4,6 +4,8 @@ description = "I analyze hundreds of publically available hostnames."
 tags = ["tailscale"]
 title = "What hostnames do people use?"
 toc = true
+image = "/tsnet/category-pie.svg"
+image_alt = "A pie chart of various hostname categories. Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%."
 draft = true
 +++
 
@@ -28,7 +30,7 @@ When visiting websites hosted on nodes in one's internal Tailnet in a browser, t
 
 Tailscale offers a solution to this problem: the [`tailscale cert`](https://tailscale.com/kb/1153/enabling-https/), which provisions a [Let's Encrypt](https://letsencrypt.org/) certificate for your `ts.net` subsubdomain using a DNS challenge. The Tailscale client asks the Tailscale backend to update the DNS for a subdomain to prove ownership of the domain. The private key and certificate signing request are generated locally, so Tailscale servers never know your private key.
 
-All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appended to a public [Certificate Transparency](https://certificate.transparency.dev/) log. Certificates are added to a tamper-evident Merkle tree (like a blockchain, except each certificate gets its own block) by certificate authorities after they are issued.Browser require that certain certificates appear in Certificate Transparency logs, and this includes the ones issued for `ts.net` subdomains. We can search through these Certificate Transparency logs to find all domains that have certificates issued for them. We can use this to find out what hostnames people are running `tailscale cert` on!
+All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appended to a public [Certificate Transparency](https://certificate.transparency.dev/) log. Certificates are added to a tamper-evident Merkle tree (like a blockchain, except each certificate gets its own block) by certificate authorities after they are issued.Browser require that certain certificates appear in Certificate Transparency logs, and this includes the ones issued for `ts.net` subdomains. We can search through these Certificate Transparency logs to find all domains that have certificates issued for them. We can use this to find out what hostnames people are running `tailscale cert` on! Keep in mind that this data is biased towards hostnames that people want to create certificates for, so it might not be representive of all hostnames.
 
 ## The data
 
@@ -41,4 +43,8 @@ I got all `ts.net` subdomains listed in certificate transparency logs on {{<rawh
 The data includes the 312 Tailscale users who used `tailscale cert`, and a total of 464 hostnames. This means that the average user has 1.49 hostnames exposed using `tailscale cert`. The most is `tailnet-cdb8` with 26, and in second place is `corp` with 9. `corp` appears to be used for services internal to Tailscale Inc. It shouldn't be possible for the Tailnet part of the domain to be `corp` -- it doesn't fit the allowed name structures, but Tailscale gave themselves the one and only vanity name.[^corp] Here are those hostnames in `corp`: `builds`, `bradfitz`, `paintest`, `tshello`, `test-builder`, `tsdev`, `changelog`, `bronzong`, and `pain`. One hopes that `pain` refers to [the French meaning](https://www.wordreference.com/fren/pain#articleWRD), not the English one.
 
 Here's what the most popular categories I assigned are:
-![Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%.](/tsnet/category-pie.svg)
+![A pie chart of various hostname categories. Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%.](/tsnet/category-pie.svg)
+
+Here are all hostnames with more than one occurence:
+
+![A bar chart. raspberrypi at 11; pihole at 5; brix, monitoring, nuc, pi, pikvm, ubuntu at 3; code, ha, homeassistant, hub, kali, media-nas, nas, nextcloud, octopi, payments, pi4, pihole-1, pihole-2, pop-os, pve at 2](/tsnet/common-hostnames.svg)

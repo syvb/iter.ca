@@ -11,11 +11,13 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 - smitop2@gmail.com also works if the previous email doesn't work for you
 
 ### Programming
-- sr.ht: [~smitop](https://sr.ht/~smitop/)
 - GitHub: [@Smittyvb](https://github.com/Smittyvb/)
+- sr.ht: [~smitop](https://sr.ht/~smitop/)
 - crates.io: [@Smittyvb](https://crates.io/users/Smittyvb)
 - Observable: [@Smittyvb](https://observablehq.com/@smittyvb)
 - Kaggle: [@smitop](https://www.kaggle.com/smitop)
+- GitHub: [@Smittyvb](https://github.com/Smittyvb/)
+- Google Developer Profile: [smitop](https://g.dev/smitop)
 
 ### Social media
 - Twitch: [@smitop2](https://twitch.tv/smitop2)

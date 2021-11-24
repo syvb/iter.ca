@@ -11,6 +11,8 @@ draft = true
 
 ## Getting the data
 
+*Skip to [interesting results](#interesting-results)*
+
 Browsers have been increasingly pushing for higher HTTPS adoption in recent times. Many browsers now display a "Not secure" indicator for websites that still use HTTP. For the most part, this is a good thing: HTTPS provides better privacy and security for users. However, it presents an issue for internal websites that are always accessed over a secure underlying transport layer anyways. The most common secure transport layer is the loopback address: since the traffic never leaves your computer, there is no risk of someone intercepting your traffic. As such, `localhost` [is special cased to be treated a secure origin in Chromium](https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features#TOC-Definitions-) and other browsers.
 
 Another case of when the underlying transport layer already provides transport security is when the host is accessed over a virtual private network (VPN) that provides sufficent security. [Tailscale](https://tailscale.com/) is one such VPN solution. When the Tailscale daemon is running, it [attempts to set the local DNS server](https://tailscale.com/blog/sisyphean-dns-client-linux/) to `100.100.100.100`, and handles DNS traffic to that address locally, resolving certain special domains to [CGNAT](https://en.wikipedia.org/wiki/Carrier-grade_NAT) addresses that are used for aidentifying hosts.
@@ -36,15 +38,24 @@ All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appende
 
 I got all `ts.net` subdomains listed in certificate transparency logs on {{<rawhtml>}}<time datetime="2021-10-18">October 18, 2021</time>{{</rawhtml>}}, and ontologized all of them into a single category. In cases like `johnny-surface-laptop`, which include multiple categories, I used a category that combines the two: `OS+User` in this case. I probably have made some mistakes in collating the data. If you want to play with the data, you can grab [the spreadsheet as a CSV](/tsnet/ts.csv).
 
-[^corp]: More solid evidence for this: a Tailscale employee [explictly confirming this to be the case](https://github.com/tailscale/tailscale/pull/2709#issuecomment-905671082)
-
 ## Interesting results
 
 The data includes the 312 Tailscale users who used `tailscale cert`, and a total of 464 hostnames. This means that the average user has 1.49 hostnames exposed using `tailscale cert`. The most is `tailnet-cdb8` with 26, and in second place is `corp` with 9. `corp` appears to be used for services internal to Tailscale Inc. It shouldn't be possible for the Tailnet part of the domain to be `corp` -- it doesn't fit the allowed name structures, but Tailscale gave themselves the one and only vanity name.[^corp] Here are those hostnames in `corp`: `builds`, `bradfitz`, `paintest`, `tshello`, `test-builder`, `tsdev`, `changelog`, `bronzong`, and `pain`. One hopes that `pain` refers to [the French meaning](https://www.wordreference.com/fren/pain#articleWRD), not the English one.
 
+[^corp]: More solid evidence for this: a Tailscale employee [explictly confirming this to be the case](https://github.com/tailscale/tailscale/pull/2709#issuecomment-905671082)
+
 Here's what the most popular categories I assigned are:
 ![A pie chart of various hostname categories. Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%.](/tsnet/category-pie.svg)
 
-Here are all hostnames with more than one occurence:
+Most hostnames describe how the host is intended to be used. More interesting are the 37% of names that are entirely unrelated. This includes hostnames like:
+- Random words (in any language)
+- Names of fictional things
+- Made-up words
+- Pokémon
+- Random characters
+
+Only 14.2% of hostnames have duplicates: 86% of hostnames are unique.
 
 ![A bar chart. raspberrypi at 11; pihole at 5; brix, monitoring, nuc, pi, pikvm, ubuntu at 3; code, ha, homeassistant, hub, kali, media-nas, nas, nextcloud, octopi, payments, pi4, pihole-1, pihole-2, pop-os, pve at 2](/tsnet/common-hostnames.svg)
+
+[Raspberry Pi](https://www.raspberrypi.org/) related hostnames are suprisingly popular there.

@@ -28,7 +28,7 @@ $ dig @9.9.9.9 +short pop1.xerus-coho.ts.net
 ```
 {{<rawhtml>}}<br>{{</rawhtml>}}
 
-When visiting websites hosted on nodes in one's internal Tailnet in a browser, they are not treated as a secure origin -- *even though they are*! Tailscale encrypts traffic as it is sent through the network using the public key of the recieving node. But since VPNs are completely transparent to the browser, it just doesn't know that the underlying transport layer is secure.
+When visiting websites hosted on nodes in one's Tailscale network (Tailnet) in a browser, they are not treated as a secure origin -- *even though they are*! Tailscale encrypts traffic as it is sent through the network using the public key of the recieving node. But since VPNs are completely transparent to the browser, it just doesn't know that the underlying transport layer is secure.
 
 Tailscale offers a solution to this problem: the [`tailscale cert`](https://tailscale.com/kb/1153/enabling-https/), which provisions a [Let's Encrypt](https://letsencrypt.org/) certificate for your `ts.net` subsubdomain using a DNS challenge. The Tailscale client asks the Tailscale backend to update the DNS for a subdomain to prove ownership of the domain. The private key and certificate signing request are generated locally, so Tailscale servers never know your private key.
 
@@ -47,15 +47,19 @@ The data includes the 312 Tailscale users who used `tailscale cert`, and a total
 Here's what the most popular categories I assigned are:
 ![A pie chart of various hostname categories. Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%.](/tsnet/category-pie.svg)
 
-Most hostnames describe how the host is intended to be used. More interesting are the 37% of names that are entirely unrelated. This includes hostnames like:
-- Random words (in any language)
-- Names of fictional things
-- Made-up words
-- Pokémon
-- Random characters
+Most hostnames describe how the host is intended to be used. More interesting are the 37% of names that are entirely unrelated to the intended use or hardware. This includes hostnames like:
+- Non-descriptive words: `spike`, `slab`, `cardinal`
+- Made-up words: `lois`, `gimli`, `thopter`
+- Pokémon: `mewtwo`, `mew`, `bronzong`
+- Random characters: `nas484e5d`, `otx82wn9xnzcygap6bsc`, `o25e62iw8ab88gg8`
+
+Using a hostname unrelated to what is happening on the host allows for more flexibility if the use changes in the future. It makes less sense for virtual machines with a particular use determined at creation time.
 
 Only 14.2% of hostnames have duplicates: 86% of hostnames are unique.
 
 ![A bar chart. raspberrypi at 11; pihole at 5; brix, monitoring, nuc, pi, pikvm, ubuntu at 3; code, ha, homeassistant, hub, kali, media-nas, nas, nextcloud, octopi, payments, pi4, pihole-1, pihole-2, pop-os, pve at 2](/tsnet/common-hostnames.svg)
 
 [Raspberry Pi](https://www.raspberrypi.org/) related hostnames are suprisingly popular there.
+
+### Connected graph
+Two Tailnets are connected if they share a hostname.

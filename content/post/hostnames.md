@@ -11,8 +11,6 @@ draft = true
 
 ## Getting the data
 
-*Skip to [interesting results](#interesting-results)*
-
 Browsers have been increasingly pushing for higher HTTPS adoption in recent times. Many browsers now display a "Not secure" indicator for websites that still use HTTP. For the most part, this is a good thing: HTTPS provides better privacy and security for users. However, it presents an issue for internal websites that are always accessed over a secure underlying transport layer anyways. The most common secure transport layer is the loopback address: since the traffic never leaves your computer, there is no risk of someone intercepting your traffic. As such, `localhost` [is special cased to be treated a secure origin in Chromium](https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features#TOC-Definitions-) and other browsers.
 
 Another case of when the underlying transport layer already provides transport security is when the host is accessed over a virtual private network (VPN) that provides sufficent security. [Tailscale](https://tailscale.com/) is one such VPN solution. When the Tailscale daemon is running, it [attempts to set the local DNS server](https://tailscale.com/blog/sisyphean-dns-client-linux/) to `100.100.100.100`, and handles DNS traffic to that address locally, resolving certain special domains to [CGNAT](https://en.wikipedia.org/wiki/Carrier-grade_NAT) addresses that are used for aidentifying hosts.
@@ -32,7 +30,7 @@ When visiting websites hosted on nodes in one's Tailscale network (Tailnet) in a
 
 Tailscale offers a solution to this problem: the [`tailscale cert`](https://tailscale.com/kb/1153/enabling-https/), which provisions a [Let's Encrypt](https://letsencrypt.org/) certificate for your `ts.net` subsubdomain using a DNS challenge. The Tailscale client asks the Tailscale backend to update the DNS for a subdomain to prove ownership of the domain. The private key and certificate signing request are generated locally, so Tailscale servers never know your private key.
 
-All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appended to a public [Certificate Transparency](https://certificate.transparency.dev/) log. Certificates are added to a tamper-evident Merkle tree (like a blockchain, except each certificate gets its own block) by certificate authorities after they are issued.Browser require that certain certificates appear in Certificate Transparency logs, and this includes the ones issued for `ts.net` subdomains. We can search through these Certificate Transparency logs to find all domains that have certificates issued for them. We can use this to find out what hostnames people are running `tailscale cert` on! Keep in mind that this data is biased towards hostnames that people want to create certificates for, so it might not be representive of all hostnames.
+All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appended to a public [Certificate Transparency](https://certificate.transparency.dev/) log. Certificates are added to a tamper-evident Merkle tree (like a blockchain, except each certificate gets its own block) by certificate authorities after they are issued. Browsers require that certain certificates appear in Certificate Transparency logs, and this includes the ones issued for `ts.net` subdomains. We can search through these Certificate Transparency logs to find all domains that have certificates issued for them. We can use this to find out what hostnames people are running `tailscale cert` on! Keep in mind that this data is biased towards hostnames that people want to create certificates for, so it might not be representive of all hostnames.
 
 ## The data
 
@@ -62,7 +60,8 @@ Only 14.2% of hostnames have duplicates: 86% of hostnames are unique.
 [Raspberry Pi](https://www.raspberrypi.org/) related hostnames are suprisingly popular there.
 
 ### Shared-hostname graph
-Two Tailnets are connected if they share a hostname:
+Two Tailnets have a line between them if they share a hostname:
 {{<rawhtml>}}
 <img src="/tsnet/shared-names.svg" alt="A diagram of various Tailnets, connected toeghetr. There are 2 large clusters and many smaller clusters." style="max-width:45rem">
 {{</rawhtml>}}
+The biggest clusters are networks with `raspberrypi`, the second largest is networks with `pihole`.

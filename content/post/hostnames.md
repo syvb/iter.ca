@@ -1,12 +1,11 @@
 +++
-date = "2021-11-15T00:00:00Z"
+date = "2021-12-07T00:00:00Z"
 description = "I analyze hundreds of publically available hostnames."
 tags = ["tailscale"]
 title = "What hostnames do people use?"
 toc = true
 image = "/tsnet/category-pie.svg"
 image_alt = "A pie chart of various hostname categories. Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%."
-draft = true
 +++
 
 ## Getting the data

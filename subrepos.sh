@@ -14,9 +14,12 @@ mv segmerepo/public segme
 rm -rf segmerepo
 
 cd ext
+rm *.{jpg,svg}
 wget https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circuit-playground-sideview.jpg/611px-Circuit-playground-sideview.jpg
 wget https://upload.wikimedia.org/wikipedia/commons/4/4a/Circuit-playground-sideview.jpg
 wget https://upload.wikimedia.org/wikipedia/commons/6/66/Adam7-mul.svg
+wget https://upload.wikimedia.org/wikipedia/commons/b/bc/Tennis-points.svg
+wget https://upload.wikimedia.org/wikipedia/commons/b/b2/HAP-ac2-Ports.jpg
 cd ..
 
 rm -rf fmat

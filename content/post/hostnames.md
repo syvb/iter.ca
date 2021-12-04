@@ -50,7 +50,7 @@ Most hostnames describe how the host is intended to be used. More interesting ar
 - Pokémon: `mewtwo`, `mew`, `bronzong`
 - Random characters: `nas484e5d`, `otx82wn9xnzcygap6bsc`, `o25e62iw8ab88gg8`
 
-Using a hostname unrelated to what is happening on the host allows for more flexibility if the use changes in the future. It makes less sense for virtual machines with a particular use determined at creation time.
+Using a hostname unrelated to what is happening on the host allows for more flexibility if the use changes in the future. It makes less sense for host with a particular use determined at creation time, which can be reimaged or have their VM destroyed if that use isn't needed anymore. Hostnames reflect if the host is treated like cattle or like a pet.
 
 Only 14.2% of hostnames have duplicates: 86% of hostnames are unique.
 

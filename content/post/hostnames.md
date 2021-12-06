@@ -1,5 +1,5 @@
 +++
-date = "2021-12-08T00:00:00Z"
+date = "2021-12-09T00:00:00Z"
 description = "I analyze hundreds of publically available hostnames."
 tags = ["tailscale"]
 title = "What hostnames do people use?"

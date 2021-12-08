@@ -1,8 +1,8 @@
 +++
-date = "2021-12-09T00:00:00Z"
-description = "I analyze hundreds of publically available hostnames."
+date = "2021-12-08T00:00:00Z"
+description = "I analyze hundreds of publically available Tailscale hostnames."
 tags = ["tailscale"]
-title = "What hostnames do people use?"
+title = "Analyzing hostnames of Tailscale users"
 toc = true
 image = "/tsnet/category-pie.svg"
 image_alt = "A pie chart of various hostname categories. Intended usage is 17.9%, Software running is 14.7%, Non-descriptive word is 13.4%, Random characters is 11.4%, Hardware is 8%, Made-up word is 5.4%, Default name is 4.3%, Human-like name is 4.3%, Hosting provider is 3.9%, OS name is 3%, Fictional thing is 2.8%, Hardware+Name is 1.9%, Non-English word is 1.7%, Physical location is 1.7%."
@@ -27,9 +27,9 @@ $ dig @9.9.9.9 +short pop1.xerus-coho.ts.net
 
 When visiting websites hosted on nodes in one's Tailscale network (Tailnet) in a browser, they are not treated as a secure origin -- *even though they are*! Tailscale encrypts traffic as it is sent through the network using the public key of the recieving node. But since VPNs are completely transparent to the browser, it just doesn't know that the underlying transport layer is secure.
 
-Tailscale offers a solution to this problem: the [`tailscale cert`](https://tailscale.com/kb/1153/enabling-https/), which provisions a [Let's Encrypt](https://letsencrypt.org/) certificate for your `ts.net` subsubdomain using a DNS challenge. The Tailscale client asks the Tailscale backend to update the DNS for a subdomain to prove ownership of the domain. The private key and certificate signing request are generated locally, so Tailscale servers never know your private key.
+Tailscale offers a solution to this problem: the [`tailscale cert`](https://tailscale.com/kb/1153/enabling-https/), which provisions a [Let's Encrypt](https://letsencrypt.org/) certificate for your `ts.net` subsubdomain using a DNS challenge. The Tailscale client asks the Tailscale backend to update the DNS for a subdomain to prove ownership of the domain. The private key and certificate signing request are generated locally, so Tailscale servers never know your private key. This provides no real additional security, it only serves to make browsers not display certificate warnings.
 
-All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appended to a public [Certificate Transparency](https://certificate.transparency.dev/) log. Certificates are added to a tamper-evident Merkle tree (like a blockchain, except each certificate gets its own block) by certificate authorities after they are issued. Browsers require that certain certificates appear in Certificate Transparency logs, and this includes the ones issued for `ts.net` subdomains. We can search through these Certificate Transparency logs to find all domains that have certificates issued for them. We can use this to find out what hostnames people are running `tailscale cert` on! Keep in mind that this data is biased towards hostnames that people want to create certificates for, so it might not be representive of all hostnames.
+All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appended to a public [Certificate Transparency](https://certificate.transparency.dev/) log. Certificates are added to a tamper-evident Merkle tree (like a blockchain, except each certificate gets its own block) by certificate authorities after they are issued. Browsers require that certain certificates appear in Certificate Transparency logs, and this includes the ones issued for `ts.net` subdomains. We can search through these Certificate Transparency logs to find all domains that have certificates issued for them. We can use this to find out what hostnames people are running `tailscale cert` on! (and Tailscale informs users of this fact when setting up TLS support for a Tailnet). Keep in mind that this data is biased towards hostnames that people want to create certificates for, so it might not be representive of all hostnames.
 
 ## The data
 

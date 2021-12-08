@@ -33,7 +33,7 @@ All certificates issued by [Let's Encrypt](https://letsencrypt.org/) are appende
 
 ## The data
 
-I got all `ts.net` subdomains listed in certificate transparency logs on {{<rawhtml>}}<time datetime="2021-10-18">October 18, 2021</time>{{</rawhtml>}}, and ontologized all of them into a single category. In cases like `johnny-surface-laptop`, which include multiple categories, I used a category that combines the two: `OS+User` in this case. I probably have made some mistakes in collating the data. If you want to play with the data, you can grab [the spreadsheet as a CSV](/tsnet/ts.csv).
+I got all `ts.net` subdomains listed in certificate transparency logs on {{<rawhtml>}}<time datetime="2021-10-18">October 18, 2021</time>{{</rawhtml>}}, and ontologized all of them into a single category. In cases like `johnny-surface-laptop`, which include multiple categories, I used a category that combines the two: `OS+User` in this case. I probably have made some mistakes in collating the data. If you want to play with the data, you can grab [the spreadsheet as a CSV](/tsnet/ts.csv) (or [from Kaggle](https://www.kaggle.com/smitop/categorization-of-tsnet-subdomains), if for some reason that's a thing you want).
 
 ## Interesting results
 

@@ -9,7 +9,7 @@ draft = true
 Recently I wondered what PNG compression engine was the best.
 I had been using [pngcrush](https://pmt.sourceforge.io/pngcrush/) out of habit, but was there a better compressor out there?
 As it turns out, yes.
-Some initial digging revealed that [PNGOUT](http://advsys.net/ken/util/pngout.htm) was apparently pretty good. 
+Some initial digging revealed that [PNGOUT](http://advsys.net/ken/util/pngout.htm) was apparently pretty good.
 While it was originally created for Windows, there are [ports available for other operating systems](https://www.jonof.id.au/kenutils.html).
 Unfortunately, PNGOUT (and those ports) are under [a non-free license](http://advsys.net/ken/utils.htm#pngoutkziplicense), and ["The source code for these tools is not public. Don't bother asking."](https://www.jonof.id.au/kenutils.html).
 So: is PNGOUT the best compression engine? Let's find out!
@@ -35,12 +35,27 @@ I sourced test images from:
 - Popular images on [Wikimedia Commons](https://commons.wikimedia.org/wiki/Main_Page)
 - Popular images on [Wikimedia Commons](https://commons.wikimedia.org/wiki/Main_Page) with the "Convert to SVG" tag
 - The [pngsuite](http://www.schaik.com/pngsuite/)
+- My [avatar](/avatar/)
+
+In total, this amounted to 336 test images.
 
 ### The results
 I was quite suprised at the results I got once I finished adding support for all engines to my test harness.
-The best engine, by a long shot, was [Zopfli](https://github.com/google/zopfli), a compression engine from Google.
+The best engine, by a long shot, was [Zopfli](https://github.com/google/zopfli), a compression engine by Google.
 It only supports compressing images, so you have to use something else to decompress them.
 [They say](https://github.com/google/zopfli/blob/831773bc28e318b91a3255fa12c9fcde1606058b/README#L1-L2):
+
 > Zopfli Compression Algorithm is a compression library programmed in C to perform
 > very good, but slow, deflate or zlib compression.
-And it is indeed very good.
+
+And it is indeed very good: it blows all of the other compression engines out of the water.
+Just look at [the comparision table of how each engine does on each image](/pngcomp/): Zopfli is almost always the best.
+On average, it can shave 33.4% off of images, while the runner-up, PNGOUT, can only do 17.86%!
+
+TODO: chart of average
+
+Of the engines, ImageMagick, and FFmpeg were never the best engine to compress an image.
+The best pngrewrite, optipng, and oxipng could do is tie for best with Zopfli (and usually they do much worse).
+ImageWorsener, PNGOUT, pngcrush, and AdvanceCOMP could sometimes beat Zopfli, but are usually only a few percent better, and only occasionally: Zopfli is the best 87%.
+
+So Zopfli is *really* good. You should use it to compress your images!

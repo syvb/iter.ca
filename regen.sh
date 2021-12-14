@@ -1,3 +1,4 @@
-cd build-data/get
+#!/bin/bash
+cd build-data/get || exit
 ./all.sh > ../../data/data.json
-cd ../..
+cd ../.. || exit

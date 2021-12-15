@@ -52,7 +52,7 @@ And it is indeed very good: it blows all of the other compression engines out of
 Just look at [the comparision table of how each engine does on each image](/pngcomp/): Zopfli is almost always the best.
 On average, it can shave 33.4% off of images, while the runner-up, PNGOUT, can only do 17.86%!
 
-TODO: chart of average
+![A bar chart of the compression rates of various engines. zopflipng has the best at -33.40%.](/png-engine-rates.svg)
 
 Of the engines, ImageMagick, and FFmpeg were never the best engine to compress an image.
 The best pngrewrite, optipng, and oxipng could do is tie for best with Zopfli (and usually they do much worse).

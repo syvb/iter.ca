@@ -1,6 +1,6 @@
 +++
 title = "Every part of PNG decoding"
-date = "2021-12-16T05:00:00+00:00"
+date = "2021-12-18T05:00:00+00:00"
 description = "How the PNG file format works, in detail."
 tags = ["png", "fileformat"]
 image = "/pngbug.png"

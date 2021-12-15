@@ -1,12 +1,11 @@
 +++
-title = "Everything in a PNG"
-date = "2021-11-20T05:00:00+00:00"
-description = "How the PNG file format works."
+title = "Every part of PNG decoding"
+date = "2021-12-16T05:00:00+00:00"
+description = "How the PNG file format works, in detail."
 tags = ["png", "fileformat"]
 image = "/pngbug.png"
 image_alt = "A glitchly-looking multicolored letter S."
 fmat_id = "png"
-draft = true
 # BINFORMATS_URI_PREFIX="https://smitop.com/fmat" ca r gen_png .
 # then copypaste below from <body> of binformats/public/png/index.html
 +++

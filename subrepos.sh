@@ -36,4 +36,9 @@ cp -r public/* ../static/fmat/
 cd ../static || exit
 rm fmat/*/index.html
 
+(
+    cd pngcomp || exit
+    ./gen.sh
+)
+
 )

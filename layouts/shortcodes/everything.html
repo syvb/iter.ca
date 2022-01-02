@@ -1,7 +1,7 @@
 {{ .Inner }}
 {{ range .Site.Pages }}
     {{ if (not (eq .Params.Title "Everything")) }}
-      <section itemscope itemtype="http://schema.org/Article" id="content">
+      <section itemscope itemtype="http://schema.org/Article">
         <h2 itemprop="name" id="title">{{ .Title }}</h2>
         By <span itemprop="author" itemscope itemtype="http://schema.org/Person"><a href="/"><span itemprop="name">Smitop</span></a></span> · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</span> · {{ math.Ceil (mul .ReadingTime 1.333) }} minute read
         <div>

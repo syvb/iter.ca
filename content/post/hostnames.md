@@ -61,6 +61,6 @@ Only 14.2% of hostnames have duplicates: 86% of hostnames are unique.
 ### Shared-hostname graph
 Two Tailnets have a line between them if they share a hostname:
 {{<rawhtml>}}
-<img src="/tsnet/shared-names.svg" alt="A diagram of various Tailnets, connected toeghetr. There are 2 large clusters and many smaller clusters." style="max-width:45rem">
+<img src="/tsnet/shared-names.svg" alt="A diagram of various Tailnets, connected toeghetr. There are 2 large clusters and many smaller clusters.">
 {{</rawhtml>}}
 The biggest clusters are networks with `raspberrypi`, the second largest is networks with `pihole`.

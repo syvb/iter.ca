@@ -25,7 +25,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 - Hive: [@smitop](https://hiveblocks.com/@smitop)
 - Hacker News: [@smitop](https://news.ycombinator.com/user?id=smitop)
 - Twitter: [@_smitop](https://twitter.com/_smitop)
-- Stack Exchange: [@smitop](https://stackexchange.com/users/17341075/smitop?tab=accounts)
+- Stack Exchange: [@smitop](https://stackexchange.com/users/13986849/smitop?tab=accounts)
 - Youtube: [smitop](https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/)
 - Dwitter: [@smitop](https://www.dwitter.net/u/Smitop)
 - wasteof.money: [@smitop](https://wasteof.money/users/smitop)

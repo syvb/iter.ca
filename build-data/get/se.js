@@ -1,10 +1,13 @@
 const fetch = require("node-fetch");
 
+// "This is not considered a secret, and may be safely embed in client side code or distributed binaries"
+const KEY = "8TxspKDh8c))qWIuZj6cYQ((";
+
 (async () => {
-    const accsData = await (await fetch("https://api.stackexchange.com/2.2/users/13986849/associated?pagesize=100")).json();
+    const accsData = await (await fetch(`https://api.stackexchange.com/2.2/users/13986849/associated?key=${KEY}&pagesize=100`)).json();
     const accs = accsData.items.filter(acc => acc.question_count > 0 || acc.answer_count > 0);
     accs.sort();
-    const siteData = await (await fetch("https://api.stackexchange.com/2.2/sites?pagesize=10000&filter=!6Oe4s8rnMURKD")).json();
+    const siteData = await (await fetch(`https://api.stackexchange.com/2.2/sites?key=${KEY}&pagesize=10000&filter=!6Oe4s8rnMURKD`)).json();
     if (accs.length > 28) {
         console.error("Can't process SE since more than 30 items and request limit is 30 req/s");
         // should implement delay between requests
@@ -20,7 +23,7 @@ const fetch = require("node-fetch");
         siteId = siteId.api_site_parameter;
         // TODO: paginate
         // filter is unsafe! okay because we escape later
-        const posts = await (await fetch(`https://api.stackexchange.com/2.2/users/${acc.user_id}/posts?order=desc&sort=activity&site=${siteId}&filter=4F_y7HR4C9TWBKXX&pagesize=100`)).json();
+        const posts = await (await fetch(`https://api.stackexchange.com/2.2/users/${acc.user_id}/posts?key=${KEY}&order=desc&sort=activity&site=${siteId}&filter=4F_y7HR4C9TWBKXX&pagesize=100`)).json();
         if (posts.backoff) await new Promise((resolve, reject) => setTimeout(resolve, posts.backoff * 1000));
         posts.items.forEach(post => {
             console.log(JSON.stringify({

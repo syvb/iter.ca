@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 (async () => {
-    const accsData = await (await fetch("https://api.stackexchange.com/2.2/users/13986849/associated")).json();
+    const accsData = await (await fetch("https://api.stackexchange.com/2.2/users/13986849/associated?pagesize=100")).json();
     const accs = accsData.items.filter(acc => acc.question_count > 0 || acc.answer_count > 0);
     accs.sort();
     const siteData = await (await fetch("https://api.stackexchange.com/2.2/sites?pagesize=10000&filter=!6Oe4s8rnMURKD")).json();

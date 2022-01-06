@@ -18,9 +18,10 @@ toc = 1
             text-align: left;
             color: black;
             transform: translateX(calc(100% + 1em));
+            font-size: 1rem;
         }
         .codex-run-meta code {
-            font-size: 120%;
+            font-size: 110%;
         }
         .codex-gen {
             color: #f8f8f2;
@@ -43,7 +44,7 @@ toc = 1
             font-family: monospace;
             font-size: 120%;
         }
-        @media (max-width: 970px) {
+        @media (max-width: 1180px) {
             .codex-run-meta {
                 transform: unset;
                 float: unset;

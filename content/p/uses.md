@@ -1,4 +1,8 @@
-# Things I use
++++
+topbar_id = "uses"
+Title = "Things I use"
+Verbose = 1
++++
 
 *Inspired by [uses.tech](https://uses.tech/)*
 

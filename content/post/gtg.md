@@ -19,7 +19,7 @@ digraph "Productivity" {
     "Stop using productivity system" -> "Find new productivity system"
 }
 -->
-![TODO(/prodcycle.svg)
+![TODO](/prodcycle.svg)
 
 - have tried many productivity apps
 - eventually landed on GTG

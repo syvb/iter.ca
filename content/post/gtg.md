@@ -38,3 +38,5 @@ digraph "Productivity" {
 - pruning old tasks
 - keeping it fairly fresh
 - no time scheduiling
+- calendar integration
+  - caldav in 0.6

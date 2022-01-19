@@ -26,6 +26,7 @@ rm -rf segmerepo
     wget https://upload.wikimedia.org/wikipedia/commons/6/66/Adam7-mul.svg
     wget https://upload.wikimedia.org/wikipedia/commons/b/bc/Tennis-points.svg
     wget https://upload.wikimedia.org/wikipedia/commons/b/b2/HAP-ac2-Ports.jpg
+    wget https://upload.wikimedia.org/wikipedia/commons/d/d6/GTG-initial.png
 )
 
 rm -rf fmat

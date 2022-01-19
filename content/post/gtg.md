@@ -29,6 +29,9 @@ digraph "Productivity" {
 - start/due dates
 - nested tasks work well
 
+![](/ext/GTG-initial.png)
+- https://fortintam.com/gtg/screenshots/wiki_main_screenshot.webp
+
 ---
 
 - how I use it

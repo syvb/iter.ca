@@ -28,3 +28,10 @@ digraph "Productivity" {
 - works well for simple usage
 - start/due dates
 - nested tasks work well
+
+---
+
+- how I use it
+- pruning old tasks
+- keeping it fairly fresh
+- no time scheduiling

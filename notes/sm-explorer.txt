@@ -1,0 +1,6 @@
+NoteType=Web app
+Date=2018-11-25
+Uri=https://sm.smitop.com/
+Title=Splinterlands explorer
+
+Explore operations that have happened on Splinterlands.

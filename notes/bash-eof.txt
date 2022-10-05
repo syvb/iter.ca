@@ -1,0 +1,6 @@
+Date=Jul 15 2021
+Title=CTRL-D exits bash right away
+Verbose=1
+NoteType=tip
+
+Fun fact! You can hit CTRL-D to exit bash (and most Unix shells) quickly. CTRL-D is the combination for EOF, and most Unix programs stop when they hit EOF, bash included.

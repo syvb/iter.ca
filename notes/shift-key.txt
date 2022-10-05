@@ -1,0 +1,6 @@
+Date=Oct 24, 2019
+Uri=https://smitop.com/shift-key.html
+Title=Is your shift key pressed?
+NoteType=Web app
+
+Wondering if your shift key is pressed? Not anymore.

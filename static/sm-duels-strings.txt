@@ -1,0 +1,93 @@
+# steemmonsters.club strings
+# Lines starting with "#", and empty lines are ignored
+# Whitespace is ignored in IDs
+
+# Main page
+title|SteemMonsters Duels
+queue-heading|Get matched with someone
+username-prompt|Steem username:
+league-prompt|I prefer dueling at this card level:  
+leauge-0|Novice
+leauge-1|Bronze
+leauge-2|Silver
+leauge-3|Gold
+leauge-4|Diamond
+leauge-5|Champion
+use-recaptcha-cb|Use Google's RECAPTCHA instead
+join-queue|Get in line
+tou-agree-prefix|By queueing, you agree to our 
+tou-text|terms of use
+tou-suffix|.
+in-line|You're in line to get matched up with someone. Please wait...
+leave-queue|Leave queue
+get-mentioned| Get mentioned in a post whenever someone is waiting for a battle
+ga-prompt|Want to win a card, leased for 7 days? You can enter the giveaway once a day.
+ga-sk|Register with Steem Keychain
+ga-sc|Register with Steem Connect
+send-chal-header|Send a challenge
+you-got-matched|Yay, you got matched with @<span class="match-username"></span>! Go to Steem Monster's <a href="https://steemmonsters.com/?p=battle_history" target="sm-battle">"Battle!" page</a>, and click "CHALLENGE".
+battle-options|Then, select the <span style="font-weight: bold;" class="match-league"></span> level limit, and enter <code><span class="match-username"></span></code> in the opponent box. Press the green "SEND" button.
+wait-for-chal|Or, wait for your opponent to send a challenge. If you receive a challenge with a level limit that isn't Bronze, decline it.
+chal-time-limit|You have 5 minutes to enter into a challenge. May the best player win!
+copy-opponent|Copy opponent name to clipboard
+done-chal|Done? <a href="/">Reload</a>, and you'll be able to enter the queue again.
+loading|Loading...
+no-match|No match could be found.
+match-found|A match has been found!
+invalid-username|Invalid username:
+banned|You are banned for %%% minutes.
+username-doesnt-exist|Chosen username does not exist on-chain.
+cached-error|You are using an old, cached version of steemmonsters.club, please reload. If you still get this message, try clearing your cache.
+recaptcha-not-completed|ReCAPTCHA not compeleted
+solvemedia-not-completed|SolveMedia CAPCTHA not completed.
+
+
+# Page shown when Steem Connect worked
+sc-success  |Success!
+sc-entered  |Congrats, you're entered into the draw. Good luck!
+sc-close-tab|You can close this tab now.
+
+# Did you know? facts
+dyk-prefix|Did you know?
+dyk-suffix|
+
+# Pending battle post
+pending-battle|A new challenger is looking to play! Get in line too at https://steemmonsters.club/
+
+# Transaction memos
+win-memo|Congrats, you won your battle against @%%%!
+lose-memo|You lost your battle against @%%%, better luck next time.
+draw-memo|Wow, you managed to draw with @%%%.
+surrender-memo|You surrendered to @%%%. Please do not surrendering in the future, thanks. You have been suspended for 30 minutes.
+decline-memo|You declined a valid challenge from @%%%. Please do not decline challenges in the future, You have been suspended for 30 minutes.
+sub-memo|You'll get 6x the rewards on your first 3 daily battles, guaranteed 10% profit, and access to exclusive steemmonsters.club benefits until DATE
+sub-limit-memo|Sorry, we are limited to " + maxUsers + " subscribers."
+sub-over-return|Your subscription is over, here's the difference between what you made and the subscription cost
+sub-over|Your subscription is over.
+
+# You can customize how many DYK facts you want in your language.
+# As not all facts are translateable well, and some facts might
+# not work in English (maybe, IDK), you can choose what facts
+# to translate. Each fact should have id "dyk-fact-N", where N
+# starts at "1", and the highest value is the number below. You
+# can't skip over numbers though
+
+dyk-num-facts|18
+dyk-fact-1 |The total market cap of all Steem Monsters cards is over $1.5 millon.
+dyk-fact-2 |Booster packs always have at least one rare card.
+dyk-fact-3 |Steem Monsters has had over 15 seasons.
+dyk-fact-4 |Only 1 million Steem Monsters beta booster will ever be sold.
+dyk-fact-5 |$88171 was pledged during the Steem Monsters Kickstarter.
+dyk-fact-6 |There are 130 unique Steem Monsters cards.
+dyk-fact-7 |The @steemmonsters username was registered on the Steem blockchain on December 19, 2017.
+dyk-fact-8 |The first booster pack purchase was @yabapmatt buying 5 alpha packs.
+dyk-fact-9 |The first starter pack was bought by @clayboyn.
+dyk-fact-10|No more alpha booster packs will ever be created.
+dyk-fact-11|The Black Dragon of Mortis is unkillable.
+dyk-fact-12|Helio is the god worshipped by dragons.
+dyk-fact-13|Earth monsters live in Anumün.
+dyk-fact-14|Water monsters live in the chaotic ΛZMΛRÉ.
+dyk-fact-15|Death monsters live on the Mortis continent.
+dyk-fact-16|Dragons live in Draykh-Nahka.
+dyk-fact-17|Goddess Khymia rules over Life monsters.
+dyk-fact-18|The Spirit of the Forest watches over all Earth monsters.

@@ -1,0 +1,8 @@
+Date=Aug 7, 2022
+Uri=https://itch.io/e/11809602/smitop-rated-a-snakes-tale
+Title=Review: A Snake's Tale
+NoteType=Review
+Verbose=1
+Stars=5
+
+A fun puzzle game with snakes!

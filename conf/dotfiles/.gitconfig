@@ -1,0 +1,21 @@
+[user]
+	name = Smitty
+	email = me@smitop.com
+[pull]
+	ff = only
+[alias]
+	pushall = !git remote | xargs -L1 git push --all
+[sendemail]
+	smtpserver = box.smitop.com
+	smtpuser = me@box.smitop.com
+	smtpencryption = tls
+	smtpserverport = 587
+	confirm = always
+[url "https://invent.kde.org/"]
+	insteadOf = kde:
+[url "ssh://git@invent.kde.org/"]
+	pushInsteadOf = kde:
+[http]
+	cookiefile = /home/smit/.gitcookies
+[init]
+	defaultBranch = master

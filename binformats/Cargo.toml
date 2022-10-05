@@ -1,0 +1,10 @@
+[package]
+name = "binformats"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+flate2 = "1.0.21"
+
+[[bin]]
+name = "gen_png"

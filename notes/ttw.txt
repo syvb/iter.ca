@@ -1,0 +1,5 @@
+Title=TagTime Web
+Uri=https://ttw.smitop.com/
+NoteType=Web app
+Date=Aug 20 2020
+Time tracking that randomly samples you.

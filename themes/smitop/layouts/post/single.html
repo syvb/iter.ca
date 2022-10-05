@@ -1,0 +1,71 @@
+{{ define "main" }}
+  {{ partial "topbar" .Params.topbar_id }}
+  <section itemscope itemtype="http://schema.org/Article" class="h-entry" id="main-section">
+    <h1 itemprop="name" id="title" class="p-name">{{ .Title }}</h1>
+    <div>
+    By
+    <span class="p-author h-card">
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <a href="/" class="p-nickname u-url" rel="me">
+          <img class="u-photo byline-avatar" width="24" height="24" src="https://smitop.com/avatar/vector.svg" alt="">
+          <span itemprop="name">Smitop</span
+        ></a>
+        {{ if (ne .Params.ai nil) }}
+          (with <a href="#ai-info">AI</a>)
+        {{ end }}
+      </span>
+    </span>
+    · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}" class="dt-published">{{ .Date.Format "Jan 2, 2006" }}</span>
+    </div>
+    <div>
+      <article itemprop="articleBody" id="content" class="e-content">
+        {{ if .Params.toc }}
+            {{ .TableOfContents }}
+        {{ end }}
+        {{ if (eq .Params.fmat_id nil) }}
+          {{ .Content }}
+        {{ else }}
+          {{ .RawContent | safeHTML }}
+        {{ end }}
+        <hr>
+      </article>
+    </div>
+    <footer>
+      <div id="meta">
+        {{ with ((.Site.RegularPages.Related .) | first 5) }}
+          <div class="related-posts">
+            <h2>Related</h2>
+            <ul class="rel-list">
+              {{ range . }}
+                <li><a href="{{.Permalink}}">{{.Title}}</a></li>
+              {{ end }}
+            </ul>
+          </div>
+        {{ end }}
+        <div class="meta-other">
+          <div>
+            <div>📧 <a href="mailto:&#109;&#101;&#64;&#115;&#109;&#105;&#116;&#111;&#112;&#46;&#99;&#111;&#109;">{{ partial "email.html" }}</a></div>
+            <div><a href="https://twitter.com/_smitop">@_smitop</a></div>
+          </div>
+          <div id="license-info">
+            Content license: <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>
+          </div>
+          <div>
+            {{ with .Params.tags }}
+              <div id="tags">
+                {{ range . }}
+                  <a href="{{ "tags/" | absURL }}{{ . | urlize }}/" class="p-category">{{ . }}</a>
+                {{ end }}
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+      {{ if (eq .Params.ai "partial") }}
+        <div id="ai-info">
+          Part of this text was drafted with <a href="https://openai.com/blog/openai-codex/">OpenAI Codex</a>. Upon generating draft language, I reviewed, edited, and revised the language to my liking and I take ultimate responsibility for the content of this post.
+        </div>
+      {{ end }}
+    </footer>
+  </section>
+{{ end }}

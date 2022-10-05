@@ -1,0 +1,6 @@
+NoteType=Game
+Date=Sept 8, 2019
+Uri=https://smitop.com/no-friction.html
+Title=0friction
+
+A game with slippery controls.

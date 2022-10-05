@@ -1,0 +1,41 @@
+baseURL = "https://smitop.com/"
+languageCode = "en-CA"
+title = "Smitop"
+author = "Smitop"
+enableGitInfo = true
+
+[params]
+author = "Smitop"
+
+[frontmatter]
+# https://www.andrewjstevens.com/posts/2021/03/last-modified-date-with-hugo/
+lastmod = ["lastmod", ":git", "date", "publishDate"]
+
+[taxonomies]
+  tag = "tags"
+
+
+[markup.goldmark.renderer]
+unsafe = true # allow raw HTML in posts
+
+[markup]
+[markup.tableOfContents]
+endLevel = 10
+ordered = false
+startLevel = 2
+
+[related]
+includeNewer = true
+toLower = true
+[[related.indices]]
+name = 'description'
+weight = 80
+[[related.indices]]
+name = 'title'
+weight = 60
+[[related.indices]]
+name = 'tags'
+weight = 40
+[[related.indices]]
+name = 'date'
+weight = 5

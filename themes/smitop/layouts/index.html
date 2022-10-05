@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="dns-prefetch" href="https://img.itch.zone/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{{.Site.Params.author}}</title>
+    <meta name="description" content="I'm interested in programming and technology. This is my website.">
+    <meta name="rating" content="General">
+    {{ partial "style.html" }}
+    <meta name="google-site-verification" content="LGtQWHbgC8bJSz0orWP71nxayoCJV2F-XH8y0HUFAJ4" />
+    <link rel="me" href="https://news.ycombinator.com/user?id=smitop" type="text/html">
+    <link rel="me" href="mailto:me@smitop.com">
+    <link rel="me" href="https://opengameart.org/users/smitop" type="text/html">
+    <link rel="me" href="https://archive.org/details/@smitop" type="text/html">
+    <link rel="me" href="https://scratch.mit.edu/users/smitop/" type="text/html">
+    <link rel="me" href="https://github.com/smittyvb" type="text/html">
+    <link rel="me" href="https://twitter.com/_smitop" type="text/html">
+    <link rel="me" href="https://sr.ht/~smitop/" type="text/html">
+    <link rel="me" href="https://t.me/smitop" type="text/html">
+    <link rel="me" href="https://wasteof.money/users/smitop" type="text/html">
+    <link rel="me" href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/" type="text/html">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}">
+    <link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
+    <link rel="canonical" href="{{ .Permalink }}" />
+</head>
+
+<body>
+    {{ partial "topbar.html" "home" }}
+    <div id="metop-container">
+        <div id="metop">
+            <div id="metop-left">
+                <div class="h-card">
+                    <a href="avatar/"><img src="/avatar/a256.png" alt="Smitop" id="avatar" class="u-photo" width="160" height="160"></a>
+                    <div id="hi-message">
+                        <a href="/" class="smitop p-nickname u-url" rel="me">{{.Site.Params.author}}</a>
+                    </div>
+                </div>
+                <!-- <div id="about-summary">
+                    Person on the Internet. <a href="/p/about/">(more)</a>
+                </div> -->
+            </div>
+            <div id="metop-right">
+                <div id="me-links">
+                    {{ readFile "themes/smitop/shortbio.md" | markdownify }}
+                    <ul>
+                        <li><a href="mailto:me@smitop.com">{{ partial "email.html" }}</a></li>
+                        <li><a href="https://github.com/smittyvb">GitHub</a></li>
+                        <li><a href="https://twitter.com/_smitop">Twitter</a></li>
+                        <li><a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">YouTube</a></li>
+                        <li><a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">Stack Exchange</a></li>
+                        <li><a href="/p/accounts/">more</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="homepage-content">
+        <div id="blog-posts">
+            <h2>Things from me <a href="/stream/me/">(more)</a></h2>
+            {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
+        </div>
+    </div>
+    <a href="https://github.com/smittyvb/smitop.com" class="source-link">
+      (view the source code for this site)
+    </a>
+    <script async defer src="https://cdn.simpleanalytics.io/hello.js"></script>
+    <noscript><img src="https://api.simpleanalytics.io/hello.gif" alt=""></noscript>
+</body>
+
+</html>

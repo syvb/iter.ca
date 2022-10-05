@@ -1,0 +1,464 @@
+Hostname,User,Type
+cybercraft,ainu-musical,Made-up word
+raspberrypi,alpaca-diatonic,Default name
+gimli,anteater-justice,Made-up word
+victors-pop-os,armadillo-major,OS+User
+marvin,axolotl-goblin,Human-like name
+atsrv1,axolotl-turtle,Random characters
+nyx,badger-cloud,Made-up word
+steves-macbook-pro,badger-tuna,Default name
+taylors-macbook-pro-2,badger-tuna,Default name
+oplx-mx,bear-cloud,Intended usage
+aleepc,bear-crocodile,Made-up word
+bfg9000,bear-jazz,Fictional thing
+pi-hole,bear-jazz,Software running
+lxc1hu,bear-minor,Software running
+caddy,beluga-salmon,Software running
+tpad,beluga-tet,Hardware
+nutsups,bishop-cloud,Made-up word
+piaware,bishop-cloud,Software running
+checkmk,bishop-cloud,Software running
+osmc,bobcat-ordinal,Software running
+tirith,boston-kelvin,Fictional thing
+darwin,boston-turtle,Software running
+kulryz01,camel-boa,Made-up word
+map,capybara-harmonic,Intended usage
+baf,capybara-harmonic,Made-up word
+macmini,caracara-gray,Hardware
+storage,cat-cloud,Intended usage
+alvaro-desktop,cat-gopher,Hardware+Name
+newscred,cat-in,Made-up word
+newscred-mbp,cat-in,Hardware+Name
+omega,cat-in,Non-descriptive word
+diary,cat-liberty,Intended usage
+goblogtest,cat-liberty,Intended usage
+elite,cat-liberty,Non-descriptive word
+raspi,cat-liberty,Hardware
+wyverary,cat-perch,Fictional thing
+september,cat-perch,Non-descriptive word
+rocinante,cat-perch,Fictional thing
+dock,cat-snapper,Intended usage
+raspkob,centaur-chuckwalla,Made-up word
+hetzner-0,centaur-gopher,Hosting provider
+edge,chihuahua-chromatic,Intended usage
+dentons-air,chihuahua-tyrannosaurus,Default name
+desktop-v9i5d34-1,chihuahua-tyrannosaurus,Default name
+raspberrypi,chimp-interval,Default name
+server,chimp-liberty,Intended usage
+raspberrypi-4,coin-cod,Default name
+vultr,coin-cod,Hosting provider
+vultr-1,coin-cod,Hosting provider
+rokuga,coin-cod,Japanese word
+little-totoro,coin-lionfish,Fictional thing
+monadnock,coin-micro,Non-descriptive word
+dev,coin-tone,Intended usage
+phryne,coin-tone,Non-descriptive word
+cstest,corgi-gopher,Intended usage
+devbox,corgi-symmetric,Intended usage
+builds,corp,Intended usage
+pain,corp,Non-descriptive word
+paintest,corp,Non-descriptive word
+tshello,corp,Software running
+test-builder,corp,Intended usage
+tsdev,corp,Intended usage
+changelog,corp,Intended usage
+bronzong,corp,Pokemon
+bradfitz,corp,Human-like name
+dilla,cow-carp,Made-up word
+nucopenwrt,cow-in,Software running
+delugebox,cow-micro,Software running
+hetzner01,cow-micro,Hosting provider
+plexguide3,cow-micro,Software running
+contabo,cow-owl,Hosting provider
+orb,deer-bebop,Non-descriptive word
+pariah,dhole-tet,Non-descriptive word
+coruscant,dingo-acoustic,Non-descriptive word
+chris-mac,dingo-lizard,Hardware+Name
+whatbox,dingo-lizard,Hosting provider
+oynx,dingo-mamba,Non-descriptive word
+lachupa-cabra,dingo-minor,Random words
+megalith,dingo-pangolin,Hosting provider
+ufintek-win-pc,dog-eel,Hardware+Name
+unfitek-ubuntu20-04-local-worker6,dog-eel,Software+OS
+server2,dog-lime,Intended usage
+baraddur,dog-shark,Fictional thing
+pihole,dog-tet,Software running
+hub,dog-toad,Intended usage
+pi,dog-toad,Hardware
+allison,dolphin-monitor,Human-like name
+ajax,dolphin-mountain,Intended usage
+pelion,dolphin-mountain,Non-descriptive word
+raspbx,donkey-monitor,Hardware
+overspin,donkey-monitor,Non-descriptive word
+yetagain-aws,dropbear-hexatonic,Hosting provider
+sepc967,dropbear-kelvin,Random characters
+sepc236,dropbear-kelvin,Random characters
+home-srv,euplectes-bebop,Intended usage
+hass,fable-scala,Non-descriptive word
+kostka,fable-scala,Human-like name
+tobias-pc2,fairy-gecko,Hardware+Name
+harrowhawk,fairy-istrian,Non-descriptive word
+octopi,fairy-istrian,Software running
+re,fairy-mountain,Random characters
+gb,fairy-mountain,Random characters
+eagle,finch-in,Non-descriptive word
+sub,finch-micro,Non-descriptive word
+kitty,fish-gray,Non-descriptive word
+ansible-semaphore,fish-yo,Software running
+bueroserver,fish-yo,Non-descriptive word
+payments,flyingfox-moth,Intended usage
+monitoring,flyingfox-moth,Intended usage
+brix,flyingfox-velociraptor,Non-descriptive word
+pi4,folk-delta,Hardware
+jarvis,fox-delta,Human-like name
+epcot,fox-delta,Non-descriptive word
+unyielding-apple,fox-locrian,Random words
+fare-pastry,fox-locrian,Random words
+btc-sg,fox-map,Intended usage
+nasigoreng,fox-salmon,Non-descriptive word
+jupiter,fox-yo,Non-descriptive word
+deimos,fox-yo,Fictional thing
+serverslime,foxhound-velociraptor,Non-descriptive word
+pix,giraffe-augmented,Intended usage
+aws-unifi,giraffe-blues,Hosting provider
+tavins-mac-mini,giraffe-blues,Default name
+nuc,giraffe-gamma,Made-up word
+fugo,giraffe-pineapplefish,Software running
+pihole,goat-major,Software running
+code,goat-snake,Intended usage
+wiki,goat-snake,Intended usage
+thopter,goat-snake,Made-up word
+monitoring,hawk-bramble,Intended usage
+payments,hawk-bramble,Hardware
+raspberrypi,hawk-jazz,Default name
+beast,hawk-lime,Non-descriptive word
+dd,hawk-lime,Made-up word
+kali,hawk-lime,OS name
+pop-os,hawk-lime,Default name
+matomo,hawk-lizard,Software running
+pi4one,hawk-snapper,Hardware
+huawei-laptop,hawk-snapper,Hardware
+pi4two,hawk-snapper,Hardware
+nuc-1,hedgehog-shark,Hardware
+nws-server,heron-gamma,Intended usage
+ha,hippo-blues,Random characters
+brix,horse-cobra,Made-up word
+gamezmaster,horse-cobra,Intended usage
+remote-ws,horse-dragon,Intended usage
+universe,horse-lizard,Non-descriptive word
+cerebro,horse-lizard,Fictional thing
+mother,hound-celsius,Non-descriptive word
+scrypted,husky-in,Software running
+nuc,hyrax-cobra,Hardware
+dockert30,hyrax-cobra,Software running
+vpnt30,hyrax-cobra,Intended usage
+lxd01,jackalope-mamba,Software running
+lxd02,jackalope-mamba,Software running
+macpro3,jaguar-alpha,Hardware
+raspberrypi,jaguar-eel,Default name
+nas484e5d,jaguar-in,Random characters
+pve,jaguar-justice,Random characters
+kharon,jaguar-lake,Fictional thing
+omen,jaguar-lake,Non-descriptive word
+bck-den,jay-tet,Random words
+3,kangaroo-jazz,Random characters
+compass-production1,koala-cod,Intended usage
+compass-staging1,koala-cod,Intended usage
+otx82wn9xnzcygap6bsc,lion-grue,Random characters
+pi,lion-shark,Hardware
+servnerr,lion-snapper,Intended usage
+sg,lion-sole,Random characters
+nextcloud,long-blues,Software running
+212,long-jazz,Random characters
+dev1,long-lake,Intended usage
+dev3,long-lake,Intended usage
+tintagel,long-lake,Made-up word
+desktop-raqmtst,long-owl,Intended usage
+duba,long-shark,Made-up word
+netmon,long-turtle,Software running
+nibbler,long-turtle,Non-descriptive word
+oracle-cloud,lynx-cobra,Hosting provider
+kali,lynx-coho,OS name
+siva,lynx-coho,Made-up word
+projector-test1,lynx-mamba,Intended usage
+hall,manx-owl,Physical location
+pifr24,marmoset-pangolin,Hardware
+hafnium,marmoset-pythagorean,Non-descriptive word
+cornerpi,monkey-blues,Physical location
+gaffiere,monkey-frog,Made-up word
+matildaii-vm,monkey-heptatonic,Made-up word
+octopi,monkey-justice,Software running
+raspberrypi,monkey-mountain,Default name
+feuerberg,monkey-puffin,Non-English word
+gernkogel,monkey-puffin,Non-English word
+neugarten,monkey-puffin,Non-English word
+softpro,monkey-toad,Random words
+droplet,moose-shark,Hosting provider
+balder,moose-tone,Non-descriptive word
+pop-os,moose-tuna,OS name
+pawalt-laptop,motmot-velociraptor,Hardware+Non-descriptive word
+raspberrypi,mouse-celsius,Default name
+adams-ubuntu-desktop,mouse-diatonic,Hardware+OS+Name
+frege,mouse-turtle,Made-up word
+aristotle,mouse-turtle,Human-like name
+nuc,narwhal-major,Software running
+notyourserver,ocelot-pentatonic,Snark
+poppy,ocelot-snapper,Non-descriptive word
+guac,ocelot-snapper,Non-English word
+raspberrypi,ocelot-snapper,Default name
+hotel,orca-in,Physical location
+minipi,orca-tone,Made-up word
+kushfest-net,ostrich-yo,Intended usage
+l,otter-cloud,Random characters
+gerty3001,owl-map,Human-like name
+rikhwanto-server,owl-toad,Human-like name
+spike,panda-arctic,Non-descriptive word
+dash,panda-arctic,Non-descriptive word
+asus,panda-in,Hardware
+tss,panda-lizard,Random words
+anthrax,panda-perch,Non-descriptive word
+mirai,panda-perch,Non-descriptive word
+zznas01,penguin-coho,Intended usage
+proxmox,penguin-gecko,Software running
+pik2,penguin-major,Software running
+opnsense,pig-chromatic,Software running
+mini-pc,pig-tuna,Hardware
+plexpi,platypus-in,Software running
+gw-cloud,platypus-snake,Software running
+monit,pug-bull,Software running
+rpihome,pug-bull,Physical location
+raspberrypi,pug-crocodile,Default name
+dmm,raptor-bebop,Random characters
+pi-poe-office-185,raptor-iguana,Hardare+Location
+piholelxc1,raptor-ratio,Software running
+arm-oracle-vm,rat-lake,Hosting provider
+hub,ratfish-grue,Intended usage
+wsl2-server,reindeer-tuna,Software running
+m1-air,reindeer-tuna,Hardware
+cloud-sg-1,rhino-chickadee,Hosting provider
+qiu-13,rhino-chickadee,Human-like name
+pi-sg,rhino-chickadee,Hardware
+nas-ds214,risk-cloud,Intended usage
+nas-ds218,risk-cloud,Intended usage
+homematic-raspi,risk-cloud,Software+OS
+ttrss,risk-cloud,Random characters
+iobroker,risk-cloud,Intended usage
+zoneminder,risk-cloud,Intended usage
+rpi0,risk-delta,Hardware
+amp,risk-gecko,Non-descriptive word
+hq-ws01,risk-liberty,Physical location
+restoretest,saga-boa,Intended usage
+pihole,saga-jazz,Software running
+main-rig,scorpion-mountain,Intended usage
+deditoolbox,serval-agama,Software running
+homeassistant,serval-gecko,Software running
+itsuki,shark-harmonic,Intended usage
+ohome,shark-python,Physical location
+helios64,shark-tone,Fictional thing
+midas,shark-yo,Fictional thing
+linode,sheep-cobra,Hosting provider
+monitoring,sheep-cobra,Intended usage
+slab,sheep-stork,Non-descriptive word
+tingr,siren-coho,Made-up word
+tminideb,siren-coho,Intended usage
+tdev,siren-coho,Intended usage
+tcdev,siren-coho,Intended usage
+tboost,siren-coho,Intended usage
+raisin,skunk-cloud,Non-descriptive word
+ecs-2d5e,skunk-iwato,Hosting provider
+hound,snake-cloud,Non-descriptive word
+pve,snake-cloud,Non-descriptive word
+honebami,snake-harmonic,Fictional thing
+hallwaypi,snake-micro,Hardare+Location
+rpi-pnt,snake-pentatonic,Hardware
+influxdb,sparrow-butterfly,Software running
+jenkins,sparrow-butterfly,Software running
+homebridge,spitz-yo,Software running
+horizon,squirrel-map,Non-descriptive word
+kmaster,starling-interval,Intended usage
+hs,starling-salmon,Intended usage
+parkers-macbook-pro-2,swallow-ratio,Default name
+mom,tailnet-00e4,Human-like name
+dst1,tailnet-00e4,Random characters
+er4,tailnet-00e4,Random characters
+derp,tailnet-00e4,Intended usage
+az-vpn,tailnet-054f,Hosting provider
+media-nas,tailnet-080e,Intended usage
+flypi,tailnet-08a0,Software running
+9884be5eb80a,tailnet-08d3,Random characters
+d1-ubuntu,tailnet-0db1,OS name
+jared-dev,tailnet-109f,Human-like name
+igor-romanov,tailnet-10aa,Human-like name
+soradns,tailnet-193d,Intended usage
+pikvm,tailnet-20c4,Software running
+homeassistant,tailnet-2a8f,Software running
+cardinal,tailnet-2b09,Non-descriptive word
+kingfisher,tailnet-2b09,Non-descriptive word
+canary,tailnet-2b09,Intended usage
+ctr-myapp-connected,tailnet-2ce5,Intended usage
+mbp-2014,tailnet-2e57,Hardware
+vevenas,tailnet-2ffe,Human-like name
+pi2,tailnet-2ffe,Hardware
+kcaj-satellite,tailnet-3006,Intended usage
+pi4,tailnet-3899,Hardware
+ubuntu,tailnet-3f25,OS name
+xgxtec-pc,tailnet-3f6a,Hardware+Name
+krapfen,tailnet-4c60,Non-English word
+armachine,tailnet-4c60,Hardware
+raspberrypi,tailnet-4c60,Default name
+bt1,tailnet-5151,Random characters
+mini,tailnet-51f4,Software running
+pihole-2,tailnet-5393,Software running
+pihole-1,tailnet-5393,Software running
+johnny-surface-laptop,tailnet-5393,OS+User
+tailscale-pihole,tailnet-5393,Software running
+pihole-azure-1,tailnet-5393,Software running
+permanent-teleport-1,tailnet-56da,Intended usage
+khashbookpro-1,tailnet-56da,Hardware
+tuturu,tailnet-56ff,Japanese word
+pi,tailnet-59ab,Hardware
+pc-win,tailnet-5aef,Hardward+OS
+pc-linux,tailnet-5aef,Hardward+OS
+lwpvg9p84dx2,tailnet-7466,Random characters
+lwpvg5cg0421rc6,tailnet-7466,Random characters
+dwpvg20200313,tailnet-7466,Random characters
+blackrock,tailnet-7691,Non-descriptive word
+pihole-2,tailnet-777e,Software running
+pihole-1,tailnet-777e,Software running
+edgerouter-x-5-port,tailnet-777e,Hardware
+johnnyserver,tailnet-777e,Hardware+Name
+kv,tailnet-78d6,Intended usage
+mba-m1,tailnet-8556,Hardward+Usage
+hoangs-macbook-air,tailnet-8556,Default name
+raspberrypi4b8g,tailnet-8725,Hardware
+synology,tailnet-8725,Software running
+ruf,tailnet-8725,Non-descriptive word
+es-alc1-ws7007,tailnet-8899,Hardware
+carbonite,tailnet-88c5,Software running
+prism,tailnet-88c5,Non-descriptive word
+pihole,tailnet-948b,Software running
+foresense,tailnet-9553,Made-up word
+moonbeam,tailnet-9553,Made-up word
+pihole,tailnet-9553,Software running
+jump-nas,tailnet-96d1,OS name
+fedora,tailnet-981a,OS name
+nas,tailnet-a300,Intended usage
+dops-playground-jenkins,tailnet-a86c,Software running
+pikvm,tailnet-aa28,Software running
+quasar,tailnet-aa28,Non-descriptive word
+pulsar,tailnet-aa28,Non-descriptive word
+pepper,tailnet-ab22,Non-descriptive word
+ha,tailnet-ac67,Random characters
+moss,tailnet-ae56,Non-descriptive word
+mxlink,tailnet-b4f1,Software running
+mewtwo,tailnet-b593,Pokemon
+mew,tailnet-b593,Pokemon
+nano,tailnet-b757,Size
+raspberrypi,tailnet-baa2,Default name
+desktop-d5tasmt,tailnet-baa2,Random characters
+aorus,tailnet-bb86,Non-descriptive word
+venafi-tpp-dev,tailnet-bb86,Software running
+rust,tailnet-c937,Software running
+brix,tailnet-ca0a,Software running
+pikvm,tailnet-cd29,Software running
+4r0zavpy1bot3kg4,tailnet-cdb8,Random characters
+t1nlru61xn9jillo,tailnet-cdb8,Random characters
+6tob4v5w5fsmou02,tailnet-cdb8,Random characters
+o25e62iw8ab88gg8,tailnet-cdb8,Random characters
+ebphgvrnes959xe9,tailnet-cdb8,Random characters
+q9impy24q2kstkqb,tailnet-cdb8,Random characters
+g0f1csmf5kc87agb,tailnet-cdb8,Random characters
+xhq9njpeuhaug0hw,tailnet-cdb8,Random characters
+h7r7i5xxmi404531,tailnet-cdb8,Random characters
+ckxsshhtpsburd92,tailnet-cdb8,Random characters
+b6hckxevm08pxuls,tailnet-cdb8,Random characters
+3z4n7g3d854r4zv7,tailnet-cdb8,Random characters
+h5oaselnyumu5wdb,tailnet-cdb8,Random characters
+fht83ce7d06uejcu,tailnet-cdb8,Random characters
+lautfrffj6j43mon,tailnet-cdb8,Random characters
+0llcmnumsd2na6jy,tailnet-cdb8,Random characters
+w981u4jiwbmjuir3,tailnet-cdb8,Random characters
+xj7l9qqd0edkrrdf,tailnet-cdb8,Random characters
+r4nrfhkt0ak4l0qp,tailnet-cdb8,Random characters
+3w2xi4hw4bw1nwr7,tailnet-cdb8,Random characters
+l68oqe84862ku2db,tailnet-cdb8,Random characters
+tkub04m2rwgarb3s,tailnet-cdb8,Random characters
+rk8c4e23m722a7h1,tailnet-cdb8,Random characters
+e2l0jow0n534rpx1,tailnet-cdb8,Random characters
+y091maygxv67tavt,tailnet-cdb8,Random characters
+ip-172-31-20-183,tailnet-cdb8,IP
+la-tailscale,tailnet-d1e9,Intended usage
+egginer,tailnet-d2ee,Non-English word
+ultimaprova,tailnet-d393,Non-English word
+dioporco,tailnet-d393,Non-English word
+mac,tailnet-d393,Hardware
+nas,tailnet-d9f0,Hardware
+pb1-arrr-rip,tailnet-dbdc,Intended usage
+csbl-gpu,tailnet-dda9,Hardware
+pinus,tailnet-e64b,Non-descriptive word
+everett,tailnet-e8f0,Non-descriptive word
+faultables-devbox,tailnet-ead2,Intended usage
+faultables-raspi,tailnet-ead2,Intended usage
+lab-home,tailnet-efa4,Physical location
+ws,tailnet-efab,Intended usage
+ubuntu-s-1vcpu-2gb-fra1-01,tailnet-efb6,Hardware
+newton,tailnet-f8bc,Human-like name
+leechbox-1,tailnet-f972,Intended usage
+notebook,tailnet-f972,Hardware
+milkshake,tailnet-fbec,Non-descriptive word
+nixos,takaya-boa,OS name
+iori,takaya-salmon,Human-like name
+work-macbook,tapir-in,Intended usage
+cizberry,tapir-in,Human-like name
+mikberry,tapir-in,Human-like name
+node1,tapir-mamba,Intended usage
+pitrh,tiger-delta,Random characters
+docker,tiger-micro,Software running
+local,tiger-yo,Intended usage
+oracle1,turkey-coho,Hosting provider
+ubuntu,turkey-coho,OS name
+charles-lenovo-yoga,turkey-iwato,Hardware+Name
+elastic,turkey-lake,Software running
+dmitrys-pihole,turkey-lake,OS+User
+q-store,turtle-goanna,Intended usage
+personal-wiki,tuxedo-coho,Intended usage
+raspberrypi3,unicorn-climb,Hardware
+wuffles,unicorn-eagle,Hardware
+wolf,unicorn-gray,Non-descriptive word
+home,vaquita-interval,Physical location
+steamos,velociraptor-augmented,OS name
+caliburn,velociraptor-augmented,Non-descriptive word
+fruitlandserver,velociraptor-cobra,Intended usage
+hydra,velociraptor-mamba,Non-descriptive word
+fold,velociraptor-mamba,Non-descriptive word
+primary,velociraptor-ostrich,Intended usage
+wsl,velociraptor-ostrich,Software running
+rabbit,vulture-lime,Non-descriptive word
+2b,walrus-acoustic,Random characters
+pathos,walrus-tet,Non-descriptive word
+raspberrypi,warthog-alligator,Default name
+octoprint,werewolf-augmented,Software running
+drmcg-linux-1,werewolf-in,OS name
+ubuntu,werewolf-map,OS name
+nito,werewolf-moth,Fictional thing
+bgarf,werewolf-mountain,Human-like name
+bgarf-ubuntu,werewolf-mountain,Hardware+Name
+dockerbox,whale-interval,Software running
+nextcloud,whale-triceratops,Software running
+hetz2-arch,wildebeest-minor,Hosting provider
+zrh1,wolf-arctic,Random characters
+lois,wolf-gray,Made-up word
+mr-radar,wolf-interval,Intended usage
+media-nas,wolf-lizard,Intended usage
+v01-casper,wolf-shark,Software running
+homebridge,wolf-turtle,Intended usage
+apiserver,wolf-yo,Intended usage
+raspberrypi-aintree,wombat-bramble,Human-like name
+zion,wombat-cloud,Human-like name
+pop1,xerus-coho,OS name
+npi,yak-celsius,Random characters
+orbit,yak-cobra,Non-descriptive word
+debian,zebra-cloud,OS name
+zun-remote,zebra-scala,Intended usage
+zun-base,zebra-scala,Intended usage
+code,zebra-trout,Intended usage

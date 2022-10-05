@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>sm4.ca</title>
+        <style>
+            body {
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                background-color: black;
+                overflow: hidden;
+            }
+            .link {
+                position: absolute;
+                width: 100vw;
+                height: 100vh;
+                z-index: 6;
+            }
+            .dot {
+                position: absolute;
+                background-color: gray;
+                border-radius: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="https://smitop.com/" class="link"></a>
+        <div id="dots"></div>
+        <script>
+            const dots = document.getElementById("dots");
+            const eles = [];
+            // cartesian <=> polar
+            const c2p = ([x, y]) => [Math.sqrt(x*x + y*y), Math.atan2(x, y)];
+            const p2c = ([r, t]) => [r * Math.sin(t), r * Math.cos(t)];
+            const COUNT = 500;
+            const MAX_SIZE = 40;
+            for (let i = 0; i < COUNT; i++) {
+                const ele = document.createElement("div");
+                ele.classList.add("dot");
+                const size = ((Math.random() * MAX_SIZE-10) + 10) + "px";
+                ele.style.height = size;
+                ele.style.width = size;
+                ele.style.top = (Math.random() * innerHeight) + "px";
+                ele.style.left = (Math.random() * innerWidth) + "px";
+                ele.style.backgroundColor = "#" + (Math.floor(Math.random()*(256**3))).toString(16).padStart(6, "0");
+                // ele.targetIdx = i === 0 ? 1 : (i - 1);
+                ele.targetIdx = Math.floor(Math.random() * COUNT);
+                ele.mul = 1;
+                eles.push(ele);
+                dots.appendChild(ele);
+            }
+            const SPEED = 2;
+            let mouseCoords = [0, 0];
+            window.addEventListener("mousemove", e => {
+                mouseCoords = [e.pageX, e.pageY];
+            }, false);
+            function eleCoords(ele, baseCoords = [0, 0]) {
+                return [+ele.style.left.slice(0, -2) - baseCoords[0], +ele.style.top.slice(0, -2) - baseCoords[1]];
+            }
+            function tick() {
+                const diag = Math.sqrt(innerWidth**2 + innerHeight**2);
+                eles.forEach((ele, i) => {
+                    const baseCoords = /*i === 0 ? mouseCoords : */eleCoords(eles[ele.targetIdx]);
+                    const polar = c2p(eleCoords(ele, baseCoords));
+                    let lenChange = SPEED + polar[0]*0.002;
+                    // if (i % 2 === 0) lenChange *= -1;
+                    lenChange *= ele.mul;
+                    polar[0] -= lenChange;
+                    // if (Math.random() < 0.1) ele.targetIdx = Math.floor(Math.random() * COUNT);
+                    if (Math.random() < 0.005) ele.mul *= -1;
+                    // polar[1] += (Math.random() * 0.004) + 0.002;
+                    const cartesian = p2c(polar);
+                    cartesian[0] += baseCoords[0];
+                    cartesian[1] += baseCoords[1];
+                    if (cartesian[0] < -MAX_SIZE || cartesian[0] > (innerWidth + MAX_SIZE) || cartesian[1] < -MAX_SIZE || cartesian[1] > (innerHeight + MAX_SIZE)) {
+                        const doTop = Math.random() > 0.5;
+                        cartesian[0] = doTop ? (Math.random() * innerWidth) : -MAX_SIZE;
+                        cartesian[1] = !doTop ? (Math.random() * innerHeight) : -MAX_SIZE;
+                        if (Math.random() > 0.5) {
+                            if (doTop) {
+                                cartesian[1] = innerHeight + MAX_SIZE;
+                            } else {
+                                cartesian[0] = innerWidth + MAX_SIZE;
+                            }
+                        }
+                        ele.mul = 1;
+                    }
+                    ele.style.left = cartesian[0] + "px";
+                    ele.style.top = cartesian[1] + "px";
+                });
+                requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        </script>
+    </body>
+</html>

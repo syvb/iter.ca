@@ -1,0 +1,7 @@
+NoteType=Web app
+Title=Segme
+Date=2021-10-04
+Uri=https://smitop.com/segme/
+Thumb=/segme.png
+
+Unicode text segmentation online.

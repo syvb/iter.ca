@@ -1,0 +1,25 @@
+<div id="topbar">
+    {{ if (eq . "home")}}
+        {{ site.Params.author}}
+    {{ else }}
+        <a href="/">{{ site.Params.author}}</a>
+    {{ end }}
+    •
+    {{ if (eq . "about")}}
+        About
+    {{ else }}
+        <a href="/p/about/">About</a>
+    {{ end }}
+    •
+    {{ if (eq . "uses")}}
+        Uses
+    {{ else }}
+        <a href="/p/uses/">Uses</a>
+    {{ end }}
+    •
+    {{ if (eq . "accounts")}}
+        Accounts
+    {{ else }}
+        <a href="/p/accounts/">Accounts</a>
+    {{ end }}
+</div>

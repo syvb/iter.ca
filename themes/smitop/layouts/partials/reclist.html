@@ -1,0 +1,12 @@
+<ul>
+    {{ range . }}
+        {{ if (eq (len (.Pages)) 0) }}
+            <li>{{ if .Date }}<time class="list-date">{{ dateFormat "January 2 2006" (int .Date.Unix) }}</time>{{ end }}<a href="{{.Permalink}}">{{.Title}}</a></li>
+        {{ else }}
+            <li>
+                <a href="{{.Permalink}}">{{.Title}}</a>
+                {{ partial "reclist.html" .Pages }}
+            </li>
+        {{ end }}
+    {{ end }}
+</ul>

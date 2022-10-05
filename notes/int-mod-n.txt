@@ -1,0 +1,5 @@
+NoteType=Math demo
+Title=Integers mod 𝑛 under multiplication
+Date=2021-04-09
+Uri=https://smitop.com/int-mod-n.html
+Thumb=/intmod200.png

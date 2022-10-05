@@ -1,0 +1,5 @@
+.headers ON
+.eqp ON
+.timer ON
+.mode box
+.nullvalue NULL

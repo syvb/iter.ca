@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="3.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="html" encoding="UTF-8" indent="yes"/>
+    <xsl:template match="/">
+        <html lang="en" dir="ltr">
+            <head>
+                <title>Smitop's blog posts</title>
+                <link rel="stylesheet" href="/style.css" />
+            </head>
+            <body>
+                <header>
+                    <h1>Smitop's blog posts</h1>
+                    <a>
+                        <xsl:attribute name="href">
+                            <xsl:value-of select="/rss/channel/link"/>
+                        </xsl:attribute>
+                        Full website
+                    </a>
+                </header>
+                <main>
+                    <h2>Recent posts</h2>
+                    <ul>
+                        <xsl:for-each select="/rss/channel/item">
+                            <li>
+                                <a>
+                                    <xsl:attribute name="href">
+                                        <xsl:value-of select="link"/>
+                                    </xsl:attribute>
+                                    <xsl:value-of select="title"/>
+                                </a>
+                                (<time><xsl:value-of select="pubDate" /></time>)
+                            </li>
+                        </xsl:for-each>
+                    </ul>
+                </main>
+            </body>
+        </html>
+    </xsl:template>
+</xsl:stylesheet>

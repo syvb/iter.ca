@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How PNGs are decoded</title>
+    <link rel="stylesheet" href="https://smitop.com/style.css" />
+    <style>
+        body {
+            font-size: 103%;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        p {
+            max-width: 45rem;
+        }
+        .chunks {
+            width: 100vw;
+            position: relative;
+            margin-left: -52vw;
+            left: 50%;
+            text-align: center;
+        }
+        .chunk {
+            border: 2px solid black;
+            border-bottom: 0;
+            width: 20em;
+            max-width: 85vw;
+            display: inline-block;
+            height: max-content;
+            height: fit-content;
+            vertical-align: top;
+            margin-right: 1em;
+            margin-bottom: 1em;
+            text-align: left;
+        }
+        .chunk .chunk-header {
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .chunk > div {
+            border-bottom: 2px solid black;
+            padding: 4px;
+        }
+        .chunk > div > .chunk-label {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .chunk-bytes {
+            font-family: monospace;
+        }
+        .chunk table th {
+            text-align: right;
+        }
+        .chunk-IDAT {
+            background: #f7f73a;
+        }
+        .chunks {
+            margin-top: 1rem;
+        }
+        .chunk-extra {
+            display: none;
+        }
+        #all-chunks:checked ~ .chunks > .chunk-extra {
+            display: inline-block;
+        }
+        .filt-label {
+            display: inline-block;
+            width: 5rem;
+        }
+        .filt-amount {
+            background-color: rgb(194, 194, 194);
+            display: inline-block;
+        }
+        .filt-counts div:nth-child(2n) .filt-amount {
+            background-color: rgb(161, 161, 161);
+        }
+        .filt-counts {
+            margin-bottom: 1rem;
+        }
+        .inter-passes > img {
+            display: inline;
+            margin-right: 1rem;
+            vertical-align: top;
+        }
+        img {
+            max-width: calc(100vw - 36px);
+            height: auto;
+            position: relative;
+        }
+        .chunk-char-table {
+            text-align: left;
+        }
+        @media (max-width: 530px) {
+            .chunk {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p>Let's look at the complete process of decoding a <abbr title="Portable Network Graphics">PNG</abbr> file. Here's the image I'll be using to demonstrate:</p>
+        <img src="https://smitop.com/avatar/a256.png" width="256" height="256" alt="Several letter 'S's on top of each other, each with a different color." />
+    </div>
+    <div>
+        <h2>Chunking</h2>
+        <p>PNG files are stored as a series of chunks. Each chunk has a 4 byte length, 4 byte name, the actual data, and a CRC. Most of the chunks contain metadata about the image, but the <code>IDAT</code> chunk contains the actual compressed image data. The capitalization of each letter of the chunk name determines how unexpected chunks should be handled:</p>
+        <table class="chunk-char-table">
+            <tbody>
+                <tr><th>UPPERCASE</th><th>lowercase</th></tr>
+                <tr><td>Critical</td><td>Ancillary</td><td>Is this chunk required to display the image correctly?</td></tr>
+                <tr><td>Public</td><td>Private</td><td>Is this a private, application-specific, chunk?</td></tr>
+                <tr><td>Reserved</td><td>Reserved</td><td></td></tr>
+                <tr><td>Safe to copy</td><td>Unsafe to copy</td><td>Do programs that modify the PNG data need to understand this chunk?</td></tr>
+            </tbody>
+        </table>
+        <img src="https://smitop.com/Chunk-letters.svg" alt="c: Ancillary, H: Public, R: Reserved, M: Unsafe to copy" width="571" height="251" />
+        <p>Here are the chunks in the image:</p>
+        <input type="checkbox" id="all-chunks"><label for="all-chunks"> Show metadata chunks</label>
+        <div class="chunks">
+            <div class="chunk chunk-important">
+                <div class="chunk-top"><div class="chunk-header">Signature</div> This identifies the image as a PNG. It contains newline characters and other characters that often get mangled to ensure that the binary image data didn't get corrupted.</div>
+                <div class="length"><span>|0-7|</span></div>
+            </div>
+            %CHUNKS%
+            <div class="chunk chunk-important">
+                <div class="chunk-top"><div class="chunk-header">Trailer</div> This empty chunk indicates the end of the PNG file.</div>
+                <div class="length"><span class="chunk-label">Length</span><span><span class="chunk-bytes">00 00 00 00</span> = 0 bytes long</span></div>
+                <div class="type"><span class="chunk-label">Type</span><span><span class="chunk-bytes">49 45 4E 44</span> = IEND</span></div>
+                <div class="crc"><span class="chunk-label">CRC</span><span class="chunk-bytes">AE 42 60 82</span></div>
+            </div>            
+        </div>
+    </div>
+    <div>
+        <h2>Extracting the image data</h2>
+        <p>We take all of the <abbr title="Image DATa"><code>IDAT</code></abbr> chunks and concatenate them together. In this image, there is only one <code>IDAT</code> chunk. Some images have multiple IDAT chunks, and the contents are concatenated together by the PNG decoder. This is so streaming encoders <a href="https://stackoverflow.com/a/29517059/10113238">don't need to know the total data length up front</a> since the data length is at the beginning of each chunk. Multiple IDAT chunks are also needed for encoding images with image data having a length longer than the largest possible chunk size (255<sup>4</sup>) Here's what we get if treat the compressed data as raw image data:</p>
+        <img src="%PREFIX%idat-raw.png" width="256" height="256" loading="lazy" alt="Random noise on the top third, with the rest black." />
+        <p>It looks like random noise, and that means that the compression algorithm did a good job. Compressed data should look higher-entropy than the lower-entropy data it is encoding. Also, it's less than a third of the height of the actual image: that's some good compression!</p>
+    </div>
+    <div>
+        <h2>Decompressing</h2>
+        <p>The most important chunk is the <code>IDAT</code> chunk, which contains the actual image data. To get the filtered image data, we concatenate the data in the <code>IDAT</code> chunks, and decompress it using zlib. There is no image-specific compression mechanism in play here: just normal zlib compression.</p>
+        <img src="%PREFIX%idat.png" width="256" height="256" loading="lazy" alt="The example image, increasingly skewed to right from top to bottom. It is mostly black and white, with pixels of intense color scattered throughout." />
+        <p>Aside from the colors looking all wrong, the image also appears to be skewed horizontally. This is because each line of the image has a filter as the first byte. Filters don't directly reduce the image size, but get it into a form that is more compressible by zlib. I <a href="https://observablehq.com/@smitop/png-filters">have written about PNG filters before</a>.</p>
+    </div>
+    <div>
+        <h2>Defiltering</h2>
+        <p>We take the decompressed data and undo the filter on each line. This gets us the decoded image, the same as the original! Here's the popularity of each filter type:</p>
+        <div class="filt-counts">
+            %FILTER_COUNTS%
+        </div>        
+        <img src="%PREFIX%defiltered.png" alt="The example image" width="256" height="256" loading="lazy" />
+    </div>
+    <div>
+        <h2>Interlacing</h2>
+        <p>PNGs can optionally be <dfn>interlaced</dfn>, which splits the image into 7 different images, each of which covers a non-overlapping area of the image:</p>
+        <img src="https://smitop.com/ext/Adam7-mul.svg" alt="Diagram of the 7 passes in an 8x8 area. The first is a single pixel in the top-left, and the seventh is every other row." width="400" height="400" loading="lazy" />
+        <p>Each of the 7 images is loaded in sequence, adding more detail to the image as it is loaded. This sequence of images is called <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>.</p>
+        <p>The data for each of the 7 images are stored after each other in the image file. If we take the example image and enable interlacing, here's the raw uncompressed image data:</p>
+        <img src="%PREFIX%inter-idat.png" alt="Same as the earlier skewed letter S, but there are multiple stacked on top of each other. The bottom half has 2, the third above that has 2 more, and above that it increasingly looks like random noise." width="256" height="256" />
+        <p>Here are the 7 passes that we can extract from that image data, which look like downscaled versions of the image:</p>
+        <div class="inter-passes">
+            <!-- in-article text describes these well enough, so set null alt text -->
+            <img src="%PREFIX%inter-1.png" alt="" width="32" height="32" loading="lazy">
+            <img src="%PREFIX%inter-2.png" alt="" width="32" height="32" loading="lazy">
+            <img src="%PREFIX%inter-3.png" alt="" width="64" height="32" loading="lazy">
+            <img src="%PREFIX%inter-4.png" alt="" width="64" height="64" loading="lazy">
+            <img src="%PREFIX%inter-5.png" alt="" width="128" height="64" loading="lazy">
+            <img src="%PREFIX%inter-6.png" alt="" width="128" height="128" loading="lazy">
+            <img src="%PREFIX%inter-7.png" alt="" width="256" height="128" loading="lazy">
+        </div>
+        <p>Since some of those sub-images are rectangles but the actual image is square, there will be more details horizontally than vertically when loading the image, since horizontal detail is more important than vertical detail for human visual perception.</p>
+    </div>
+    <div>
+        <h2>Bonus: bugs</h2>
+        <p>Here's what you get when you have a bug in the Average filter that causes it to treat overflows incorrectly (the way integer overflow in filter value calculation is specified to be a bit different than the rest):</p>
+        <img src="https://smitop.com/pngbug.png" alt="The example image, but it looks glitchy starting a quarter of the way down." width="256" height="256" loading="lazy">
+    </div>
+</body>
+</html>

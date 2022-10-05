@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} list</title>
+    <meta charset="utf-8" />
+    <meta name="rating" content="General">
+    <link rel="canonical" href="{{ .Permalink }}" />
+    {{ partial "style.html" }}
+</head>
+<body>
+  {{ partial "topbar" "pages" }}
+  <section itemscope="" itemtype="http://schema.org/Article" id="main-section">
+    <div>
+        <h1>{{.Title}} list</h1>
+        {{ partial "breadcrumbs.html" . }}
+        <article itemprop="articleBody" id="content" class="e-content">
+          {{ .Content }}
+          {{ partial "reclist.html" .Pages }}
+        </article>
+    </div>
+  </section>
+</body>
+</html>

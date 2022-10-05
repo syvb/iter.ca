@@ -1,0 +1,5 @@
+NoteType=Game
+Title=LearnLake
+Date=2018-04-13
+Uri=https://learnlake.com/
+A small educational website.

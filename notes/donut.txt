@@ -1,0 +1,6 @@
+NoteType=Art
+Title=Donut
+Date=2017-12-08
+Uri=https://archive.org/details/donut_vector
+Thumb=/donut.svg
+Verbose=1

@@ -1,0 +1,133 @@
+! Homepage: https://smitop.com/filters/
+! Title: Smitop's filters
+! Expires: 1 days
+! Version: 4
+
+! 2020-07-08 https://www.reddit.com
+www.reddit.com##._23HF_LA75CXQvFP4nnxWQD
+
+! 2020-07-14 https://glitch.com
+glitch.com##.blm-banner
+
+! 2020-08-28 https://www.washingtonpost.com
+www.washingtonpost.com###paywall-ca-57539a6527e
+
+! 2020-12-06 https://old.reddit.com
+old.reddit.com##.premium-banner-outer
+
+! 2021-03-11 https://www.washingtonpost.com
+www.washingtonpost.com##.wwu-pldql-
+
+! 2021-04-01 https://www.google.com
+www.google.com###eob_18
+
+! 2021-04-28 https://www.turnitin.com
+www.turnitin.com##.cc-color-override--1580745490.cc-bottom.cc-theme-block.cc-type-info.cc-banner.cc-window
+
+! 2021-07-17 https://www.esquire.com
+www.esquire.com##.ot-fade-in.onetrust-pc-dark-filter
+www.esquire.com###onetrust-consent-sdk
+
+! 2021-10-01 https://webcache.googleusercontent.com
+webcache.googleusercontent.com##.js-consent-banner.r16.l16.b16.bar-lg.fc-white.bg-black-750.sm\:p16.p32.sm\:w-auto.ws4.z-nav-fixed.ps-fixed.ff-sans
+
+! 2021-11-08 https://twitter.com
+twitter.com##div.r-1udh08x.r-1ifxtd0.r-rs99b7.r-1phboty.r-1867qdf.r-k0dy70.r-1ysxnx4.css-1dbjc4n:nth-of-type(3) > .css-1dbjc4n > .css-1dbjc4n > .css-1dbjc4n > .css-1dbjc4n > .css-1dbjc4n
+
+! 2022-02-10 https://news.ycombinator.com
+#news.ycombinator.com##.athing:has(td:empty)
+#news.ycombinator.com##.athing:has(td:empty) + tr
+#news.ycombinator.com##.athing:has(td:empty) + tr + tr
+
+! 2022-02-11 https://www.dailyprincetonian.com
+||blink.net/iframe.html$subdocument
+
+! 2022-02-18 https://www.blockchain.com
+www.blockchain.com##[src="/explorer-frontend/_next/image?url=%2Fimages%2FspinningIcons.gif&w=128&q=75"]
+
+! 2022-03-23 https://elpha.com
+elpha.com##div[role=dialog]
+elpha.com###overlay
+elpha.com###modal-container
+elpha.com##.bordered-container.shadow-post-login
+
+! 2022-03-23 https://techstomper.com
+techstomper.com##.wp-gdpr-cookie-notice
+
+! 2022-04-05 https://www.glassdoor.ca
+www.glassdoor.ca##.hardsellOverlay
+www.glassdoor.ca##body:style(overflow: scroll !important)
+
+! 2022-05-06 https://billingsgazette.com
+billingsgazette.com###lee-subscription-wall-modal
+billingsgazette.com##.in.fade.modal-backdrop
+billingsgazette.com##body:style(overflow: scroll !important)
+
+! 11/14/2019 https://www.thesaurus.com
+www.thesaurus.com##.eavft170.css-1tci8x.app-base > div:nth-of-type(3)
+
+! 11/22/2019 https://www.websiteplanet.com
+www.websiteplanet.com###new-post-share-sticky
+
+! 12/22/2019 https://hackernoon.com
+hackernoon.com##.ads
+
+! 1/15/2020 https://www.payscale.com
+www.payscale.com###modal
+
+! 4/13/2020 https://www.wolframalpha.com
+www.wolframalpha.com##.X_9fF._2FSdf
+
+! 5/5/2020 https://developer.nintendo.com
+developer.nintendo.com##.fps_draw
+
+! 5/11/2020 https://rbt.asia
+rbt.asia##.post_image
+
+! 6/12/2020 https://glitch.com
+glitch.com##.blm-banner
+
+! 6/22/2020 https://www.latimes.com
+www.latimes.com###reg-overlay
+
+! 2021-03-25 https://www.thestar.com
+www.thestar.com##.ndh28zfgectf
+
+! 2021-05-30 https://www.duolingo.com
+www.duolingo.com##.F2B9m
+
+! 2021-08-03 https://www.kickresume.com
+www.kickresume.com##.fixed-bottom.bg-dark.banner--edit-sample.section
+
+! 2021-08-31 https://astralcodexten.substack.com
+astralcodexten.substack.com##.topbar
+
+! 2021-11-03 https://web.archive.org
+web.archive.org##.js-consent-banner.r16.l16.b16.bar-lg.fc-white.bg-black-750.sm\:p16.p32.sm\:w-auto.ws4.z-nav-fixed.ps-fixed.ff-sans
+
+! 2022-01-02 https://ai.stackexchange.com
+||cdn.sstatic.net/Sites/ai/Img/LogoSponsored.svg$image
+
+! 2022-05-18 https://visalist.io
+visalist.io##.v-dialog__content--active.v-dialog__content
+visalist.io##.v-overlay__scrim
+visalist.io##*:style(overflow: scroll !important)
+visalist.io##.theme--dark.v-overlay--active.v-overlay
+
+! fix timescale docs colors
+docs.timescale.com##.ts-site__content__text-page li, .ts-site__content__text-page p, .ts-site__content__text-page td, .ts-site__content__text-page th, .ts-site__content__text-page tr:style(color: black !important)
+
+! don't use annoying grey on Discord light mode
+discord.com##html.theme-light #app-mount:style(--text-normal: black)
+
+! 2022-06-25 https://www.newyorker.com
+www.newyorker.com##.site-navigation.stacked-navigation--is-scrolled.stacked-navigation--theme-standard.stacked-navigation--fixed-header-layout.jVKIgf.StackedNavigationHeader-geASwb
+
+! 2022-06-28 https://officeplanner.ikea.com
+officeplanner.ikea.com##.banner
+
+! 2022-07-04 https://www.vice.com
+www.vice.com##.docked-slot-renderer
+
+! 2022-08-11 https://uquiz.com
+uquiz.com##.trending_header

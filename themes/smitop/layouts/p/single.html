@@ -1,0 +1,20 @@
+{{ define "main" }}
+  {{ partial "topbar" .Params.topbar_id }}
+  <section itemscope itemtype="http://schema.org/Article" id="main-section">
+    <div>
+      <h1>{{ .Title }}</h1>
+      <div id="lastmod-info">
+        Last updated <span itemprop="dateModified" content="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "Jan 2, 2006" }}</span>
+      </div>
+      {{ partial "breadcrumbs.html" . }}
+      <article itemprop="articleBody" id="content">
+        {{ .Content }}
+      </article>
+    </div>
+  </section>
+  <aside id="meta">
+    <div id="license-info">
+      This work is licensed under the <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    </div>    
+  </aside>
+{{ end }}

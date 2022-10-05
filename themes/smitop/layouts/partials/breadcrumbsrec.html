@@ -1,0 +1,1 @@
+{{ if .Parent }}{{ partial "breadcrumbsrec.html" .Parent }} → <a href="{{ .Parent.Permalink }}">{{ .Parent.Title }}</a>{{ end }}

@@ -1,0 +1,29 @@
+<!-- based on https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/_default/rss.xml -->
+<!-- using XML declarationg doesn't work with hugo, transforms leading < -->
+<!-- <?xml version="1.0" encoding="utf-8" standalone="yes"?> -->
+{{ safeHTML "<?xml-stylesheet href=\"/rss.xml\" type=\"text/xsl\"?>" }}
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule" version="2.0">
+    <channel>
+        <title>Smitop's Blog</title>
+        <link>{{ .Permalink }}</link>
+        <description>Recent blog posts on Smitop's Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>{{ .Site.LanguageCode }}</language>
+        <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+        <copyright>Copyright 2019-{{ .Date.Year }}. This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.</copyright>
+        <atom:link href="https://smitop.com/index.xml" rel="self" type="application/rss+xml"/>
+        {{ range (first 10 (where .Site.Pages "File.Dir" "post/")) }}
+            {{ if (eq (.Params.reply) nil) }}
+                <item>
+                    <title>{{ .Title }}</title>
+                    <link>{{ .Permalink }}</link>
+                    <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+                    {{ with .Site.Author.email }}<author>{{.}}{{ with $.Site.Author.name }} ({{.}}){{end}}</author>{{end}}
+                    <guid>{{ .Permalink }}</guid>
+                    <description>{{ if (eq .Params.fmat_id nil) }}{{ .Content | html }}{{ else }}{{ .RawContent | safeHTML | html }}{{ end }}</description>
+                    <creativeCommons:license>http://www.creativecommons.org/licenses/by-sa/4.0</creativeCommons:license>
+                </item>
+            {{ end }}
+        {{ end }}
+    </channel>
+</rss>

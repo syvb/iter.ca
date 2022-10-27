@@ -19,7 +19,7 @@
                     <link>{{ .Permalink }}</link>
                     <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
                     {{ with .Site.Author.email }}<author>{{.}}{{ with $.Site.Author.name }} ({{.}}){{end}}</author>{{end}}
-                    <guid>{{ .Permalink }}</guid>
+                    <guid>https://smitop.com{{.RelPermalink}}</guid>
                     <description>{{ if (eq .Params.fmat_id nil) }}{{ .Content | html }}{{ else }}{{ .RawContent | safeHTML | html }}{{ end }}</description>
                     <creativeCommons:license>http://www.creativecommons.org/licenses/by-sa/4.0</creativeCommons:license>
                 </item>

@@ -92,7 +92,7 @@ We can take a [circular mean](https://en.wikipedia.org/wiki/Circular_mean) to fi
 </div>
 <script type="module" async>
 import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
-import define from "https://api.observablehq.com/d/00991c3084b248ef.js?v=3";
+import define from "./nb.js";
 window.obsModule = new Runtime().module(define, name => {
   if (name === "nCircExplainer") return new Inspector(document.querySelector("#observablehq-nCircExplainer-b1c5a5c2"));
   if (name === "nCircStyle") return new Inspector(document.querySelector("#observablehq-nCircStyle-b1c5a5c2"));

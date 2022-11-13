@@ -206,7 +206,7 @@ function genUnitCircle(id) {
     </foreignObject>
 
     <line x1=150 y1=150 x2=150 y2=0 stroke=black stroke-width=6 /> <!-- radius line -->
-    <text x="130" y="95" font-family="&quot;Liberation Serif&quot;, serif" fill="white">1</text> <!-- radius number -->
+    <!-- <text x="130" y="95" font-family="&quot;Liberation Serif&quot;, serif" fill="white">1</text> -->
     <circle cx="150" cy="150" r="7" fill="black" /> <!-- center circle -->
   `;
 }

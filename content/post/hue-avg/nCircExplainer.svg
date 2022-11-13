@@ -5,7 +5,6 @@
     </foreignObject>
 
     <line x1="150" y1="150" x2="150" y2="0" stroke="black" stroke-width="6"/> <!-- radius line -->
-    <text x="130" y="95" font-family="&quot;Liberation Serif&quot;, serif" fill="white">1</text> <!-- radius number -->
     <circle cx="150" cy="150" r="7" fill="black"/> <!-- center circle --></g>
       <g id="unit-circle-avg-line" class="unit-circle-phase" style="opacity: 0"><g><line x1="150" y1="153" x2="202.55483468623294" y2="77.40427329006222" stroke="black" stroke-width="6"/>
     <path d="M 180.65,111.93 A 150.00,105.18 360 0 0 150.00,105.18" stroke="black" stroke-width="3.5"/>

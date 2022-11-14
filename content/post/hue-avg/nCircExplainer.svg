@@ -56,7 +56,7 @@
           animation-name: phase3;
         }
         .unit-circle-phase, #unit-circle-points-anim &gt; circle {
-          animation-duration: 11s;
+          animation-duration: 5s;
           animation-iteration-count: infinite;
         }
       </style>

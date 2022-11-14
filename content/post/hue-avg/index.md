@@ -4,6 +4,7 @@ description = "Averaging hues is weird, you can't just take a normal average"
 tags = ["programming", "math"]
 title = "How to average hues"
 toc = 1
+no_stream_image = 1
 image = "post/hue-avg/cover.png"
 image_alt = "A color line with two points and their average"
 +++

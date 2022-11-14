@@ -3,6 +3,7 @@ date = "2021-11-14T00:00:00Z"
 description = "An explanation of how visual voicemail systems work"
 tags = ["tel", "email"]
 title = "Your Phone app has an email client"
+no_stream_image = 1
 image = "actually-email.png"
 image_alt = "The app icon for the Phone app points to text that says \"actually an email client?!?\". There is a phone on the far right."
 +++

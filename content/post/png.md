@@ -5,6 +5,8 @@ description = "How the PNG file format works, in detail."
 tags = ["png", "fileformat"]
 image = "/pngbug.png"
 image_alt = "A glitchly-looking multicolored letter S."
+image_h = 256
+image_w = 256
 fmat_id = "png"
 # BINFORMATS_URI_PREFIX="https://smitop.com/fmat" ca r gen_png .
 # then copypaste below from <body> of binformats/public/png/index.html

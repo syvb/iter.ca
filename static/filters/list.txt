@@ -34,11 +34,6 @@ webcache.googleusercontent.com##.js-consent-banner.r16.l16.b16.bar-lg.fc-white.b
 ! 2021-11-08 https://twitter.com
 twitter.com##div.r-1udh08x.r-1ifxtd0.r-rs99b7.r-1phboty.r-1867qdf.r-k0dy70.r-1ysxnx4.css-1dbjc4n:nth-of-type(3) > .css-1dbjc4n > .css-1dbjc4n > .css-1dbjc4n > .css-1dbjc4n > .css-1dbjc4n
 
-! 2022-02-10 https://news.ycombinator.com
-#news.ycombinator.com##.athing:has(td:empty)
-#news.ycombinator.com##.athing:has(td:empty) + tr
-#news.ycombinator.com##.athing:has(td:empty) + tr + tr
-
 ! 2022-02-11 https://www.dailyprincetonian.com
 ||blink.net/iframe.html$subdocument
 
@@ -131,3 +126,6 @@ www.vice.com##.docked-slot-renderer
 
 ! 2022-08-11 https://uquiz.com
 uquiz.com##.trending_header
+
+! 2022-10-22 https://www.wealthsimple.com
+www.wealthsimple.com##.flex.w-full.fixed.BottomCta

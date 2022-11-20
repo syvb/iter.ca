@@ -28,6 +28,8 @@ rm -rf segmerepo
     wget https://upload.wikimedia.org/wikipedia/commons/b/b2/HAP-ac2-Ports.jpg
     wget https://upload.wikimedia.org/wikipedia/commons/d/d6/GTG-initial.png
     wget https://upload.wikimedia.org/wikipedia/commons/a/ad/Atan2definition.svg
+    wget 'https://archive.org/download/rust-format/rust-format.pdf'
+    wget 'https://archive.org/download/rust-format/rust-format.fig'
 )
 
 rm -rf fmat

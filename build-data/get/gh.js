@@ -163,6 +163,6 @@ const fetch = require("node-fetch");
                 GhRepo: iss.url.split("/").slice(4,6).join("/"),
             }));
         });
-        if (res.items.length !== 100) break;
+        if (res.items.length === 0) break;
     }
 })();

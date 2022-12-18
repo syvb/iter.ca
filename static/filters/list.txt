@@ -138,3 +138,6 @@ fariscpa.com##.cta-locked.sticky-footer-bar.et_pb_text_align_center.et_fullwidth
 
 ! 2022-12-18 https://docs.google.com
 docs.google.com###waffle-disclaimer-bar:has-text(Quotes are not sourced from all markets)
+
+! 2022-12-18 https://try.gitea.io
+try.gitea.io##body > .container.ui:has-text(THIS IS A TEST INSTANCE ONLY! REPOSITORIES CAN BE DELETED AT ANY TIME)

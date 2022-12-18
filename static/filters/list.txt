@@ -129,3 +129,12 @@ uquiz.com##.trending_header
 
 ! 2022-10-22 https://www.wealthsimple.com
 www.wealthsimple.com##.flex.w-full.fixed.BottomCta
+
+! 2022-11-28 https://twitter.com
+twitter.com##.r-zchlnj.r-1xcajam.r-12vffkv.r-1d2f490.r-1p0dtai.r-aqfbo4.css-1dbjc4n > div.r-12vffkv.css-1dbjc4n:nth-of-type(1) > .r-12vffkv.css-1dbjc4n
+
+! 2022-12-02 https://fariscpa.com
+fariscpa.com##.cta-locked.sticky-footer-bar.et_pb_text_align_center.et_fullwidth_section
+
+! 2022-12-18 https://docs.google.com
+docs.google.com###waffle-disclaimer-bar:has-text(Quotes are not sourced from all markets)

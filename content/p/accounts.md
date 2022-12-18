@@ -30,11 +30,11 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>Twitch: <a href="https://twitch.tv/smitop2">@smitop2</a></li>
 <li>Hive: <a href="https://hiveblocks.com/@smitop">@smitop</a></li>
 <li>Hacker News: <a href="https://news.ycombinator.com/user?id=smitop">@smitop</a></li>
-<li>Twitter: <a href="https://twitter.com/_smitop">@_smitop</a></li>
 <li>Stack Exchange: <a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">Smitop</a></li>
 <li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">Smitop</a></li>
 <li>wasteof.money: <a href="https://wasteof.money/users/smitop">@smitop</a></li>
 <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Special:Contributions/Smitop">User:Smitop</a></li>
+<li class="inactive">Twitter: <a href="https://twitter.com/_smitop">@_smitop</a></li>
 <li class="inactive">Dwitter: <a href="https://www.dwitter.net/u/Smitop">@smitop</a></li>
 <li class="inactive">Mastodon: <a href="https://mas.to/@smitop">@smitop@mas.to</a></li>
 </ul>

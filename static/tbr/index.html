@@ -8,7 +8,8 @@
 </head>
 <body>
     <div>
-        date: <input type="text" id="date" value="2022/12/28">
+        date: <input type="text" id="date" value="2022/12/28"><br>
+        only flagged: <input type="checkbox" id="only-flagged" checked><br>
         <button id="fetch">fetch</button>
     </div>
     <div id="data-table-parent" style="display: none;">
@@ -17,31 +18,46 @@
         <table id="data-table"></table>
     </div>
     <script>
-        let blockedDomains = [];
+        let blockedDomains;
+        let words;
         let tbrDomains;
         function filter(domain) {
+            if (domain !== domain.toLowerCase()) throw new Error("non-lowercase domain");
             if (blockedDomains.includes(domain)) return true;
-            if (domain.length <= 5) return true;
-            if (domain.length >= 15) return false;
-            if (domain.length >= 7 && domain.includes("-")) return false;
+            const label = domain.split(".")[0];
+            if (label.length <= 3) return true;
+            if (label.length > 12) return false;
+            if (label.length >= 5 && domain.includes("-")) return false;
+            if (label.length >= 5 && label.match(/^[a-z]+[0-9]+[a-z]+$/)) return false;
             return true;
         }
         function updateTable() {
             document.getElementById("release-date").textContent = (new Date(tbrDomains.releaseDate)).toLocaleString();
             document.getElementById("data-table").innerHTML = "";
+            const onlyFlagged = document.getElementById("only-flagged").checked;
             const tbody = document.createElement("tbody");
             let count = 0;
             tbrDomains.domainNames.forEach(domain => {
+                const [label, tld] = domain.split(".");
+                if (tld !== "ca") throw new Error("non .ca domain");
                 if (!filter(domain)) return;
+                let flags = "";
+                flags += (blockedDomains.includes(domain)) ? "B" : " ";
+                flags += (label.length === 2) ? "2" : " ";
+                flags += (label.length === 3) ? "3" : " ";
+                // const containsWord = !words.every(word => word.length < 4 || !label.includes(word));
+                const isWord = !words.every(word => word !== label);
+                // flags += containsWord ? "C" : " ";
+                flags += isWord ? "W" : " ";
+                if (onlyFlagged && flags.trim() === "") return;
+
                 const tr = document.createElement("tr");
                 const td1 = document.createElement("td");
                 tr.appendChild(td1);
                 const td2 = document.createElement("td");
                 tr.appendChild(td2);
                 td1.textContent = domain;
-                td2.textContent += (blockedDomains.includes(domain)) ? "B" : " ";
-                td2.textContent += (domain.length === 5) ? "2" : " ";
-                td2.textContent += (domain.length === 6) ? "3" : " ";
+                td2.textContent = flags;
                 td2.classList.add("domain-flags");
                 tbody.appendChild(tr);
                 count++;
@@ -52,15 +68,26 @@
             document.getElementById("data-table-parent").style.display = "block";
         }
         document.getElementById("fetch").onclick = async e => {
-            const [tbrData, blockedData] = await Promise.all([
-                fetch("https://api.ca.fury.ca/api/tbr/session?datetime=" + document.getElementById("date").value).then(res => res.json()),
-                fetch("blocked.txt").then(res => res.text())
-            ]);
-            blockedDomains = blockedData.split("\n").map(x => x.split(" ")[0]).filter(s => s.endsWith(".ca"));
+            const tbrData = await fetch(
+                "https://api.ca.fury.ca/api/tbr/session?datetime=" + document.getElementById("date").value
+            ).then(res => res.json());
             tbrDomains = tbrData;
             tbrDomains.domainNames.sort();
+            await dataReady;
             updateTable();
         };
+        const dataReady = (async () => {
+            const [blockedData, wordsData] = await Promise.all([
+                fetch("blocked.txt").then(res => res.text()),
+                fetch("https://i.sm4.ca/words.txt").then(res => res.text()),
+            ]);
+            blockedDomains = blockedData.split("\n").map(x => x.split(" ")[0]).filter(s => s.endsWith(".ca"));
+            words = wordsData
+                .split("\n")
+                .slice(5)
+                .map(word => word.trim().toLowerCase().replace(/[^a-z]/g, ""))
+                .filter(word => word.length > 1);
+        })();
     </script>
     <style>
         body {

@@ -401,6 +401,17 @@ details {
     padding: 0.5em;
 }
 
+ol.spec-list {
+    margin-top: 0;
+    counter-reset: item;
+    list-style-type: none;
+}
+
+ol.spec-list > li:before {
+    content: attr(data-prefix) '.' counter(item, decimal) '. ';
+    counter-increment: item;
+}
+
 @media (max-width: 900px) {
     #metop {
         flex-direction: column;

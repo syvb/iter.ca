@@ -49,10 +49,10 @@ toAlpIdCounter(50) // -> DH
 
 |AlpID|Counter value|
 |-|-|
-|ACME-A  |0|
-|ACME-C  |1|
-|ACME-FQ |100|
-|ACME-YSQ|1000|
+|`ACME-A`  |0|
+|`ACME-C`  |1|
+|`ACME-FQ` |100|
+|`ACME-YSQ`|1000|
 
 ## 3: Resources
 

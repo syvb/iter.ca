@@ -3,12 +3,11 @@
   <section itemscope itemtype="http://schema.org/Article" class="h-entry" id="main-section">
     <h1 itemprop="name" id="title" class="p-name">{{ .Title }}</h1>
     <div>
-    By
+    On
     <span class="p-author h-card">
       <span itemprop="author" itemscope itemtype="http://schema.org/Person">
         <a href="/" class="p-nickname u-url" rel="me">
-          <img class="u-photo byline-avatar" width="24" height="24" src="https://smitop.com/avatar/vector.svg" alt="">
-          <span itemprop="name">Smitop</span
+          <span itemprop="name">iter.ca</span
         ></a>
         {{ if (ne .Params.ai nil) }}
           (with <a href="#ai-info">AI</a>)

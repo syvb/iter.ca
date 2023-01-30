@@ -5,6 +5,7 @@ const fetch = require("node-fetch");
     const posts = userData.submitted;
     for (postId of posts) {
         const post = await (await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`)).json();
+        if (post.deleted) return;
         let data = {
             Type: "hn",
             HNType: post.type,

@@ -1,6 +1,6 @@
 baseURL = "https://iter.ca/"
 languageCode = "en-CA"
-title = "Smitop"
+title = "iter.ca"
 author = "Smitop"
 enableGitInfo = true
 

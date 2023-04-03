@@ -1,6 +1,6 @@
 [user]
-	name = Smitty
-	email = me@smitop.com
+	name = syvb
+	email = me@iter.ca
 [pull]
 	ff = only
 [alias]
@@ -26,3 +26,5 @@
 	process = git-lfs filter-process
 [merge]
 	conflictStyle = diff3
+[gpg]
+	format = ssh

@@ -19,7 +19,7 @@
     <div>
       <article itemprop="articleBody" id="content" class="e-content">
         {{ if .Params.toc }}
-            {{ .TableOfContents }}
+          {{ .TableOfContents }}
         {{ end }}
         {{ if (eq .Params.fmat_id nil) }}
           {{ .Content }}
@@ -42,21 +42,7 @@
           </div>
         {{ end }}
         <div class="meta-other">
-          <div>
-            <div>📧 <a href="mailto:&#109;&#101;&#64;&#115;&#109;&#105;&#116;&#111;&#112;&#46;&#99;&#111;&#109;">{{ partial "email.html" }}</a></div>
-          </div>
-          <div id="license-info">
-            Content license: <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>
-          </div>
-          <div>
-            {{ with .Params.tags }}
-              <div id="tags">
-                {{ range . }}
-                  <a href="{{ "tags/" | absURL }}{{ . | urlize }}/" class="p-category">{{ . }}</a>
-                {{ end }}
-              </div>
-            {{ end }}
-          </div>
+          {{ partial "footer-meta-other.html" . }}
         </div>
       </div>
       {{ if (eq .Params.ai "partial") }}

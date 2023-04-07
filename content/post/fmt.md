@@ -1,7 +1,7 @@
 +++
 date = "2022-11-19T20:30:00Z"
 description = "My printable summary of everything the Rust format! macro can do"
-tags = ["programming", "design"]
+tags = ["programming", "design", "rust"]
 title = "Everything the Rust format! macro can do"
 aliases = [ "/fmt" ]
 +++

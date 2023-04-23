@@ -5,12 +5,12 @@
 cd static || exit
 
 rm -rf transform-playground
-git clone https://github.com/Smittyvb/transform-playground.git
+git clone https://github.com/syvb/transform-playground.git
 rm -rf transform-playground/.git
 
 (
     rm -rf segme segmerepo
-    git clone https://github.com/Smittyvb/segme.git segmerepo
+    git clone https://github.com/syvb/segme.git segmerepo
     cd segmerepo || exit
     wasm-pack build -t no-modules
     mv pkg public

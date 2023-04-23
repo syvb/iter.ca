@@ -5,7 +5,7 @@ attrib:
 category: "git"
 tags: ["github", "git"]
 ---
-[GitHub Gist](https://gist.github.com/) is pastebin-like service for sharing files. They are also Git repos, and can be cloned like any other repo. You can clone them like `git clone https://gist.github.com/Smittyvb/f4a13f0c668754b44aff24bbc25e8d65`. You can find all of the clone URIs by clicking on the Embed dropdown. Each item in the Git revesion history corresponds to an edit of the Gist. You can even push commits using command-line Git to edit your Gists. There are some limitations though: if you try to push a repo containing a directory to a Gist, it will be rejected:
+[GitHub Gist](https://gist.github.com/) is pastebin-like service for sharing files. They are also Git repos, and can be cloned like any other repo. You can clone them like `git clone https://gist.github.com/syvb/f4a13f0c668754b44aff24bbc25e8d65`. You can find all of the clone URIs by clicking on the Embed dropdown. Each item in the Git revesion history corresponds to an edit of the Gist. You can even push commits using command-line Git to edit your Gists. There are some limitations though: if you try to push a repo containing a directory to a Gist, it will be rejected:
 
 ```
 remote: Gist does not support directories.

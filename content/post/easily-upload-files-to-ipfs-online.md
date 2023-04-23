@@ -9,6 +9,6 @@ Need to upload files to [IPFS](https://ipfs.io) quickly? With my new [Upload2IPF
 
 It uses [Infura](https://infura.io)'s API to upload files. While Infura _should_ pin the file to their node, it's a good idea to pin them locally (the tool provides a command you can copy to do that), or with a pinning service.
 
-The tool itself is hosted on CloudFlare's IPFS gateway, which works really well for a simple static page. You can [view the source code on GitHub](https://github.com/smittyvb/upload2ipfs).
+The tool itself is hosted on CloudFlare's IPFS gateway, which works really well for a simple static page. You can [view the source code on GitHub](https://github.com/syvb/upload2ipfs).
 
 Enjoy!

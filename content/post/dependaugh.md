@@ -15,7 +15,7 @@ GitHub has a feature called [Dependabot](https://github.com/features/security), 
   - a lot of the time, it is the dependency of a dependency that is vulnerable, but the vulnerable code is never called by the leaf dependency
   - a function may be vulnerable but never called
 
-For [one of my repositories](https://github.com/Smittyvb/ttw), I've got 28 security alerts over the part year. I checked all of them, and *none* were actual issues. Most of them were in build scripts and devDependencies, and the rest were in dependencies that were not actually used or where the vulnerable code was not actually used. GitHub could have eliminated most of the bad alerts by just ignoring ones that are build/devDependencies.
+For [one of my repositories](https://github.com/syvb/ttw), I've got 28 security alerts over the part year. I checked all of them, and *none* were actual issues. Most of them were in build scripts and devDependencies, and the rest were in dependencies that were not actually used or where the vulnerable code was not actually used. GitHub could have eliminated most of the bad alerts by just ignoring ones that are build/devDependencies.
 
 Even worse is security updates in projects I don't maintain anymore. I haven't pushed a commit in two years, is it *really* necessary to let me know about all the security issues in my dependencies?
 
@@ -30,7 +30,7 @@ Here are some examples of the issues I've had with Dependabot:
 
 And you can't just disable Dependabot for all of your repos: you have to disable it for each individual repo, which gets annoying if you have 395 repos like me (although apparently I have more repos than most users[^alot]).
 
-[^alot]: Fun fact: I have so many repos that the option to export all my GitHub data times out, and aftering contacting support I learned the only way to export my data was [using the API](https://github.com/Smittyvb/ghexports).
+[^alot]: Fun fact: I have so many repos that the option to export all my GitHub data times out, and aftering contacting support I learned the only way to export my data was [using the API](https://github.com/syvb/ghexports).
 
 As a result of this, I get quite a bit of useless email from GitHub about non-existent security issues. I do worry that the volume of bad reports means that someday Dependabot will catch an actual issue that needs updating, and I'll miss it because I've started mentally filtering out all the alerts.
 

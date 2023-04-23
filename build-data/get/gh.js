@@ -17,22 +17,22 @@ const fetch = require("node-fetch");
         "number": 87500,
         "title": "Document math behind MIN/MAX consts on integers",
         "user": {
-            "login": "Smittyvb",
+            "login": "syvb",
             "id": 10530973,
             "node_id": "MDQ6VXNlcjEwNTMwOTcz",
             "avatar_url": "https://avatars.githubusercontent.com/u/10530973?v=4",
             "gravatar_id": "",
-            "url": "https://api.github.com/users/Smittyvb",
-            "html_url": "https://github.com/Smittyvb",
-            "followers_url": "https://api.github.com/users/Smittyvb/followers",
-            "following_url": "https://api.github.com/users/Smittyvb/following{/other_user}",
-            "gists_url": "https://api.github.com/users/Smittyvb/gists{/gist_id}",
-            "starred_url": "https://api.github.com/users/Smittyvb/starred{/owner}{/repo}",
-            "subscriptions_url": "https://api.github.com/users/Smittyvb/subscriptions",
-            "organizations_url": "https://api.github.com/users/Smittyvb/orgs",
-            "repos_url": "https://api.github.com/users/Smittyvb/repos",
-            "events_url": "https://api.github.com/users/Smittyvb/events{/privacy}",
-            "received_events_url": "https://api.github.com/users/Smittyvb/received_events",
+            "url": "https://api.github.com/users/syvb",
+            "html_url": "https://github.com/syvb",
+            "followers_url": "https://api.github.com/users/syvb/followers",
+            "following_url": "https://api.github.com/users/syvb/following{/other_user}",
+            "gists_url": "https://api.github.com/users/syvb/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/syvb/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/syvb/subscriptions",
+            "organizations_url": "https://api.github.com/users/syvb/orgs",
+            "repos_url": "https://api.github.com/users/syvb/repos",
+            "events_url": "https://api.github.com/users/syvb/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/syvb/received_events",
             "type": "User",
             "site_admin": false
         },
@@ -148,7 +148,7 @@ const fetch = require("node-fetch");
     */
     // merged PRs
     for (let i = 0; i < 8; i++) { // never try to fetch too many pages, cause rate limits
-        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=1000&q=is:merged%20is:pr%20author:Smittyvb%20archived:false%20-user:Smittyvb`)).json();
+        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=1000&q=is:merged%20is:pr%20author:syvb%20archived:false%20-user:syvb`)).json();
         res.items.forEach(iss => {
             console.log(JSON.stringify({
                 Type: "gh-pr",

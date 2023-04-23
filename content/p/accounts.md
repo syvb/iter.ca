@@ -16,12 +16,11 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 
 ### Programming
 <ul class="acc-list">
-<li>GitHub: <a href="https://github.com/Smittyvb/">@Smittyvb</a></li>
+<li>GitHub: <a href="https://github.com/syvb/">@syvb</a></li>
 <li>sr.ht: <a href="https://sr.ht/~smitop/">~smitop</a></li>
-<li>crates.io: <a href="https://crates.io/users/Smittyvb">@Smittyvb</a></li>
-<li>Observable: <a href="https://observablehq.com/@smittyvb">@Smittyvb</a></li>
+<li>crates.io: <a href="https://crates.io/users/syvb">@syvb</a></li>
+<li>Observable: <a href="https://observablehq.com/@smitop">@smitop</a></li>
 <li>Kaggle: <a href="https://www.kaggle.com/smitop">@smitop</a></li>
-<li>GitHub: <a href="https://github.com/Smittyvb/">@Smittyvb</a></li>
 </ul>
 
 ### Social media

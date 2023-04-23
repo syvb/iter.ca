@@ -35,4 +35,4 @@ My blog has gone from almost completely unstyled, to fairly consistent styling. 
 While this hasn't changed, I use [Travis CI](https://travis-ci.com/) builds commits to `master`, and deploys them to [Surge](https://surge.sh/).
 
 ## Open source
-It's open source now! I actually have two repos for this blog, [a public one](https://github.com/Smittyvb/smitop.com) and a private one. The private one contains my unpublished blog posts and some other non-public things. I use GitHub Actions to sync the two repos automatically.
+It's open source now! I actually have two repos for this blog, [a public one](https://github.com/syvb/iter.ca) and a private one. The private one contains my unpublished blog posts and some other non-public things. I use GitHub Actions to sync the two repos automatically.

@@ -11,7 +11,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuut6gjf34GROH4+CED0M08g3Hr7kDZ7bT6JxRN27E
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOSmB3TyA2uwJzlLo1D9asCMQHlmCPgVooWcpaOj5moZ
 ```
 
-I control [other SSH keys as well](https://github.com/smittyvb.keys) but I only use those for authenticating to specific servers.
+I control [other SSH keys as well](https://github.com/syvb.keys) but I only use those for authenticating to specific servers.
 
 ## Commit signing
 

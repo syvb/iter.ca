@@ -7,10 +7,24 @@ This is a collection of my current and past avatars. Use the download links for 
 I have waived all copyright and related or neighboring rights to these works under the terms of <a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a>.
 
 ## Current
-<a id="4"></a>
-<a href="/avatar/maxrescomp.png" download>download PNG</a> or <a href="/avatar/vector.svg">download SVG</a>
 
-<div><img src="/avatar/a256.png" alt="" width="256"></div>
+### Octoahedron with background
+<a id="6"></a>
+<a href="/avatar/6/maxrescomp.png" download>download PNG</a>
+
+<div><img src="/avatar/6/a256.png" alt="" width="256"></div>
+
+### Octoahedron without background
+<a id="6t"></a>
+<a href="/avatar/6t/maxrescomp.png" download>download PNG</a>
+
+<div><img src="/avatar/6t/a256.png" alt="" width="256"></div>
+
+### A letter S
+<a id="4"></a>
+<a href="/avatar/4/maxrescomp.png" download>download PNG</a> or <a href="/avatar/4/vector.svg">download SVG</a>
+
+<div><img src="/avatar/4/a256.png" alt="" width="256"></div>
 
 ## 2014-2021 (on <a href="https://scratch.mit.edu/">Scratch</a>)
 <a id="2"></a>

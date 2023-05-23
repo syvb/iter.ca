@@ -19,7 +19,16 @@
         <article itemprop="articleBody" id="content" class="e-content">
           {{ .Content }}
           {{ partial "reclist.html" .Pages }}
+          <hr>
         </article>
+        <footer>
+          <div id="meta">
+            <div class="related-posts"></div>
+            <div class="meta-other">
+              {{ partial "footer-meta-other.html" . }}
+            </div>
+          </div>
+        </footer>
     </div>
   </section>
 </body>

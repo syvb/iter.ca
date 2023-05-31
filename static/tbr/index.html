@@ -21,6 +21,7 @@
         let blockedDomains;
         let words;
         let tbrDomains;
+        let topDomains;
         function filter(domain) {
             if (domain !== domain.toLowerCase()) throw new Error("non-lowercase domain");
             if (blockedDomains.includes(domain)) return true;
@@ -43,6 +44,8 @@
                 if (!filter(domain)) return;
                 let flags = "";
                 flags += (blockedDomains.includes(domain)) ? "B" : " ";
+                flags += (topDomains.includes(domain)) ? "T" : " ";
+                flags += (label.length === 1) ? "1" : " ";
                 flags += (label.length === 2) ? "2" : " ";
                 flags += (label.length === 3) ? "3" : " ";
                 // const containsWord = !words.every(word => word.length < 4 || !label.includes(word));
@@ -77,9 +80,10 @@
             updateTable();
         };
         const dataReady = (async () => {
-            const [blockedData, wordsData] = await Promise.all([
+            const [blockedData, wordsData, topData] = await Promise.all([
                 fetch("blocked.txt").then(res => res.text()),
                 fetch("https://i.sm4.ca/words.txt").then(res => res.text()),
+                fetch("https://i.sm4.ca/cf-top-1mil.csv").then(res => res.text()),
             ]);
             blockedDomains = blockedData.split("\n").map(x => x.split(" ")[0]).filter(s => s.endsWith(".ca"));
             words = wordsData
@@ -87,7 +91,15 @@
                 .slice(5)
                 .map(word => word.trim().toLowerCase().replace(/[^a-z]/g, ""))
                 .filter(word => word.length > 1);
+            topDomains = topData
+                .split("\n")
+                .slice(1)
+                .filter(dom => dom.endsWith(".ca"));
         })();
+        onload = () => {
+            const now = new Date();
+            document.getElementById("date").value = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+        }
     </script>
     <style>
         body {

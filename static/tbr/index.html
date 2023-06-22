@@ -27,9 +27,9 @@
             if (blockedDomains.includes(domain)) return true;
             const label = domain.split(".")[0];
             if (label.length <= 3) return true;
-            if (label.length > 12) return false;
+            // if (label.length > 12) return false;
             if (label.length >= 5 && domain.includes("-")) return false;
-            if (label.length >= 5 && label.match(/^[a-z]+[0-9]+[a-z]+$/)) return false;
+            // if (label.length >= 6 && label.match(/^[a-z]+[0-9]+[a-z]+$/)) return false;
             return true;
         }
         function updateTable() {

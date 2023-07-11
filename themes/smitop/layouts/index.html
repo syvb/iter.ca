@@ -43,24 +43,33 @@
             </div>
             <div id="metop-right">
                 <div id="me-links">
-                    {{ readFile "themes/smitop/shortbio.md" | markdownify }}
-                    <ul>
-                        <li><a href="mailto:me&#x000000000000000000000000000000040;iter.ca">{{ partial "email.html" }}</a></li>
-                        <li><a href="https://github.com/syvb">GitHub</a></li>
-                        <li><a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">YouTube</a></li>
-                        <li><a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">Stack Exchange</a></li>
-                        <li><a href="/p/accounts/">more</a></li>
-                    </ul>
+                    <p>I do stuff!</p>
+                    <div>
+                        <ul>
+                            <li><a href="mailto:me&#x000000000000000000000000000000040;iter.ca">{{ partial "email.html" }}</a></li>
+                            <li><a href="https://github.com/syvb">GitHub</a></li>
+                            <li><a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">YouTube</a></li>
+                            <li><a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">Stack Exchange</a></li>
+                            <li><a href="/p/accounts/">more</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        On this site:
+                        <ul>
+                            <li><a href="/post">Posts</a></li>
+                            <li><a href="/p">Pages</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="homepage-content">
-        <div id="blog-posts">
-            <h2>Things from me <a href="/stream/me/">(more)</a></h2>
+        <details id="blog-posts">
+            <summary><h2>Some mildly interesting things from me <a href="/stream/me/">(even more)</a></h2></summary>
             {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
-        </div>
+        </details>
     </div>
     <a href="https://github.com/syvb/iter.ca" class="source-link">
       (view the source code for this site)

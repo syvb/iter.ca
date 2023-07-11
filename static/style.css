@@ -92,9 +92,20 @@ kbd {
     width: 100%;
 }
 
-#me-links > ul {
+#me-links > div, #me-links > div > ul {
     padding: 0;
     text-align: center;
+}
+#me-links > div ul {
+    display: inline-block;
+}
+#me-links > div {
+    margin-top: 1em;
+}
+
+#me-links p {
+    text-align: center;
+    padding-bottom: 0;
 }
 
 #me-links li {
@@ -282,7 +293,7 @@ blockquote > p:last-child {
 
 #metop {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     font-family: sans-serif;
     max-width: 60em;
     margin-bottom: 1em;
@@ -293,7 +304,6 @@ blockquote > p:last-child {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-right: 1.5em;
 }
 
 #metop-right {
@@ -412,12 +422,22 @@ ol.spec-list > li:before {
     counter-increment: item;
 }
 
+#blog-posts > summary {
+    cursor: pointer;
+}
+
+#blog-posts[open] {
+    cursor: unset;
+    background: white;
+}
+
+summary h2 {
+    display: inline;
+}
+
 @media (max-width: 900px) {
     #metop {
         flex-direction: column;
-    }
-    #metop-left {
-        margin-right: 0;
     }
 }
 

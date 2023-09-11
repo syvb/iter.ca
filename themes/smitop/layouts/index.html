@@ -66,10 +66,12 @@
     </div>
 
     <div id="homepage-content">
-        <details id="blog-posts">
-            <summary><h2>Some mildly interesting things from me <a href="/stream/me/">(even more)</a></h2></summary>
+        <!-- <details id="blog-posts"> -->
+            <!-- <summary> -->
+                <h2>Some mildly interesting things from me <a href="/stream/me/">(even more)</a></h2>
+            <!-- </summary> -->
             {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
-        </details>
+        <!-- </details> -->
     </div>
     <a href="https://github.com/syvb/iter.ca" class="source-link">
       (view the source code for this site)

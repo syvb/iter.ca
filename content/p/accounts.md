@@ -26,15 +26,15 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 ### Social media
 <ul class="acc-list">
 <li>Hacker News: <a href="https://news.ycombinator.com/user?id=smitop">@smitop</a></li>
-<li>Stack Exchange: <a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">Smitop</a></li>
-<li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">Smitop</a></li>
+<li>Stack Exchange: <a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">smitop</a></li>
+<li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">iter</a></li>
 <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Special:Contributions/Smitop">User:Smitop</a></li>
 <li class="inactive">Twitter: <a href="https://twitter.com/_smitop">@_smitop</a></li>
 </ul>
 
 ### Chat
 <ul class="acc-list">
-<li>Discord: <code>@smitop#9929</code></li>
+<li>Discord: <code>@moreloops</code></li>
 </ul>
 
 ### Other websites
@@ -44,6 +44,6 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>Neocities: <a href="https://neocities.org/site/smitop">@smitop</a></li>
 <li>itch.io: <a href="https://smitop.itch.io/">@smitop</a></li>
 <li>Scratch: <a href="https://scratch.mit.edu/users/smitop/">@smitop</a></li>
-<li>Kongregate: <a href="https://www.kongregate.com/accounts/smitop">@smitop</a></li>
-<li>Product Hunt: <a href="https://www.producthunt.com/@_smitop">@smitop</a></li>
+<li class="inactive">Kongregate: <a href="https://www.kongregate.com/accounts/smitop">@smitop</a></li>
+<li class="inactive">Product Hunt: <a href="https://www.producthunt.com/@_smitop">@smitop</a></li>
 </ul>

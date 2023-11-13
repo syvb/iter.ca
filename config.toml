@@ -1,11 +1,11 @@
 baseURL = "https://iter.ca/"
 languageCode = "en-CA"
 title = "iter.ca"
-author = "Smitop"
+author = "iter"
 enableGitInfo = true
 
 [params]
-author = "Smitop"
+author = "iter"
 
 [frontmatter]
 # https://www.andrewjstevens.com/posts/2021/03/last-modified-date-with-hugo/

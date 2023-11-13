@@ -4,9 +4,9 @@
 {{ safeHTML "<?xml-stylesheet href=\"/rss.xml\" type=\"text/xsl\"?>" }}
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule" version="2.0">
     <channel>
-        <title>Smitop's Blog</title>
+        <title>iter.ca</title>
         <link>{{ .Permalink }}</link>
-        <description>Recent blog posts on Smitop's Blog</description>
+        <description>Recent blog posts on iter.ca</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>{{ .Site.LanguageCode }}</language>
         <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>

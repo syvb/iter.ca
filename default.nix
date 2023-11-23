@@ -5,6 +5,7 @@ stdenv.mkDerivation rec {
 
     buildInputs = [
         nodejs
+        deno
         hugo
     ];
 

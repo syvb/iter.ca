@@ -7,10 +7,12 @@ let linkrefs = {
 let queue = [Deno.args[0]];
 
 function handleLinks(links: string[], origin: string) {
-    links.forEach(link => {
+    links.forEach((link: string | URL) => {
         if (!link) return;
         try {
-            link = new URL(link, origin).href;
+            link = new URL(link, origin);
+            link.hash = "";
+            link = link.href;
         } catch (e) {
             return;
         }
@@ -19,7 +21,7 @@ function handleLinks(links: string[], origin: string) {
         linkrefs[link] = linkrefs[link] || [];
         linkrefs[link].push(origin);
         // don't crawl out of initial origin
-        if (!alreadyQueued && ((new URL(origin)).hostname.endsWith("smitop.com"))) {
+        if (!alreadyQueued && ((new URL(origin)).hostname.endsWith("iter.ca"))) {
             queue.push(link);
         }
     });
@@ -55,7 +57,7 @@ function handleLinks(links: string[], origin: string) {
             console.log("failed to get html for", cur);
             continue;
         }
-        handleLinks([...doc.querySelectorAll("a[href]")].map(x => (x as any).attributes["href"]), cur);
+        handleLinks([...doc.querySelectorAll("a[href]")].map(x => (x as any).getAttribute("href")), cur);
         cur = queue.pop();
         await new Promise(resolve => setTimeout(() => resolve(undefined), 50));
     }

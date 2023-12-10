@@ -68,6 +68,7 @@
     lld
     tree
     whois
+    gh
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

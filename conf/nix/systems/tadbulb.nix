@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  imports = [ ../base.nix ];
+  imports = [ ../base.nix ../interactive.nix ];
 
   networking.hostName = "tadbulb";
 

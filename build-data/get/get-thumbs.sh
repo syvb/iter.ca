@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 >&2 echo "Getting YouTube thumbnails"
 while read -r id

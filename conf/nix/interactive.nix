@@ -33,6 +33,7 @@
       openssl
       imagemagick
       inkscape
+      vscodium
     ];
   };
 }

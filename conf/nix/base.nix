@@ -29,7 +29,6 @@
   environment.systemPackages = with pkgs; [
     git
     wget
-    vscodium
     lld
     tree
     whois

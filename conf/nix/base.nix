@@ -28,12 +28,15 @@
 
   environment.systemPackages = with pkgs; [
     git
+    gh
     wget
     lld
     tree
     whois
-    gh
     jq
+    pkg-config
+    openssl
+    imagemagick
   ];
   programs.mtr.enable = true;
 

@@ -25,15 +25,21 @@
     description = "Smitty";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
+      # Internet
       firefox
+
+      # Editors
       kate
+      vscodium
+
+      # Dev
       rustup
       gcc
-      pkg-config
-      openssl
-      imagemagick
+
+      # Art
       inkscape
-      vscodium
+      prusa-slicer
+      blender
     ];
   };
 }

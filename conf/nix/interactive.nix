@@ -32,6 +32,7 @@
       pkg-config
       openssl
       imagemagick
+      inkscape
     ];
   };
 }

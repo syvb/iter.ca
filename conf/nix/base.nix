@@ -37,6 +37,11 @@
     pkg-config
     openssl
     imagemagick
+    dig
+    killall
+    gnumake
+    unzip
+    xxd
   ];
   programs.mtr.enable = true;
 

@@ -42,6 +42,7 @@
     gnumake
     unzip
     xxd
+    units
   ];
   programs.mtr.enable = true;
 

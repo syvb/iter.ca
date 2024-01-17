@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 shopt -s dotglob
 
-if [ -f ~/scom ]; then
+if [ -e ~/scom ]; then
 scom=$HOME/scom
 else
 scom=$HOME/src/scom

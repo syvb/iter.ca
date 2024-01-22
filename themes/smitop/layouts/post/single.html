@@ -30,13 +30,16 @@
       </article>
     </div>
     <footer>
-      <iframe
-        id="footer-email-sub"
-        scrolling="no"
-        loading="lazy"
-        style="width:100%!important;height:140px;border:1px #ccc solid !important"
-        src="https://buttondown.email/z?as_embed=true&tag=source:scom"
-      ></iframe>
+      <div class="footer-newsletter">
+        Subscribe to my weekly-ish email newsletter:
+        <iframe
+          id="footer-email-sub"
+          scrolling="no"
+          loading="lazy"
+          style="width:100%!important;height:140px;border:1px #ccc solid !important"
+          src="https://buttondown.email/z?as_embed=true&tag=source:scom"
+        ></iframe>
+      </div>
       <hr>
       <div id="meta">
         {{ with ((.Site.RegularPages.Related .) | first 5) }}

@@ -3,8 +3,8 @@ body {
     font-family: "Source Serif Pro", P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
 }
 
-body::before {
-    /* https://stackoverflow.com/a/33091315/10113238 */
+/* body::before {
+    /* https://stackoverflow.com/a/33091315/10113238 * /
     content: "";
     position: fixed;
     left: 0;
@@ -13,14 +13,14 @@ body::before {
     z-index: -1;
 
     display: block;
-    /* background-image: url('https://i.sm4.ca/justbg.png'); */
+    /* background-image: url('https://i.sm4.ca/justbg.png'); * /
     background-image: url('/justbg2.jpg');
     background-size: cover;
     width: 100%;
     height: 100%;
 
     filter: opacity(0.1) blur(4px);
-}
+} */
 
 #lastmod-info {
     color: rgb(77, 77, 77);

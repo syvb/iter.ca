@@ -60,7 +60,7 @@ execScript("e71012934811a=false::On Error Resume Next::" + e + "::if Err.Number=
 - checks for these strings on window (de-obfuscated, I also have the original obfuscated ones in case you are also looking through the source):
   - `boltsWebViewAppLinkResolverResult`, `GoogleJsInterface`, `googleAdsJsInterface`, `accessibilityTraversal`, `accessibility`, `FbPlayableAd`, `__REACT_WEB_VIEW_BRIDGE`
   - obfuscated in code as `obygfJroIvrjNccYvaxErfbyireErfhyg`, `TbbtyrWfVagresnpr`, `tbbtyrNqfWfVagresnpr`, `npprffvovyvglGenirefny`, `npprffvovyvgl`, `SoCynlnoyrNq`, `__ERNPG_JRO_IVRJ_OEVQTR`
-- checks the screen's `availHeight`, `availWidth`, `width`, and `height
+- checks the screen's `availHeight`, `availWidth`, `width`, and `height`
 - checks the screen's `colorDepth`, `pixelDepth`, and `devicePixelRatio`
 - checks for these automation-related properties on `window`: `domAutomation`, `domAutomationController`, `_WEBDRIVER_ELEM_CACHE`, `_phantom`, `callPhantom`, `window.chrome._commandLineAPI`, `window.Debug.debuggerEnabled`, `__BROWSERTOOLS_CONSOLE`, `window._FirebugCommandLine`, and also if `document.documentElement.hasAttribute("webdriver")` is true
 - checks if `"function () { return Function.apply.call(x.log, x, arguments); }" == window.console.log.toString()` (also to check for browser automation I guess

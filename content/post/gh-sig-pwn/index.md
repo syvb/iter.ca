@@ -75,7 +75,7 @@ Since the first `author` name is zero characters long, the regex skips that line
 
 ## The fix
 
-GitHub fixed the issue by changing the problematic regex to <span style="white-space: nowrap">`/\Aauthor ([^<]*)[ ]{0,1}<(.+)>/`</span>, which should all `author` header lines accepted by `git-fsck`.
+GitHub fixed the issue by changing the problematic regex to <span style="white-space: nowrap">`/\Aauthor ([^<]*)[ ]{0,1}<(.+)>/`</span>, which should match all `author` header lines accepted by `git-fsck`.
 
 ## Timeline
 - April 22 2023: I report the issue to GitHub

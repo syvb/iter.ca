@@ -4,6 +4,7 @@
 {"Type":"note","Id":"note-battle-fight-icon","NoteType":"Art","Title":"Battle/fight icon","Date":{"Unix":1551916800},"Uri":"https://opengameart.org/content/battlefight-icon-with-two-swords-svg-vector","Thumb":"/fight.svg","Verbose":1,"Text":"\n"},
 {"Type":"note","Id":"note-cookie","NoteType":"Art","Title":"Cookie","Date":{"Unix":1512691200},"Uri":"https://archive.org/details/Cookie_vector","Thumb":"/cookie.svg","Verbose":1,"Text":"\n"},
 {"Type":"note","Id":"note-donut","NoteType":"Art","Title":"Donut","Date":{"Unix":1512691200},"Uri":"https://archive.org/details/donut_vector","Thumb":"/donut.svg","Verbose":1,"Text":"\n"},
+{"Type":"note","Id":"note-h1-1887917","Date":{"Unix":1696809600},"Title":"IRCCloud XSS from Mastodon embeds","Verbose":0,"NoteType":"Report","Uri":"https://hackerone.com/reports/1887917","Text":"\n\n"},
 {"Type":"note","Id":"note-int-mod-n","NoteType":"Math demo","Title":"Integers mod 𝑛 under multiplication","Date":{"Unix":1617926400},"Uri":"https://smitop.com/int-mod-n.html","Thumb":"/intmod200.png","Verbose":0,"Text":"\n"},
 {"Type":"note","Id":"note-learnlake","NoteType":"Game","Title":"LearnLake","Date":{"Unix":1523577600},"Uri":"https://learnlake.com/","Verbose":0,"Text":"A small educational website.\n\n"},
 {"Type":"note","Id":"note-mova","NoteType":"Game","Date":{"Unix":1578009600},"Uri":"https://smitop.com/mova.html","Title":"Mova","Verbose":0,"Text":"\nA game where you avoid tiny squares.\n\n"},

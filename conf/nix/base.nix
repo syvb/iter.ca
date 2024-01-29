@@ -36,6 +36,7 @@
     jq
     pkg-config
     openssl
+    openssl.dev
     imagemagick
     dig
     killall
@@ -45,6 +46,9 @@
     units
   ];
   programs.mtr.enable = true;
+  environment.sessionVariables = rec {
+    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+  };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 

@@ -27,6 +27,7 @@
     packages = with pkgs; [
       # Internet
       firefox
+      chromium
 
       # Editors
       kate

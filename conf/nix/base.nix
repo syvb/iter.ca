@@ -44,6 +44,8 @@
     unzip
     xxd
     units
+    python3
+    mercurial
   ];
   programs.mtr.enable = true;
   environment.sessionVariables = rec {

@@ -25,13 +25,13 @@
             {{- else if (eq .Item.Type "observable") -}}
                 Observable notebook
             {{- else if (eq .Item.Type "hn") -}}
-                HN {{- .Item.HNType -}}
+                HN {{ .Item.HNType -}}
             {{- else if (eq .Item.Type "scrproj") -}}
                 Scratch project
             {{- else if (eq .Item.Type "SePost") -}}
                 Stack Exchange post
             {{- else if (eq .Item.Type "itch") -}}
-                Itch {{- .Item.ItchType -}}
+                Itch {{ .Item.ItchType -}}
             {{- else if (eq .Item.Type "gh-pr") -}}
                 Pull request
             {{- else -}}
@@ -61,9 +61,9 @@
             </h2>
         {{- end -}}
         <div class="stream-item-date">
-            {{- if (eq .Item.Type "gh-pr") -}}
+            {{- if (eq .Item.Type "gh-pr") }}
                 merged
-            {{- end -}}
+            {{ end -}}
             {{- if (.scr.Get "mini") }} on {{ end -}}
             {{- dateFormat "January 2, 2006" (int .Item.Date.Unix) -}}
         </div>

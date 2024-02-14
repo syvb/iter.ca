@@ -75,11 +75,11 @@
                     <!-- Just going to call these images decorative. This is how YouTube handles thumbnail alt text. -->
                     <img
                         src="{{- .Item.Thumb -}}"
-                        {{- if (eq .Item.Type "itch") -}}
+                        {{ if (eq .Item.Type "itch") }}
                             height="135" width="170"
-                        {{- else -}}
+                        {{ else }}
                             height="135" width="240"
-                        {{- end -}}
+                        {{ end }}
                         alt=""
                         class="stream-item-thumb"
                         loading="lazy" />

@@ -1,4 +1,8 @@
-<div class="stream-item{{if (isset . "Featured")}} featured{{ end }}" id="{{ if (isset .Item "Id")}}stream-item-{{ .Item.Id }}{{ else }}stream-item-post-{{ .Item.File.UniqueID }}{{ end }}">
+<div
+    class="stream-item{{if (isset . "Featured")}} featured{{ end }}"
+    id="{{ if (isset .Item "Id")}}stream-item-{{ .Item.Id }}{{ else }}stream-item-post-{{ .Item.File.UniqueID }}{{ end }}"
+    data-verbose="{{ .scr.Get "verbose" }}"
+>
     {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
     {{ if .Item.Title }}
         <div class="stream-item-type">

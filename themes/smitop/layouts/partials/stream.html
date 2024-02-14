@@ -1,76 +1,96 @@
-<div class="stream{{ if .Mini }} mini{{ end }}">
-    {{ $scr := newScratch }}
-    {{ $scr.Set "idx" 0 }}
-    {{ $scr.Set "verboseMax" .VerboseMax }}
-    {{ $scr.Set "overrides" .Overrides }}
-    {{ $scr.Set "selfOnly" .SelfOnly }}
-    {{ $scr.Set "mini" .Mini }}
+<div class="stream{{- if .Mini }} mini{{ end -}}">
+    {{- $scr := newScratch -}}
+    {{- $scr.Set "idx" 0 -}}
+    {{- $scr.Set "verboseMax" .VerboseMax -}}
+    {{- if (eq .VerboseMin nil) -}}
+        {{- $scr.Set "verboseMin" -1000 -}}
+    {{- else -}}
+        {{- $scr.Set "verboseMin" .VerboseMin -}}
+    {{- end -}}
+    {{- if (eq .Limit nil) -}}
+        {{- $scr.Set "limit" 1000000 -}}
+    {{- else -}}
+        {{- $scr.Set "limit" .Limit -}}
+    {{- end -}}
+
+    {{- $scr.Set "overrides" .Overrides -}}
+    {{- $scr.Set "selfOnly" .SelfOnly -}}
+    {{- $scr.Set "mini" .Mini -}}
     <!-- featured posts are shown even when SelfOnly would supress them -->
-    {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
-        {{ $scr.Set "verbose" 0 }}
-        {{ if (hasPrefix .File.Dir "p/") }}
-            {{ $scr.Set "verbose" 1 }}
-        {{ end }}
-        {{ if (eq .Params nil) }}
-            {{ if (ne .Verbose nil) }}
-                {{ $scr.Set "verbose" .Verbose }}
-            {{ end }}
-        {{ end }}
-        {{ if (ne .Params.Featured nil) }}
-            {{ $.Set "verbose" -1 }}
-        {{ end }}
-        {{ if (eq .Params nil) }}
-            {{ if (ne .Id nil) }}
-                {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
-                    {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
-                {{ end }}
-            {{ end }}
-            {{ if (and (eq .HNType "story") ($scr.Get "selfOnly")) }}
-                {{ $scr.Set "verbose" 100 }}
-            {{ end }}
-        {{ end }}
-        {{ if (ne .Params.Verbose nil) }}
-            {{ $scr.Set "verbose" .Params.Verbose }}
-        {{ end }}
-        {{ if (and (le ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
-            {{ $scr.Add "idx" 1 }}
-            {{ partial "streamitem.html" (dict "Item" . "scr" $scr "Featured" true) }}
-        {{ end }}
-    {{ end }}
-    {{ range (sort .Data ".Date.Unix" "desc") | uniq }}
-        {{ $scr.Set "verbose" 0 }}
-        {{ if (hasPrefix .File.Dir "p/") }}
-            {{ $scr.Set "verbose" 1 }}
-        {{ end }}
-        {{ if (eq .Params nil) }}
-            {{ if (ne .Verbose nil) }}
-                {{ $scr.Set "verbose" .Verbose }}
-            {{ end }}
-        {{ end }}
-        {{ if (ne .Params.Featured nil) }}
-            {{ $.Set "verbose" -1 }}
-        {{ end }}
-        {{ if (eq .Params nil) }}
-            {{ if (ne .Id nil) }}
-                {{ if (ne (index ($scr.Get "overrides") .Id) nil)}}
-                    {{ $scr.Set "verbose" (index ($scr.Get "overrides") .Id) }}
-                {{ end }}
-            {{ end }}
-            {{ if (and (eq .HNType "story") ($scr.Get "selfOnly")) }}
-                {{ $scr.Set "verbose" 100 }}
-            {{ end }}
-        {{ end }}
-        {{ if (ne .Params.Verbose nil) }}
-            {{ $scr.Set "verbose" .Params.Verbose }}
-        {{ end }}
-        {{ if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) ) }}
-            {{ $scr.Add "idx" 1 }}
-            {{ partial "streamitem.html" (dict "Item" . "scr" $scr) }}
-        {{ end }}
+    {{- range (sort .Data ".Date.Unix" "desc") | uniq -}}
+        {{- $scr.Set "verbose" 0 -}}
+        {{- if (hasPrefix .File.Dir "p/") -}}
+            {{- $scr.Set "verbose" 1 -}}
+        {{- end -}}
+        {{- if (eq .Params nil) -}}
+            {{- if (ne .Verbose nil) -}}
+                {{- $scr.Set "verbose" .Verbose -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if (ne .Params.Featured nil) -}}
+            {{- $.Set "verbose" -1 -}}
+        {{- end -}}
+        {{- if (eq .Params nil) -}}
+            {{- if (ne .Id nil) -}}
+                {{- if (ne (index ($scr.Get "overrides") .Id) nil) -}}
+                    {{- $scr.Set "verbose" (index ($scr.Get "overrides") .Id) -}}
+                {{- end -}}
+            {{- end -}}
+            {{- if (and (eq .HNType "story") ($scr.Get "selfOnly")) -}}
+                {{- $scr.Set "verbose" 100 -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if (ne .Params.Verbose nil) -}}
+            {{- $scr.Set "verbose" .Params.Verbose -}}
+        {{- end -}}
+        {{- if (and (le ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) (ge ($scr.Get "verbose") ($scr.Get "verboseMin")) ) -}}
+            {{- $scr.Add "idx" 1 -}}
+            {{- if (le ($scr.Get "idx") ($scr.Get "limit")) -}}
+                {{- partial "streamitem.html" (dict "Item" . "idx" ($scr.Get "idx") "scr" $scr "Featured" (gt ($scr.Get "verboseMax") -1)) -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{- range (sort .Data ".Date.Unix" "desc") | uniq -}}
+        {{- $scr.Set "verbose" 0 -}}
+        {{- if (hasPrefix .File.Dir "p/") -}}
+            {{- $scr.Set "verbose" 1 -}}
+        {{- end -}}
+        {{- if (eq .Params nil) -}}
+            {{- if (ne .Verbose nil) -}}
+                {{- $scr.Set "verbose" .Verbose -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if (ne .Params.Featured nil) -}}
+            {{- $.Set "verbose" -1 -}}
+        {{- end -}}
+        {{- if (eq .Params nil) -}}
+            {{- if (ne .Id nil) -}}
+                {{- if (ne (index ($scr.Get "overrides") .Id) nil) -}}
+                    {{- $scr.Set "verbose" (index ($scr.Get "overrides") .Id) -}}
+                {{- end -}}
+            {{- end -}}
+            {{- if (and (eq .HNType "story") ($scr.Get "selfOnly")) -}}
+                {{- $scr.Set "verbose" 100 -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if (ne .Params.Verbose nil) -}}
+            {{- $scr.Set "verbose" .Params.Verbose -}}
+        {{- end -}}
+        {{- if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) (ge ($scr.Get "verbose") ($scr.Get "verboseMin")) ) -}}
+            {{- $scr.Add "idx" 1 -}}
+            {{- if (le ($scr.Get "idx") ($scr.Get "limit")) -}}
+                {{- partial "streamitem.html" (dict "Item" . "Idx" ($scr.Get "idx") "scr" $scr "Featured" 0) -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{ if .MoreLink }}
+        <div class="stream-item stream-more" data-verbose="-100" data-idx="{{ $scr.Get "idx" }}"
+            ><a href="{{ .MoreLink }}">more...</a>
+        </div>
     {{ end }}
 </div>
-{{ if .Count }}
+{{- if .Count -}}
     <div>
-        Rendered {{ $scr.Get "idx" }} items.
+        Rendered {{- $scr.Get "idx" -}} items.
     </div>
-{{ end }}
+{{- end -}}

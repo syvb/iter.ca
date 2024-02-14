@@ -3,5 +3,6 @@ Title=Segme
 Date=2021-10-04
 Uri=https://smitop.com/segme/
 Thumb=/segme.png
+Verbose=-1
 
 Unicode text segmentation online.

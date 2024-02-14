@@ -1,4 +1,5 @@
 +++
+verbose = -1
 date = "2023-11-11T23:00:00+00:00"
 description = "Creating fake signed commits"
 tags = ["github", "programming", "security", "git"]

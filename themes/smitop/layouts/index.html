@@ -53,7 +53,7 @@
                             <li><a href="/p/accounts/">more</a></li>
                         </ul>
                     </div>
-                    <div>
+                    <div id="on-this-site">
                         On this site:
                         <ul>
                             <li><a href="/post">Posts</a></li>
@@ -66,12 +66,12 @@
     </div>
 
     <div id="homepage-content">
-        <!-- <details id="blog-posts"> -->
-            <!-- <summary> -->
-                <h2>Some mildly interesting things from me <a href="/stream/me/">(even more)</a></h2>
-            <!-- </summary> -->
-            {{ partial "stream.html" (dict "VerboseMax" 0 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides)}}
-        <!-- </details> -->
+        <!-- <input type="range" min="-1" max="0" id="verbose-slider" value="0" autocomplete="off" oninput="this.setAttribute('value', this.value)"> -->
+        <!-- <h2>Some mildly interesting things from me <a href="/stream/me/">(even more)</a></h2> -->
+        <h2>Top posts</h2>
+        {{ partial "stream.html" (dict "VerboseMax" -1 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides "Mini" 1)}}
+        <h2>Recent stuff (<a href="/stream/interesting">more</a>)</h2>
+        {{ partial "stream.html" (dict "VerboseMax" 0 "VerboseMin" 0 "Limit" 20 "Data" (.Site.RegularPages | append $.Site.Data.data) "Overrides" $.Site.Data.voverrides "Mini" 1 "MoreLink" "/stream/interesting/")}}
     </div>
     <a href="https://github.com/syvb/iter.ca" class="source-link">
       (view the source code for this site)

@@ -1,131 +1,135 @@
 <div
-    class="stream-item{{if (isset . "Featured")}} featured{{ end }}"
-    id="{{ if (isset .Item "Id")}}stream-item-{{ .Item.Id }}{{ else }}stream-item-post-{{ .Item.File.UniqueID }}{{ end }}"
-    data-verbose="{{ .scr.Get "verbose" }}"
+    class="stream-item{{- if .Featured }} featured{{ end -}}"
+    id="{{ if (isset .Item "Id") }}stream-item-{{ .Item.Id }}{{ else }}stream-item-post-{{ .Item.File.UniqueID }}{{ end }}"
+    data-verbose="{{- .scr.Get "verbose" -}}"
+    data-idx="{{- .Idx -}}"
 >
-    {{if (isset . "Featured")}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{ end }}
-    {{ if .Item.Title }}
+    {{- if .Featured -}}<img src="/star.svg" class="fstar" alt="Featured" title="Featured" width="20">{{- end -}}
+    {{- if .Item.Title -}}
         <div class="stream-item-type">
-    {{ else }}
+    {{- else -}}
         <h2 class="stream-item-type">
-        {{ if (isset .Item "Uri") }}
-            <a href="{{ .Item.Uri }}">
-        {{ end }}
-    {{ end }}
-        {{ if (isset .Item "Type")}}
-            {{ if (eq .Item.Type "note")}}
-                {{ if (isset .Item "NoteType")}}
-                    {{ .Item.NoteType }}
-                {{ else }}
+        {{- if (isset .Item "Uri") -}}
+            <a href="{{- .Item.Uri -}}">
+        {{- end -}}
+    {{- end -}}
+        {{- if (isset .Item "Type") -}}
+            {{- if (eq .Item.Type "note") -}}
+                {{- if (isset .Item "NoteType") -}}
+                    {{- .Item.NoteType -}}
+                {{- else -}}
                     Note
-                {{ end }}
-            {{ else if (eq .Item.Type "video")}}
+                {{- end -}}
+            {{- else if (eq .Item.Type "video") -}}
                 Video
-            {{ else if (eq .Item.Type "observable")}}
+            {{- else if (eq .Item.Type "observable") -}}
                 Observable notebook
-            {{ else if (eq .Item.Type "hn")}}
-                HN {{ .Item.HNType }}
-            {{ else if (eq .Item.Type "scrproj")}}
+            {{- else if (eq .Item.Type "hn") -}}
+                HN {{- .Item.HNType -}}
+            {{- else if (eq .Item.Type "scrproj") -}}
                 Scratch project
-            {{ else if (eq .Item.Type "SePost")}}
+            {{- else if (eq .Item.Type "SePost") -}}
                 Stack Exchange post
-            {{ else if (eq .Item.Type "itch")}}
-                Itch {{ .Item.ItchType }}
-            {{ else if (eq .Item.Type "gh-pr")}}
+            {{- else if (eq .Item.Type "itch") -}}
+                Itch {{- .Item.ItchType -}}
+            {{- else if (eq .Item.Type "gh-pr") -}}
                 Pull request
-            {{ else }}
+            {{- else -}}
                 Note
-            {{ end }}
-        {{ else }}
+            {{- end -}}
+        {{- else -}}
             Blog post
-        {{ end }}
-    {{ if .Item.Title}}
+        {{- end -}}
+    {{- if .Item.Title -}}
         </div>
-    {{ else }}
-        {{ if (isset .Item "Uri") }}
+    {{- else -}}
+        {{- if (isset .Item "Uri") -}}
             </a>
-        {{ end }}
+        {{- end -}}
         </h2>
-    {{ end }}
-    {{ if (isset .Item "Type")}}
-        {{ if (isset .Item "Title")}}
+    {{- end -}}
+    {{- if (isset .Item "Type") -}}
+        {{- if (isset .Item "Title") -}}
             <h2>
-                {{ if (isset .Item "Uri") }}
-                    <a href="{{ .Item.Uri }}">
-                {{ end }}
-                    {{ .Item.Title }}
-                {{ if (isset .Item "Uri") }}
+                {{- if (isset .Item "Uri") -}}
+                    <a href="{{- .Item.Uri -}}">
+                {{- end -}}
+                    {{- .Item.Title -}}
+                {{- if (isset .Item "Uri") -}}
                     </a>
-                {{ end }}
+                {{- end -}}
             </h2>
-        {{ end }}
+        {{- end -}}
         <div class="stream-item-date">
-            {{ if (eq .Item.Type "gh-pr")}}
+            {{- if (eq .Item.Type "gh-pr") -}}
                 merged
-            {{ end }}
-            {{ if (.scr.Get "mini") }}on{{ end }}
-            {{ dateFormat "January 2, 2006" (int .Item.Date.Unix) }}
+            {{- end -}}
+            {{- if (.scr.Get "mini") }} on {{ end -}}
+            {{- dateFormat "January 2, 2006" (int .Item.Date.Unix) -}}
         </div>
-        {{ if (isset .Item "Uri") }}
-            <a href="{{ .Item.Uri }}">
-        {{ end }}
-            {{ if (isset .Item "Thumb") }}
+        {{- if (isset .Item "Uri") -}}
+            <a href="{{- .Item.Uri -}}">
+        {{- end -}}
+            {{- if (and (isset .Item "Thumb") (not (.scr.Get "mini"))) -}}
                 <div class="stream-item-thumb-wrapper">
                     <!-- Just going to call these images decorative. This is how YouTube handles thumbnail alt text. -->
                     <img
-                        src="{{ .Item.Thumb }}"
-                        {{ if (eq .Item.Type "itch")}}
+                        src="{{- .Item.Thumb -}}"
+                        {{- if (eq .Item.Type "itch") -}}
                             height="135" width="170"
-                        {{ else }}
+                        {{- else -}}
                             height="135" width="240"
-                        {{ end }}
+                        {{- end -}}
                         alt=""
                         class="stream-item-thumb"
                         loading="lazy" />
                 </div>
-            {{ end }}
-        {{ if (isset .Item "Uri") }}
+            {{- end -}}
+        {{- if (isset .Item "Uri") -}}
             </a>
-        {{ end }}
-        {{ if (and (isset .Item "Text") (or (not (.scr.Get "mini")) (not (.Item.Title)))) }}
+        {{- end -}}
+        {{- if (and (isset .Item "Text") (or (not (.scr.Get "mini")) (not (.Item.Title)))) -}}
             <!-- safeHTML is okay here since this content is all generated by me -->
             <div class="summary">
-                {{ if (eq .Item.Type "note") }}
-                    {{ .Item.Text | safeHTML }}
-                {{ else if (eq .Item.Type "hn")}}
-                    {{ .Item.Text | safeHTML | truncate 150 }}
-                {{ else if (eq .Item.Type "gh-pr")}}
-                    {{ .Item.Text | safeHTML | markdownify | plainify | htmlUnescape | truncate 150 }}
-                {{ else }}
-                    {{ .Item.Text | truncate 150 | markdownify | plainify | htmlUnescape | safeHTML }}
-                {{ end }}
+                {{- if (eq .Item.Type "note") -}}
+                    {{- .Item.Text | safeHTML -}}
+                {{- else if (eq .Item.Type "hn") -}}
+                    {{- .Item.Text | safeHTML | truncate 150 -}}
+                {{- else if (eq .Item.Type "gh-pr") -}}
+                    {{- .Item.Text | safeHTML | markdownify | plainify | htmlUnescape | truncate 150 -}}
+                {{- else -}}
+                    {{- .Item.Text | truncate 150 | markdownify | plainify | htmlUnescape | safeHTML -}}
+                {{- end -}}
             </div>
-        {{ end }}
-    {{ else }}
-        <div>
-            <h2>
-                <a href="{{.Item.Permalink}}">{{.Item.Title}} {{ if (.Item.Draft) }}(DRAFT){{end}}</a>
+        {{- end -}}
+    {{- else -}}
+        <div
+            ><h2
+                ><a href="{{- .Item.Permalink -}}">{{- .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
             </h2>
-            <div class="stream-item-date">{{ .Item.Date.Format "January 2, 2006" }}</div>
-            {{ if (and (isset .Item.Params "image") (not (isset .Item.Params "no_stream_image"))) }}
+            <div class="stream-item-date">
+                {{- if (.scr.Get "mini") }} on {{ end -}}
+                {{- .Item.Date.Format "January 2, 2006" -}}
+            </div>
+            {{- if (and (isset .Item.Params "image") (not (isset .Item.Params "no_stream_image")) (not (.scr.Get "mini"))) -}}
                 <div class="stream-item-thumb-wrapper">
                     <!-- Just going to call these images decorative. This is how YouTube handles thumbnail alt text. -->
                     <img
-                        src="{{ .Item.Params.image }}"
-                        height="{{ if (isset .Item.Params "image_h")}}{{.Item.Params.image_h}}{{else}}135{{end}}"
-                        width="{{ if (isset .Item.Params "image_w")}}{{.Item.Params.image_w}}{{else}}240{{end}}"
+                        src="{{- .Item.Params.image -}}"
+                        height="{{- if (isset .Item.Params "image_h") -}}{{- .Item.Params.image_h -}}{{- else -}}135{{- end -}}"
+                        width="{{- if (isset .Item.Params "image_w") -}}{{- .Item.Params.image_w -}}{{- else -}}240{{- end -}}"
                         alt=""
                         class="stream-item-thumb"
                         loading="lazy" />
                 </div>
-            {{ else }}
-                {{ if (not (.scr.Get "mini"))}}
+            {{- else -}}
+                {{- if (not (.scr.Get "mini")) -}}
                     <div class="summary">
-                        {{ .Item.Description }}
-                        <a class="cont-reading" href="{{.Item.Permalink}}">(continue reading)</a>
+                        {{- .Item.Description }}
+                        <a class="cont-reading" href="{{- .Item.Permalink -}}">(continue reading)</a>
                     </div>
-                {{ end }}
-            {{ end }}
+                {{- end -}}
+            {{- end -}}
         </div>
-    {{ end }}
+    {{- end -}}
 </div>

@@ -1,4 +1,5 @@
 +++
+verbose = -1
 title = "Each step of decoding a PNG"
 date = "2022-03-11T05:00:00+00:00"
 description = "How the PNG file format works, in detail."

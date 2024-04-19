@@ -32,6 +32,7 @@
       # Editors
       kate
       vscodium
+      logseq
 
       # Dev
       rustup

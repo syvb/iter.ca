@@ -28,6 +28,8 @@
       # Internet
       firefox
       chromium
+      thunderbird
+      tor-browser
 
       # Editors
       kate

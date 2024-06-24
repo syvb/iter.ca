@@ -13,7 +13,7 @@ As a self-hosted email enthusiast, I recently encountered a weird issue with my 
 
 ## The symptoms
 
-So I didn't get an email someone sent me from ProtonMail. To investigate, I set up a test account and tried sending emails to various addresses, and I got all of them except for the one I sent to my own mail server.
+So I didn't get an email someone sent me from ProtonMail. To investigate, I set up a test account and tried sending emails to various addresses, and I received all of them except for the one I sent to my own mail server.
 
 At first I thought the problem might be on ProtonMail's end, given that emails were successfully reaching other providers. However, as we'll see, the issue was closer to home.
 
@@ -51,19 +51,19 @@ You can [configure Postfix to log full SMTP transactions](https://serverfault.co
 
 (I don't know why that log shows the response to the EHLO before the request)
 
-The TLS handshake was completing successfully, and the ProtonMail mail server was able to speak enough TLS to send a `QUIT` command, but it wasn't delivering any mail. What could be causing this behavior?
+The TLS handshake was completing successfully, and the ProtonMail mail server was able to speak enough TLS to send a `QUIT` command, but it wasn't delivering any mail - it was just immediately quitting. What could be causing this behavior?
 
 ## Maybe it was caused by the Let's Encrypt certificate?
 
-At first I thought ProtonMail might not like the Let's Encrypt certificate I was using. I noticed that many large email providers don't use Let's Encrypt for their SMTP servers - maybe that's the problem? I did some more testing I found that [MXroute](http://mxroute.com/) could receive emails from ProtonMail despite using Let's Encrypt, so I tentatively ruled out the certificate as being the problem.
+At first I thought ProtonMail might not like the Let's Encrypt certificate I was using. I noticed that many large email providers don't use Let's Encrypt for their SMTP servers - maybe that's the problem? I did some more testing, and found that [MXroute](http://mxroute.com/) could receive emails from ProtonMail despite using Let's Encrypt, so I tentatively ruled out the certificate issuer as being the problem.
 
 ## It was DNS
 
 After Googling for `"ehlo=1 starttls=1 quit=1 commands=3"` (which is how Postfix logs a TLS connection with 3 commands and a quit) I found several posts that mentioned incorrect TLSA records as causing the problem.
 
-TLSA records are part of DANE (DNS-based Authentication of Named Entities), which allows domain owners to specify which TLS certificate should be used by a service. If the TLSA record is invalid or outdated, some mail servers refuse to continue the connection after the TLS handshake.
+TLSA records are part of DANE (DNS-based Authentication of Named Entities), which allows domain owners to specify which TLS certificate should be used by a service. If the TLSA record corresponds to the wrong certificate, some mail servers quit the SMTP transaction after the TLS handshake. DANE is only useful if the DNS zone is signed with DNSSEC (or the client has some other means of ensuring the DNS records are authentic); otherwise an attacker that can MITM the SMTP connection could just MITM the DNS lookup as well.
 
-Only a few email providers, such as ProtonMail and Microsoft, actually check TLSA records. This explains why most of my test emails were getting through fine, while ProtonMail consistently failed.
+DANE isn't very useful in most cases - mail tranfer agents already verify that the certificate domain matches the mail server domain, so it only provides extra security against rouge certificate authorities.
 
 ### Why didn't I notice this earlier?
 

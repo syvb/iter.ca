@@ -1,25 +1,25 @@
 +++
 date = "2024-06-24T00:00:00Z"
-description = "I broke my mailserver by forgetting to update a DNS record"
+description = "I broke my mail server by forgetting to update a DNS record"
 tags = ["programming", "email"]
-title = "The case of the disappearing emails from ProtonMail"
+title = "Reolving an email deliverablity mystery"
 ai = "claude-3.5-sonnet"
 draft = true
 +++
 
 <!-- tl;dr: I forgot to update a TLSA record so I couldn't receive emails from ProtonMail or Microsoft. -->
 
-As a self-hosted email enthusiast, I recently encountered a weird issue with my emailserver. I run my on mailserver, using [Mail-in-a-Box](https://mailinabox.email/) (which uses Postfix as the mail transfer agent) with some modifications I made myself.
+As a self-hosted email enthusiast, I recently encountered a weird issue with my email server. I run my on mail server, using [Mail-in-a-Box](https://mailinabox.email/) (which uses Postfix as the mail transfer agent) with some modifications I made myself.
 
 ## The symptoms
 
-So I didn't get an email someone sent me from ProtonMail. To investigate, I set up a test account and tried sending emails to various addresses, and I got all of them except for the one I sent to my own mailserver.
+So I didn't get an email someone sent me from ProtonMail. To investigate, I set up a test account and tried sending emails to various addresses, and I got all of them except for the one I sent to my own mail server.
 
 At first I thought the problem might be on ProtonMail's end, given that emails were successfully reaching other providers. However, as we'll see, the issue was closer to home.
 
 ## The investigation
 
-Since I run the mailserver myself, I checked my Postfix logs (at `/var/log/mail.log`) and saw that I was indeed getting connections from ProtonMail:
+Since I run the mail server myself, I checked my Postfix logs (at `/var/log/mail.log`) and saw that I was indeed getting connections from ProtonMail:
 
 ```
 Jun 23 19:18:00 box postfix/smtpd[31194]: connect from mail-40141.protonmail.ch[185.70.40.141]
@@ -51,7 +51,7 @@ You can [configure Postfix to log full SMTP transactions](https://serverfault.co
 
 (I don't know why that log shows the response to the EHLO before the request)
 
-The TLS handshake was completing successfully, and the ProtonMail mailserver was able to speak enough TLS to send a `QUIT` command, but it wasn't delivering any mail. What could be causing this behavior?
+The TLS handshake was completing successfully, and the ProtonMail mail server was able to speak enough TLS to send a `QUIT` command, but it wasn't delivering any mail. What could be causing this behavior?
 
 ## Maybe it was caused by the Let's Encrypt certificate?
 
@@ -65,8 +65,6 @@ TLSA records are part of DANE (DNS-based Authentication of Named Entities), whic
 
 Only a few email providers, such as ProtonMail and Microsoft, actually check TLSA records. This explains why most of my test emails were getting through fine, while ProtonMail consistently failed.
 
-It's worth noting that TLSA records are dependent on DNSSEC (Domain Name System Security Extensions). DNSSEC provides authentication of DNS responses, which is crucial for the security guarantees that DANE aims to provide. Without DNSSEC, TLSA records can't be reliably authenticated, rendering them essentially useless.
-
 ### Why didn't I notice this earlier?
 
 I did get some emails about this when it broke. The first from a Mail-in-a-Box monitoring script on 2023-07-19, but it sends a lot of status check change emails so I didn't really pay attention to that. I got one the next day from the [DNSSEC and SMTP DANE TLS adoption survey](https://stats.dnssec-tools.org/explore/), which I really should have paid attention to.
@@ -77,7 +75,7 @@ I don't really know. I think I updated some APT packages around when it broke? I
 
 ## On TLSA checking
 
-The fact that only a few providers check TLSA records raises an interesting question: Should more email providers be doing these checks? Implementing DANE checks can enhance security by providing an additional layer of authentication for TLS certificates. This can help prevent man-in-the-middle attacks and improve the overall security of email communications.
+Most email providers don't check TLSA records - AFAIK ProtonMail, and (sometimes?) Outlook (but maybe not MS Exchange Email?) are the only major email providers that check it. The fact that only a few providers check TLSA records raises an interesting question: Should more email providers be doing these checks? Implementing DANE checks can enhance security by providing an additional layer of authentication for TLS certificates. This can help prevent man-in-the-middle attacks and improve the overall security of email communications.
 
 On the other hand, as my experience shows, TLSA records can be a source of problems if not maintained correctly. Widespread adoption of TLSA checking could potentially lead to more delivery issues for self-hosted and smaller email servers where DNS records might not be as meticulously maintained. While increased security is always desirable, it needs to be balanced against practical considerations of maintenance and compatibility.
 
@@ -85,4 +83,4 @@ On the other hand, as my experience shows, TLSA records can be a source of probl
 
 I fixed my TLSA record in my DNS provider (Cloudflare), and my test emails ProtonMail started flowing in!
 
-You probably shouldn't run your own mailserver.
+You probably shouldn't run your own mail server.

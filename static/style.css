@@ -32,6 +32,7 @@ body {
     line-height: 1.4;
     font-size: 0.8rem;
     margin-bottom: 1em;
+    text-align: left;
 }
 
 h2, h3, h4, h5, h6 {
@@ -472,6 +473,13 @@ summary h2 {
 {
     display: none;
 } */
+
+.cw {
+    background-color: rgb(255, 255, 173);
+    border: 1.5px solid rgb(184, 120, 0);
+    padding: 0.5em;
+    margin-bottom: 1em;
+}
 
 @media (max-width: 900px) {
     #metop {

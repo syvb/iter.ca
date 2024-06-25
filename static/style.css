@@ -33,6 +33,7 @@ body {
     font-size: 0.8rem;
     margin-bottom: 1em;
     text-align: left;
+    overflow-x: scroll;
 }
 
 h2, h3, h4, h5, h6 {
@@ -135,10 +136,6 @@ kbd {
 
 #me-links li:not(:last-child):after {
     content: " • ";
-}
-
-pre {
-    white-space: pre-wrap;
 }
 
 .source-link {

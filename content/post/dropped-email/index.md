@@ -49,8 +49,6 @@ You can [configure Postfix to log full SMTP transactions](https://serverfault.co
 > 221 2.0.0 Bye
 ```
 
-(I don't know why that log shows the response to the EHLO before the request)
-
 The TLS handshake was completing successfully, and the ProtonMail mail server was able to speak enough TLS to send a `QUIT` command, but it wasn't delivering any mail - it was just immediately quitting. What could be causing this behavior?
 
 ## Maybe it was caused by the Let's Encrypt certificate?

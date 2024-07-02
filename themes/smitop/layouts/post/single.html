@@ -20,7 +20,7 @@
       <article itemprop="articleBody" id="content" class="e-content">
         {{ if .Params.cw }}
           <div class="cw">
-            {{ .Params.cw | markdownify }}
+            ⚠️ {{ .Params.cw | markdownify }}
           </div>
         {{ end }}
         {{ if .Params.toc }}

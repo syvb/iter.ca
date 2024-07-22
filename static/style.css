@@ -203,6 +203,17 @@ h1 {
     font-weight: bold;
 }
 
+.things-done {
+    list-style-position: inside;
+    padding-left: 0;
+}
+.things-done > li {
+    padding: 4px;
+}
+.things-done a {
+    font-weight: bold;
+}
+
 .stream-item-thumb-wrapper {
     display: flex;
     align-items: center;

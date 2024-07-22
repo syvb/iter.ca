@@ -16,6 +16,7 @@
     {{- $scr.Set "overrides" .Overrides -}}
     {{- $scr.Set "selfOnly" .SelfOnly -}}
     {{- $scr.Set "mini" .Mini -}}
+    {{- $scr.Set "games" .Games -}}
     <!-- featured posts are shown even when SelfOnly would supress them -->
     {{- range (sort .Data ".Date.Unix" "desc") | uniq -}}
         {{- $scr.Set "verbose" 0 -}}
@@ -39,8 +40,15 @@
             {{- if (and (eq .HNType "story") ($scr.Get "selfOnly")) -}}
                 {{- $scr.Set "verbose" 100 -}}
             {{- end -}}
+            {{- if (and (not (or (eq .Type "itch") (eq .NoteType "Game"))) ($scr.Get "games")) -}}
+                {{- $scr.Set "verbose" 100 -}}
+            {{- end -}}
+        {{ else }}
+            {{- if ($scr.Get "games") -}}
+                {{- $scr.Set "verbose" 100 -}}
+            {{- end -}}
         {{- end -}}
-        {{- if (ne .Params.Verbose nil) -}}
+        {{- if (and (not ($scr.Get "games")) (ne .Params.Verbose nil)) -}}
             {{- $scr.Set "verbose" .Params.Verbose -}}
         {{- end -}}
         {{- if (and (le ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) (ge ($scr.Get "verbose") ($scr.Get "verboseMin")) ) -}}
@@ -72,8 +80,15 @@
             {{- if (and (eq .HNType "story") ($scr.Get "selfOnly")) -}}
                 {{- $scr.Set "verbose" 100 -}}
             {{- end -}}
+            {{- if (and (not (or (eq .Type "itch") (eq .NoteType "Game"))) ($scr.Get "games")) -}}
+                {{- $scr.Set "verbose" 100 -}}
+            {{- end -}}
+        {{ else }}
+            {{- if ($scr.Get "games") -}}
+                {{- $scr.Set "verbose" 100 -}}
+            {{- end -}}
         {{- end -}}
-        {{- if (ne .Params.Verbose nil) -}}
+        {{- if (and (not ($scr.Get "games")) (ne .Params.Verbose nil)) -}}
             {{- $scr.Set "verbose" .Params.Verbose -}}
         {{- end -}}
         {{- if (and (gt ($scr.Get "verbose") -1) (le ($scr.Get "verbose") ($scr.Get "verboseMax")) (ge ($scr.Get "verbose") ($scr.Get "verboseMin")) ) -}}

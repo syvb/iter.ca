@@ -35,17 +35,6 @@
       </article>
     </div>
     <footer>
-      <div class="footer-newsletter">
-        Subscribe to my occasional email newsletter:
-        <iframe
-          id="footer-email-sub"
-          scrolling="no"
-          loading="lazy"
-          style="width:100%!important;height:140px;border:1px #ccc solid !important"
-          src="https://buttondown.email/z?as_embed=true&tag=source:scom"
-        ></iframe>
-      </div>
-      <hr>
       <div id="meta">
         {{ with ((.Site.RegularPages.Related .) | first 5) }}
           <div class="related-posts">
@@ -67,10 +56,21 @@
         </div>
       {{ end }}
       {{ if (eq .Params.ai "claude-3.5-sonnet") }}
-      <div id="ai-info">
-        Part of this text was drafted with <a href="https://www.anthropic.com/news/claude-3-5-sonnet">Claude 3.5 Sonnet</a>.
+        <div id="ai-info">
+          Part of this text was drafted with <a href="https://www.anthropic.com/news/claude-3-5-sonnet">Claude 3.5 Sonnet</a>.
+        </div>
+      {{ end }}
+      <hr>
+      <div class="footer-newsletter">
+        Subscribe to my occasional email newsletter:
+        <iframe
+          id="footer-email-sub"
+          scrolling="no"
+          loading="lazy"
+          style="width:100%!important;height:140px;border:1px #ccc solid !important"
+          src="https://buttondown.email/z?as_embed=true&tag=source:scom"
+        ></iframe>
       </div>
-    {{ end }}
     </footer>
   </section>
 {{ end }}

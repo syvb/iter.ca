@@ -1,0 +1,9 @@
+<div class="llm-run llm-run {{ .Get 2 }}">
+    <div class="llm-run-meta">
+        <div class="llm-run-fact">Model: <code>{{ .Get 0 }}</code></div>
+        {{ with (.Get 1) }}
+            <div class="llm-run-fact">{{ . }}</code></div>
+        {{ end }}
+    </div>
+    <div class="llm-gen"><span class="llm-gen-text"><span class="llm-input">{{.Inner}}</span></div>
+</div>

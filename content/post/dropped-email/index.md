@@ -2,7 +2,7 @@
 date = "2024-06-24T00:00:00Z"
 description = "I broke my mail server by forgetting to update a DNS record"
 tags = ["programming", "email"]
-title = "Resolving an email deliverablity mystery"
+title = "Resolving an email deliverability mystery"
 ai = "claude-3.5-sonnet"
 +++
 

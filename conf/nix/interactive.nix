@@ -20,6 +20,11 @@
     #media-session.enable = true;
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    # for logseq
+    "electron-27.3.11"
+  ];
+
   users.users.loops = {
     isNormalUser = true;
     description = "Smitty";

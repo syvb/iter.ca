@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS</title>
+</head>
+<body>
+    <textarea id="c"></textarea>
+    <br>
+    <button id="run">Run</button>
+    <br>
+    <pre id="out"></pre>
+    <script>
+        const c = document.getElementById("c");
+        const out = document.getElementById("out");
+        function showObject(obj, depth = 0) {
+            if (depth >= 3) return "...";
+            let text = "";
+            for (const prop in obj) {
+                let val;
+                try {
+                    if (typeof obj[prop] === "object") {
+                        val = showObject(obj[prop], depth + 1)
+                        val.replace(/(^|\n)/, "  $&");
+                    } else if (obj[prop] === undefined || obj[prop] === null) {
+                        val = JSON.stringify(obj[prop]);
+                    } else {
+                        val = obj[prop].toString().replaceAll("\n", "⏎");
+                    }
+                } catch (e) {
+                    val = "[error stringifying]";
+                }
+
+                text += `- ${prop}: ${val}\n`
+            }
+            return text;
+        }
+        document.getElementById("run").addEventListener("click", () => {
+            let text;
+            try {
+                text = eval(c.value);
+                if (typeof text === "object") {
+                    text = showObject(text);
+                } else {
+                    text = text.toString();
+                }
+            } catch (e) {
+                text = `${e.toString()}\n${e.stack}`;
+            }
+            console.log(text);
+            out.textContent = text;
+        });
+    </script>
+</body>
+</html>

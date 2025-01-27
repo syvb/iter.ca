@@ -10,7 +10,7 @@ I have waived all copyright and related or neighboring rights to these works und
 
 ### Octoahedron with background
 <a id="6"></a>
-<a href="/avatar/6/maxrescomp.png" download>download PNG</a> | <a href="https://i.sm4.ca/octoh.blend">download Blender source</a>
+<a href="/avatar/6/maxrescomp.png" download>download PNG</a> | <a href="https://i.sm4.ca/octoh.blend">download Blender source</a> | [video of the octahedron spinning](https://www.youtube.com/watch?v=I5sCnL1_sis)
 
 <div><img src="/avatar/6/a256.png" alt="" width="256"></div>
 

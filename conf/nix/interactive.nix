@@ -1,7 +1,7 @@
 { config, lib, pkgs, modulesPath, ... }:
 {
+  services.displayManager.sddm.enable = true;
   services.xserver.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
 
   hardware.pulseaudio.enable = false;

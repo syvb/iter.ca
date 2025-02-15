@@ -1,5 +1,5 @@
 +++
-date = "2022-12-235T00:00:00Z"
+date = "2022-12-25T00:00:00Z"
 description = "Using service workers to evaluate !bangs before they hit a server"
 tags = ["programming", "search"]
 title = "Evaluating !bangs faster with Service Workers"

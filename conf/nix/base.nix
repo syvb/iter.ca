@@ -46,6 +46,7 @@
     units
     python3
     mercurial
+    fd
   ];
   programs.mtr.enable = true;
   environment.sessionVariables = rec {

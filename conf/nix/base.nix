@@ -56,9 +56,6 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "loops" ];
 
-  # hibernate on sleep doesn't work right for me
-  powerManagement.enable = false;
-
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

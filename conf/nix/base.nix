@@ -47,6 +47,7 @@
     python3
     mercurial
     fd
+    tmux
   ];
   programs.mtr.enable = true;
   environment.sessionVariables = rec {

@@ -52,7 +52,7 @@ This very obfuscated script does many things, including (this is an incomplete l
     return String.fromCharCode(e.charCodeAt(0) - o--)
 })
 ```
-  - this evaluates to `res://ieframe.dll/acr.js`, but only on IE. This string has only one purpose, exploiting the fact that you can put arbitrary HTML in the hash part of the URL and have it get evaluated, I beleive in a privledged context of some sort. This file actually resolves in IE to a internal Windows system file, which is only accessible in JS due to a bug.
+  - this evaluates to `res://ieframe.dll/acr.js`, but only on IE. This string has only one purpose, exploiting the fact that you can put arbitrary HTML in the hash part of the URL and have it get evaluated, I believe in a privileged context of some sort. This file actually resolves in IE to a internal Windows system file, which is only accessible in JS due to a bug.
 - tries to run VBScript:
 ```js
 execScript("e71012934811a=false::On Error Resume Next::" + e + "::if Err.Number=-2147024891 or Err.Number=5002 then e71012934811a=true::Err.Clear", "VBScript"), t = "e71012934811a" in window ? window.e71012934811a ? o.EXISTS : o.MISSING : o.UNKNOWN
@@ -60,7 +60,7 @@ execScript("e71012934811a=false::On Error Resume Next::" + e + "::if Err.Number=
 - checks for these strings on window (de-obfuscated, I also have the original obfuscated ones in case you are also looking through the source):
   - `boltsWebViewAppLinkResolverResult`, `GoogleJsInterface`, `googleAdsJsInterface`, `accessibilityTraversal`, `accessibility`, `FbPlayableAd`, `__REACT_WEB_VIEW_BRIDGE`
   - obfuscated in code as `obygfJroIvrjNccYvaxErfbyireErfhyg`, `TbbtyrWfVagresnpr`, `tbbtyrNqfWfVagresnpr`, `npprffvovyvglGenirefny`, `npprffvovyvgl`, `SoCynlnoyrNq`, `__ERNPG_JRO_IVRJ_OEVQTR`
-- checks the screen's `availHeight`, `availWidth`, `width`, and `height
+- checks the screen's `availHeight`, `availWidth`, `width`, and `height`
 - checks the screen's `colorDepth`, `pixelDepth`, and `devicePixelRatio`
 - checks for these automation-related properties on `window`: `domAutomation`, `domAutomationController`, `_WEBDRIVER_ELEM_CACHE`, `_phantom`, `callPhantom`, `window.chrome._commandLineAPI`, `window.Debug.debuggerEnabled`, `__BROWSERTOOLS_CONSOLE`, `window._FirebugCommandLine`, and also if `document.documentElement.hasAttribute("webdriver")` is true
 - checks if `"function () { return Function.apply.call(x.log, x, arguments); }" == window.console.log.toString()` (also to check for browser automation I guess

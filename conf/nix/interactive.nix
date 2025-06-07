@@ -48,6 +48,9 @@
       inkscape
       prusa-slicer
       blender
+
+      # Fonts
+      inter
     ];
   };
 }

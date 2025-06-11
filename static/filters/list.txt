@@ -1,7 +1,12 @@
-! Homepage: https://smitop.com/filters/
-! Title: Smitop's filters
+! Homepage: https://iter.ca/filters/
+! Title: loops' filters
 ! Expires: 1 days
-! Version: 4
+! Version: 5
+
+! testing:
+
+! condition is needed to avoiding trying to replace on undefined
+www.youtube.com##+js(trusted-replace-outbound-text, JSON.stringify, 'contentPlaybackContext":{', 'contentPlaybackContext":{"isInlinePlaybackNoAd":true,', condition, 'contentPlaybackContext')
 
 ! 2020-07-08 https://www.reddit.com
 www.reddit.com##._23HF_LA75CXQvFP4nnxWQD

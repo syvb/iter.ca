@@ -25,6 +25,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 
 ### Social media
 <ul class="acc-list">
+<li>Bluesky: <a href="https://bsky.app/profile/did:plc:n3csajkwabhchilmzmrsnvlc">@iter.ca</a></li>
 <li>Hacker News: <a href="https://news.ycombinator.com/user?id=smitop">@smitop</a></li>
 <li>Stack Exchange: <a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">smitop</a></li>
 <li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">iter</a></li>

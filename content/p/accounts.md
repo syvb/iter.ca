@@ -17,10 +17,10 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 ### Programming
 <ul class="acc-list">
 <li>GitHub: <a href="https://github.com/syvb/">@syvb</a></li>
-<li>sr.ht: <a href="https://sr.ht/~smitop/">~smitop</a></li>
 <li>crates.io: <a href="https://crates.io/users/syvb">@syvb</a></li>
 <li>Observable: <a href="https://observablehq.com/@smitop">@smitop</a></li>
 <li>Kaggle: <a href="https://www.kaggle.com/smitop">@smitop</a></li>
+<li class="inactive">sr.ht: <a href="https://sr.ht/~smitop/">~smitop</a></li>
 </ul>
 
 ### Social media
@@ -40,11 +40,11 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 
 ### Other websites
 <ul class="acc-list">
-<li>archive.org: <a href="https://archive.org/details/@smitop">@smitop</a></li>
-<li>OpenGameArt: <a href="https://opengameart.org/users/smitop">@smitop</a></li>
-<li>Neocities: <a href="https://neocities.org/site/smitop">@smitop</a></li>
 <li>itch.io: <a href="https://smitop.itch.io/">@smitop</a></li>
-<li>Scratch: <a href="https://scratch.mit.edu/users/smitop/">@smitop</a></li>
+<li>Neocities: <a href="https://neocities.org/site/smitop">@smitop</a></li>
+<li>archive.org: <a href="https://archive.org/details/@smitop">@smitop</a></li>
+<li class="inactive">Scratch: <a href="https://scratch.mit.edu/users/smitop/">@smitop</a></li>
+<li class="inactive">OpenGameArt: <a href="https://opengameart.org/users/smitop">@smitop</a></li>
 <li class="inactive">Kongregate: <a href="https://www.kongregate.com/accounts/smitop">@smitop</a></li>
 <li class="inactive">Product Hunt: <a href="https://www.producthunt.com/@_smitop">@smitop</a></li>
 </ul>

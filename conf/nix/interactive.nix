@@ -2,7 +2,7 @@
 {
   services.displayManager.sddm.enable = true;
   services.xserver.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.desktopManager.plasma6.enable = true;
 
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -36,7 +36,7 @@
       tor-browser
 
       # Editors
-      kate
+      kdePackages.kate
       vscodium
       logseq
 

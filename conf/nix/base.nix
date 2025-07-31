@@ -48,6 +48,7 @@
     mercurial
     fd
     tmux
+    ripgrep
   ];
   programs.mtr.enable = true;
   environment.sessionVariables = rec {

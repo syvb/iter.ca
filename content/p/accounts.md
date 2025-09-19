@@ -30,7 +30,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>Stack Exchange: <a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">smitop</a></li>
 <li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">iter</a></li>
 <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Special:Contributions/Smitop">User:Smitop</a></li>
-<li class="inactive">Twitter: <a href="https://twitter.com/_smitop">@_smitop</a></li>
+<li class="inactive">X/Twitter: <a href="https://x.com/_smitop">@_smitop</a></li>
 </ul>
 
 ### Chat

@@ -39,6 +39,9 @@
       kdePackages.kate
       vscodium
       logseq
+      jetbrains.idea-community-src
+      maven
+      jdk17
 
       # Dev
       rustup

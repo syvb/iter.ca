@@ -2,9 +2,9 @@
 {
   services.displayManager.sddm.enable = true;
   services.xserver.enable = true;
-  services.xserver.desktopManager.plasma6.enable = true;
+  services.desktopManager.plasma6.enable = true;
+  services.pulseaudio.enable = false;
 
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

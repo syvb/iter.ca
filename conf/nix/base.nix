@@ -23,6 +23,7 @@
   console.useXkbConfig = true;
 
   services.printing.enable = true; # Enable CUPS to print documents
+  services.flatpak.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 

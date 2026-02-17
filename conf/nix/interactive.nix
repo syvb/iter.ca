@@ -5,6 +5,10 @@
   services.desktopManager.plasma6.enable = true;
   services.pulseaudio.enable = false;
 
+  # for printing
+  services.avahi.enable = true;
+  services.avahi.nssmdns4 = true;
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

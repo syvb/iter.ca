@@ -31,7 +31,7 @@
   users.users.loops = {
     isNormalUser = true;
     description = "Smitty";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       # Internet
       firefox

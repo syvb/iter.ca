@@ -5,6 +5,8 @@
   services.desktopManager.plasma6.enable = true;
   services.pulseaudio.enable = false;
 
+  virtualisation.docker.enable = true;
+
   # for printing
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;

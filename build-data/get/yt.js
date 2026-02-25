@@ -56,6 +56,7 @@ if (!process.env.REDO_YT) {
 {"Type":"video","Thumb":"/yt-thumbs/YilTK9NtvnI.jpg","Uri":"https://youtube.com/watch?v=YilTK9NtvnI","Title":"Fall ball","Date":{"Unix":1611585984},"Id":"yt-vid-YilTK9NtvnI"}
 {"Type":"video","Thumb":"/yt-thumbs/X42MZqXHXDM.jpg","Uri":"https://youtube.com/watch?v=X42MZqXHXDM","Title":"Compressing images with Paeth prediction","Date":{"Unix":1632593385},"Id":"yt-vid-X42MZqXHXDM"}
 {"Type":"video","Thumb":"/yt-thumbs/I5sCnL1_sis.jpg","Uri":"https://youtube.com/watch?v=I5sCnL1_sis","Title":"Octahedron spinning","Date":{"Unix":1680879560},"Id":"yt-vid-I5sCnL1_sis"}`);
+    return;
 }
 
 const fs = require("fs");

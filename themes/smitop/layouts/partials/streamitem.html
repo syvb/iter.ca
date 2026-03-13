@@ -32,6 +32,8 @@
                 Stack Exchange post
             {{- else if (eq .Item.Type "itch") -}}
                 Itch {{ .Item.ItchType -}}
+            {{- else if (eq .Item.Type "buttondown") -}}
+                Newsletter
             {{- else if (eq .Item.Type "gh-pr") -}}
                 Pull request
             {{- else -}}

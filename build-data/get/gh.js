@@ -3,6 +3,9 @@
 process.env.TZ = "Etc/Utc"; // don't have date differences on CI
 const fetch = require("node-fetch");
 
+const TOKEN = process.env.GITHUB_TOKEN || "";
+const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {};
+
 (async () => {
     /*
         {
@@ -148,7 +151,7 @@ const fetch = require("node-fetch");
     */
     // merged PRs
     for (let i = 0; i < 8; i++) { // never try to fetch too many pages, cause rate limits
-        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=1000&q=is:merged%20is:pr%20author:syvb%20archived:false%20-user:syvb`)).json();
+        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=1000&q=is:merged%20is:pr%20author:syvb%20archived:false%20-user:syvb`, { headers })).json();
         res.items.forEach(iss => {
             console.log(JSON.stringify({
                 Type: "gh-pr",

@@ -19,7 +19,7 @@ const TOKEN = fs.readFileSync("tokens/buttondown.txt", "utf-8").trim();
                 .trim();
             console.log(JSON.stringify({
                 Type: "buttondown",
-                Id: `buttondown-${email.id}`,
+                Id: `buttondown-${email.slug}`,
                 Title: email.subject,
                 Text: text,
                 Date: { Unix: (new Date(email.publish_date)).valueOf() / 1000 },

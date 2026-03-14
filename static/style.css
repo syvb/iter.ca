@@ -452,6 +452,10 @@ details {
     margin-bottom: 1em;
 }
 
+details > summary {
+    cursor: pointer;
+}
+
 .sidenote {
     border: 1px solid rgb(70, 70, 70);
     background: rgb(241, 241, 241);

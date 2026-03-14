@@ -55,7 +55,6 @@ function oppositeAvg(p1, p2) {
 We can use the average closest to the points as our average hue.
 
 </details>
-<br>
 
 ## More than 2 hues
 

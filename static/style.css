@@ -449,6 +449,30 @@ details {
     border: 1px solid rgb(70, 70, 70);
     background: rgb(241, 241, 241);
     padding: 0.5em;
+    margin-bottom: 1em;
+}
+
+.sidenote {
+    border: 1px solid rgb(70, 70, 70);
+    background: rgb(241, 241, 241);
+    padding: 1em 0.75em 0;
+    margin: 1.5em 0 1em;
+    position: relative;
+}
+
+.sidenote > :last-child {
+    margin-bottom: 0;
+}
+
+.sidenote-label {
+    position: absolute;
+    top: -0.7em;
+    left: 0.75em;
+    background: rgb(241, 241, 241);
+    padding: 0 0.4em;
+    font-style: italic;
+    font-size: 0.9em;
+    color: rgb(70, 70, 70);
 }
 
 ol.spec-list {

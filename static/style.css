@@ -479,6 +479,36 @@ details > summary {
     color: rgb(70, 70, 70);
 }
 
+.post-cta {
+    border: 1px solid rgb(50, 100, 140);
+    background: rgb(234, 243, 250);
+    padding: 1em 0.75em 0.75em;
+    margin: 0.75em 0 1em;
+    position: relative;
+}
+
+.post-cta-label {
+    position: absolute;
+    top: -0.7em;
+    left: 0.75em;
+    background: rgb(234, 243, 250);
+    padding: 0 0.4em;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: rgb(50, 100, 140);
+}
+
+.post-cta > p:last-of-type {
+    margin-bottom: 0;
+}
+
+.post-cta-lastmod {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    color: rgb(100, 120, 140);
+    font-style: italic;
+}
+
 ol.spec-list {
     margin-top: 0;
     counter-reset: item;

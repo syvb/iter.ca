@@ -26,10 +26,18 @@
         {{ if .Params.toc }}
           {{ .TableOfContents }}
         {{ end }}
+        {{ $cta := printf "%s" (partial "cta.html" .) }}
         {{ if (eq .Params.fmat_id nil) }}
-          {{ .Content }}
+          {{ $content := printf "%s" .Content }}
+          {{ if findRE `<div class="footnotes"` $content }}
+            {{ replaceRE `(<div class="footnotes")` (printf "%s$1" $cta) $content | safeHTML }}
+          {{ else }}
+            {{ .Content }}
+            {{ $cta | safeHTML }}
+          {{ end }}
         {{ else }}
           {{ .RawContent | safeHTML }}
+          {{ $cta | safeHTML }}
         {{ end }}
         <hr>
       </article>

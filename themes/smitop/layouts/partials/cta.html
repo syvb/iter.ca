@@ -1,0 +1,9 @@
+{{ with .Site.Data.cta }}
+  {{ if .content }}
+    <aside class="post-cta">
+      <div class="post-cta-label">{{ .label }}</div>
+      <p>{{ .content | markdownify }}</p>
+      <div class="post-cta-lastmod">Last updated {{ .lastmod | time.Format "Jan 2, 2006" }}</div>
+    </aside>
+  {{ end }}
+{{ end }}

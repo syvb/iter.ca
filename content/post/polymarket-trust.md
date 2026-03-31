@@ -63,5 +63,3 @@ Proxy 0x2C0367a9...C58B1
 
 ## Fin
 Yeah please don't call Polymarket "trustless", it's not :)
-
-If you have any questions or want to chat you can DM me on Discord as `@moreloops`.

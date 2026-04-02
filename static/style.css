@@ -456,6 +456,13 @@ details > summary {
     cursor: pointer;
 }
 
+details:not([open]) > summary::after {
+    content: "(click to expand)";
+    font-size: 0.85em;
+    opacity: 0.5;
+    margin-left: 0.4em;
+}
+
 .sidenote {
     border: 1px solid rgb(70, 70, 70);
     background: rgb(241, 241, 241);

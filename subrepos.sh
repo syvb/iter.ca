@@ -30,6 +30,11 @@ rm -rf segmerepo
     wget https://upload.wikimedia.org/wikipedia/commons/a/ad/Atan2definition.svg
     wget 'https://archive.org/download/rust-format/rust-format.pdf'
     wget 'https://archive.org/download/rust-format/rust-format.fig'
+    wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_021311254.RAW-01.COVER_pixelated.jpg'
+    wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032729461.RAW-01.COVER.jpg'
+    wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032801897.RAW-01.COVER.jpg'
+    wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032815315.RAW-01.COVER.jpg'
+    wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032826782.RAW-01.COVER.jpg'
 )
 
 rm -rf fmat

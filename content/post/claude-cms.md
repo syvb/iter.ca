@@ -5,7 +5,7 @@ tags = ["programming"]
 title = "How the Claude Mythos leak happened"
 +++
 
-So last week Anthropic [had a CMS problem that exposed](https://fortune.com/2026/03/26/anthropic-says-testing-mythos-powerful-new-ai-model-after-data-leak-reveals-its-existence-step-change-in-capabilities/) a draft blog post about a future model release, but the specifics about how the leak happened weren't published. The Fortune article says it got the post from Roy Paz and Alexandre Pauwels, and there is a [archived copy of the leak by M1Astra](https://m1astra-mythos.pages.dev) that has some clues about the origin, and I figured out what happened by doing some investigation after I saw the leak. (I did most of this because I was interested in verifying if the leak was real or not.)
+Last week Anthropic [had a CMS problem that exposed](https://fortune.com/2026/03/26/anthropic-says-testing-mythos-powerful-new-ai-model-after-data-leak-reveals-its-existence-step-change-in-capabilities/) a draft blog post about a future model release, but the specifics about how the leak happened weren't published. The Fortune article says it got the post from Roy Paz and Alexandre Pauwels, and there is a [archived copy of the leak by M1Astra](https://m1astra-mythos.pages.dev) that has some clues about the origin, and I figured out what happened by doing some investigation after I saw the leak. (I did most of this because I was interested in verifying if the leak was real or not.)
 
 ## Anthropic's CMS
 

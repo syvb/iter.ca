@@ -37,4 +37,4 @@ But it turns out Sanity always keeps article revisions for the project-wide rete
 
 > Current Access Control means if you're able to access the document today, you'll be able to access all the previous revisions of the document.
 
-So anyone could read all revisions of all posts in Anthropic's CMS. I told Anthropic about this and they fixed it pretty quickly by disabling all unauthenticated access through the Sanity API. I told them about it March 26 at 10pm; they responded 9 minutes later and fixed it by the time I woke up next morning. If you use Sanity.io as a CMS it might be worth ensuring you either don't publish content you don't want public or disabling unauthenticated public access.
+So anyone could read all revisions of all posts in Anthropic's CMS. I emailed Anthropic about this and they fixed it pretty quickly by disabling all unauthenticated access through the Sanity API. I told them about it March 26 at 10pm; they responded 9 minutes later and fixed it by the time I woke up next morning. If you use Sanity.io as a CMS it might be worth ensuring you either don't publish content you don't want public or disabling unauthenticated public access.

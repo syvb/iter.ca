@@ -1,0 +1,5 @@
+Date=Apr 4 2026
+Title=Positive-sum doesn't mean win-win
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/pCB5SoDmkNxdeTsBH/positive-sum-doesn-t-mean-win-win

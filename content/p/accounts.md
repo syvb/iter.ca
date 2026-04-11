@@ -31,6 +31,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>LessWrong: <a href="https://www.lesswrong.com/users/loops">@loops</a></li>
 <li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">iter</a></li>
 <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Special:Contributions/Smitop">User:Smitop</a></li>
+<li>Flickr: <a href="https://www.flickr.com/photos/204436251@N02/">lotsofloops</a></li>
 <li class="inactive">X/Twitter: <a href="https://x.com/_smitop">@_smitop</a></li>
 </ul>
 

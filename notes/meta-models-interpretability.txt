@@ -1,0 +1,5 @@
+Date=Apr 11 2026
+Title=Why I'm excited about meta-models for interpretability
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/bkPLnkG5Lnh7G97LP/why-i-m-excited-about-meta-models-for-interpretability

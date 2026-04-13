@@ -1,0 +1,5 @@
+Date=Aug 17 2025
+Title=Model organism of misalignment for hackathon
+Verbose=0
+NoteType=Hackathon submission
+Uri=https://github.com/syvb/bench-af-hackathon/tree/0cd77715edf081321c9e52ccf9e82b2440f00c63/environments/food_selection

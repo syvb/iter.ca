@@ -1,0 +1,50 @@
+name: Regen (sans thumbnails)
+
+on:
+  push:
+    paths:
+      - 'notes/**'
+    branches:
+      - master
+  schedule:
+    - cron: 0 23 * * *
+  workflow_dispatch:
+
+jobs:
+  regen:
+    runs-on: ubuntu-24.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Create secrets
+        env:
+          ITCH_TOKEN: ${{ secrets.ITCH_TOKEN }}
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: |
+          mkdir build-data/get/tokens
+          echo $ITCH_TOKEN > build-data/get/tokens/itch.txt
+          echo $BUTTONDOWN_API_KEY > build-data/get/tokens/buttondown.txt
+      - name: Install build-data deps
+        run: |
+          cd build-data/get
+          yarn
+          cd ..
+      - name: Regen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./regen.sh
+      - name: Print diff
+        run: git diff
+      - name: Update
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "Regen script"
+          git diff-index --quiet HEAD -- || git commit -am "Automatic regen"
+          git push

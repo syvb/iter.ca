@@ -1,0 +1,26 @@
+name: Run shellcheck
+
+on:
+  push:
+    paths:
+      - '**.sh'
+      - '.github/**'
+      - 'bin/**'
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    name: Run shellcheck
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install shellcheck
+
+      - name: Check shell scripts
+        run: |
+          shellcheck $(find | grep "\.sh$" | grep -v "static" | grep -v "public")
+          shellcheck bin/*

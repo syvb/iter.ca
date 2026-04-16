@@ -1,0 +1,40 @@
+name: Deploy sm4.ca to Neocities
+
+on:
+  push:
+    paths:
+      - 'data/**'
+      - 'sm4/**'
+      - 'content/**'
+      - '.github/**'
+    branches:
+      - master
+  # ensure scheduled posts get posted automatically
+  schedule:
+    - cron: 0 0 * * *
+      
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    name: Deploy to Neocities
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: Install Node
+        run: |
+          sudo apt-get update
+          sudo apt-get install nodejs
+      - name: Build
+        run: |
+          cd sm4
+          node gen.js
+          cd ..
+      - name: Deploy to neocities
+        uses: bcomnes/deploy-to-neocities@v3
+        with:
+          api_key: ${{ secrets.SM4_NEOCITIES_API_TOKEN }}
+          cleanup: false
+          dist_dir: sm4/public
+          neocities_supporter: true

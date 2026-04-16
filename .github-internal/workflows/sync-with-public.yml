@@ -1,0 +1,58 @@
+# Syncs syvb/scom (internal, private repo) with syvb/iter.ca (public repo)
+# This script syncs the master branch of scom with the master branch of iter.ca, after
+# making a few changes. Specifically, this script removes drafts and some other internal files.
+# It also removes this script to prevent Github Actions from running on the public repo
+
+name: Sync with public repo
+on:
+  push:
+    branches:
+      - master
+    # adding a path here doesn't stop it from being synced, it only stops commits that only change
+    # these from being looked at
+    paths-ignore:
+      - 'work/**'
+      - 'chromelol/**'
+      - 'selfdata/**'
+      - 'self/**'
+      - '270/**'
+      - 'bin/**'
+      - 'consulting/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    name: Sync with public repo
+    continue-on-error: true # for when there are no public changes
+    steps:
+    - name: Clone public repo
+      uses: actions/checkout@master
+      with:
+        repository: syvb/iter.ca
+        path: smitop.com
+        ssh-key: ${{ secrets.PUBLIC_REPO_SSH_KEY }}
+    - name: Clone private repo
+      uses: actions/checkout@master
+      with:
+        path: smitop-blog
+    - name: Do sync
+      run: |
+        ls -a .
+        rm -rf $GITHUB_WORKSPACE/smitop.com/* # * doesn't include .git since it starts with a dot
+        rsync -av --progress $GITHUB_WORKSPACE/smitop-blog/* $GITHUB_WORKSPACE/smitop.com --exclude .git
+        cd $GITHUB_WORKSPACE/smitop-blog
+        LASTMSG=$(git log --format=format:"%s" -1)
+        LASTHASH=$(git log --format=format:"%H" -1)
+        cd $GITHUB_WORKSPACE/smitop.com
+        cp -r $GITHUB_WORKSPACE/smitop-blog/.github .github-internal
+        rm -rf {work,.github,self,selfdata,270,chromelol,bin,consulting}/
+        rm -rf content/post/draft-*
+        rm -rf static/{audit.log,projects.toml,scr-thumbs,yt-thumbs,uploads,start,dct-stimulus-playground,miniposts} static/*.{png,js,eml,html}
+        rm README.md
+        mv README.public.md README.md
+        git add .
+        git config --global user.email "me@smitop.com"
+        git config --global user.name "syvb (via script)"
+        # only commit if there are no changes
+        git diff-index --quiet HEAD -- || git commit -m "$LASTMSG" -m "This commit was automatically generated from $LASTHASH"
+        git push

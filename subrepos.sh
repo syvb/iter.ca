@@ -36,16 +36,16 @@ rm -rf segmerepo
     wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032815315.RAW-01.COVER.jpg'
     wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032826782.RAW-01.COVER.jpg'
     wget -O bad-math-poster-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55190563458&secret=29ceebc973'
-    magick bad-math-poster-orig.jpg -define jpeg:extent=1MB bad-math-poster.jpg
+    convert bad-math-poster-orig.jpg -define jpeg:extent=1MB bad-math-poster.jpg
     rm bad-math-poster-orig.jpg
     wget -O andon-bathroom-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55209483742&secret=761fa0744d'
-    magick andon-bathroom-orig.jpg -define jpeg:extent=1MB andon-bathroom.jpg
+    convert andon-bathroom-orig.jpg -define jpeg:extent=1MB andon-bathroom.jpg
     rm andon-bathroom-orig.jpg
     wget -O andon-soap-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55210534958&secret=05a592313a'
-    magick andon-soap-orig.jpg -define jpeg:extent=1MB andon-soap.jpg
+    convert andon-soap-orig.jpg -define jpeg:extent=1MB andon-soap.jpg
     rm andon-soap-orig.jpg
     wget -O andon-storage-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55209483707&secret=cd6e0aa8c1'
-    magick andon-storage-orig.jpg -define jpeg:extent=1MB andon-storage.jpg
+    convert andon-storage-orig.jpg -define jpeg:extent=1MB andon-storage.jpg
     rm andon-storage-orig.jpg
 )
 

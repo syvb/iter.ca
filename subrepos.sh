@@ -38,6 +38,15 @@ rm -rf segmerepo
     wget -O bad-math-poster-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55190563458&secret=29ceebc973'
     magick bad-math-poster-orig.jpg -define jpeg:extent=1MB bad-math-poster.jpg
     rm bad-math-poster-orig.jpg
+    wget -O andon-bathroom-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55209483742&secret=761fa0744d'
+    magick andon-bathroom-orig.jpg -define jpeg:extent=1MB andon-bathroom.jpg
+    rm andon-bathroom-orig.jpg
+    wget -O andon-soap-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55210534958&secret=05a592313a'
+    magick andon-soap-orig.jpg -define jpeg:extent=1MB andon-soap.jpg
+    rm andon-soap-orig.jpg
+    wget -O andon-storage-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55209483707&secret=cd6e0aa8c1'
+    magick andon-storage-orig.jpg -define jpeg:extent=1MB andon-storage.jpg
+    rm andon-storage-orig.jpg
 )
 
 rm -rf fmat

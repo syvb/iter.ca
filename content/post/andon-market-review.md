@@ -1,5 +1,5 @@
 +++
-date = "2026-04-15T00:00:00Z"
+date = "2026-04-16T00:00:00Z"
 description = "ai-run store in sf"
 tags = []
 title = "I went to the AI-run store in SF"

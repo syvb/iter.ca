@@ -1,4 +1,3 @@
-# 
 +++
 date = "2026-04-18T00:00:00Z"
 description = "Rough notes that aren't really that interesting"

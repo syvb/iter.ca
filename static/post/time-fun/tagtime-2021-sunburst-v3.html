@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { background:#0f1416; color:#e6edf0; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; margin:0; }
+  .wrap { padding: 16px; }
+  .chart { display:flex; gap:28px; align-items:flex-start; flex-wrap:wrap; }
+  svg { background:#14191c; border-radius: 6px; max-width:100%; height:auto; }
+  .legend-wrap { flex:0 1 auto; font-size:12px; }
+  .legend-wrap summary { cursor:pointer; padding:6px 10px; background:#14191c; border-radius:6px; user-select:none; color:#bcc6cc; list-style:none; font-size:12px; }
+  .legend-wrap summary::-webkit-details-marker { display:none; }
+  .legend-wrap summary::before { content:"▸ "; display:inline-block; transition:transform .15s; color:#7b8b92; }
+  .legend-wrap[open] summary::before { transform:rotate(90deg); }
+  .legend-wrap[open] { flex:1 1 240px; min-width:0; }
+  .legend-wrap[open] summary { margin-bottom:6px; }
+  .legend { display:flex; flex-direction:column; gap:2px; }
+  .legend .row { display:flex; align-items:center; gap:8px; padding:3px 6px; border-radius:4px; }
+  .legend .sw { width:12px; height:12px; border-radius:2px; flex:none; }
+  .legend .name { flex:1; }
+  .legend .hrs { color:#8fa0a8; font-variant-numeric: tabular-nums; font-size:11px; }
+  .legend .child { padding-left: 18px; font-size:11px; color:#bcc6cc; }
+  .legend .child .sw { width:10px; height:10px; }
+  .slicelbl { font-size:12px; font-weight:600; pointer-events:none; fill:#f3f6f8; }
+  .slicelbl.inner { font-size:13px; }
+  .slicelbl.small { font-size:10px; font-weight:500; }
+  .leader { stroke:#5d6a70; stroke-width:0.8; fill:none; }
+  #tip {
+    position: fixed; pointer-events:none; background:#1a2124; border:1px solid #2a3236;
+    border-radius:6px; padding:8px 10px; font-size:12px; color:#e6edf0;
+    box-shadow:0 6px 24px rgba(0,0,0,.45); display:none; z-index:10;
+  }
+  .slice { transition: filter .12s; }
+  .slice:hover { filter: brightness(1.18); cursor: default; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="chart">
+    <div id="plot"></div>
+    <details class="legend-wrap" open><summary>Legend</summary><div class="legend" id="legend"></div></details>
+  </div>
+</div>
+<div id="tip"></div>
+
+<script id="data" type="application/json">[{"name":"Sleep","total":3703.6332949093785,"children":[{"name":"Sleep","value":3703.6332949093785}]},{"name":"Computer touching","total":1558.4021378275406,"children":[{"name":"Coding","value":1096.3229488391826},{"name":"Creative","value":207.5140030006368},{"name":"Research","value":98.40978689652131},{"name":"Security","value":70.01885013161599},{"name":"Wiki","value":66.48213415060425},{"name":"Finance","value":19.654414808979546}]},{"name":"School","total":477.46718899451776,"children":[{"name":"School","value":477.46718899451776}]},{"name":"Self-directed learning","total":294.86107239694405,"children":[{"name":"Self-directed","value":260.1222647153686},{"name":"Job search","value":34.738807681575466}]},{"name":"Fun","total":1597.3069281380526,"children":[{"name":"Social/News","value":686.3852549437503},{"name":"Video","value":590.772451746452},{"name":"Web browsing","value":208.59030625634855},{"name":"Gaming","value":111.5589151915016}]},{"name":"Travel","total":241.85890660977188,"children":[{"name":"Transit","value":241.85890660977188}]},{"name":"Outdoors","total":294.97087406390705,"children":[{"name":"Outdoors","value":294.97087406390705}]},{"name":"Personal needs","total":364.6002734852779,"children":[{"name":"Eating","value":283.6478009241931},{"name":"Personal care","value":80.95247256108479}]},{"name":"Other","total":226.8993235746104,"children":[{"name":"Other","value":226.8993235746104}]}]</script>
+<!-- <script id="data" type="application/json">[{"name":"Sleep","total":3704.8289634424705,"children":[{"name":"Sleep","value":3704.8289634424705}]},{"name":"Computer touching","total":1443.1229406613502,"children":[{"name":"Coding","value":959.0455522779337},{"name":"Creative","value":208.1845895853338},{"name":"Research","value":109.61687003637401},{"name":"Security","value":79.91163341486913},{"name":"Wiki","value":66.63396507544132},{"name":"Finance","value":19.730330271398074}]},{"name":"School","total":383.3678216598636,"children":[{"name":"School","value":383.3678216598636}]},{"name":"Self-directed learning","total":299.05879911485914,"children":[{"name":"Self-directed","value":260.4006214109032},{"name":"Job search","value":38.6581777039559}]},{"name":"Fun","total":1594.9314067932062,"children":[{"name":"Social/News","value":686.9403867626858},{"name":"Video","value":590.5684289412022},{"name":"Web browsing","value":208.08262160142465},{"name":"Gaming","value":109.33996948789331}]},{"name":"Travel","total":352.61828882804843,"children":[{"name":"Transit","value":352.61828882804843}]},{"name":"Outdoors","total":366.2407000642628,"children":[{"name":"Outdoors","value":366.2407000642628}]},{"name":"Personal needs","total":390.8217345611243,"children":[{"name":"Eating","value":309.69212592106294},{"name":"Personal care","value":81.12960864006135}]},{"name":"Other","total":225.00934487481575,"children":[{"name":"Other","value":225.00934487481575}]}]</script> -->
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const grand = DATA.reduce((s,t)=>s+t.total, 0);
+
+const INNER_COLORS = {
+  "Sleep":                  "#2a3c4a",
+  "Computer touching":      "#1f8fa3",
+  "School":                 "#c94a4a",
+  "Self-directed learning": "#b86979",
+  "Fun":                    "#c9894d",
+  "Travel":                 "#8a6fa8",
+  "Outdoors":               "#5b9c72",
+  "Personal needs":         "#b88f5a",
+  "Other":                  "#4a5358",
+};
+const OUTER_COLORS = {
+  "Sleep":        "#3a4f5e",
+  "Video":        "#a0c44e",
+  "Social/News":  "#6fbda6",
+  "Eating":       "#d9a96b",
+  "Transit":      "#8a6fa8",
+  "Outdoors":     "#6fb07f",
+  "Coding":       "#22d3ee",
+  "Security":     "#f5c542",
+  "Research":     "#b891d9",
+  "Job search":   "#f07ea8",
+  "School":       "#e25f5f",
+  "Self-directed":"#d98aa0",
+  "Finance":      "#4fb678",
+  "Wiki":         "#cdd3d8",
+  "Creative":     "#5f9ee0",
+  "Gaming":       "#e08a3e",
+  "Web browsing": "#9aa1a9",
+  "Personal care":"#c7b299",
+  "Other":        "#3d464a",
+};
+
+const W = 860, H = 700;
+const cx = 360, cy = H/2;
+const rInnerHole = 0, rInnerOuter = 180, rOuterInner = 184, rOuterOuter = 290;
+
+const svgNS = "http://www.w3.org/2000/svg";
+const svg = document.createElementNS(svgNS, "svg");
+svg.setAttribute("width", W); svg.setAttribute("height", H);
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+
+function polar(r, ang){ return [cx + r*Math.cos(ang), cy + r*Math.sin(ang)]; }
+function arcPath(r1, r2, a0, a1){
+  const large = (a1 - a0) > Math.PI ? 1 : 0;
+  const [x1,y1] = polar(r1, a0), [x2,y2] = polar(r2, a0);
+  const [x3,y3] = polar(r2, a1), [x4,y4] = polar(r1, a1);
+  return `M ${x1} ${y1} L ${x2} ${y2} A ${r2} ${r2} 0 ${large} 1 ${x3} ${y3} L ${x4} ${y4} A ${r1} ${r1} 0 ${large} 0 ${x1} ${y1} Z`;
+}
+function fmtH(hrs){
+  if (hrs >= 100) return Math.round(hrs) + "h";
+  if (hrs >= 10) return hrs.toFixed(0) + "h";
+  return hrs.toFixed(1) + "h";
+}
+function labelColor(hex){
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  const L = 0.2126*r + 0.7152*g + 0.0722*b;
+  return L > 150 ? "#0f1416" : "#f3f6f8";
+}
+
+let a = -Math.PI / 2;
+const tip = document.getElementById("tip");
+const outerLabelRequests = [];
+
+for (const top of DATA){
+  const ang = (top.total / grand) * 2 * Math.PI;
+  const a0 = a, a1 = a + ang;
+  const innerPath = document.createElementNS(svgNS, "path");
+  innerPath.setAttribute("d", arcPath(rInnerHole, rInnerOuter, a0, a1));
+  innerPath.setAttribute("fill", INNER_COLORS[top.name]);
+  innerPath.setAttribute("class", "slice");
+  innerPath.addEventListener("mousemove", e => showTip(e, `<b>${top.name}</b><br>${top.total.toFixed(0)}h · ${(top.total/grand*100).toFixed(1)}% of year`));
+  innerPath.addEventListener("mouseleave", hideTip);
+  svg.appendChild(innerPath);
+
+  const angMid = (a0 + a1) / 2;
+  const arcSpan = a1 - a0;
+  if (arcSpan > 0.18){
+    const [lx, ly] = polar((rInnerHole + rInnerOuter) / 2 + 12, angMid);
+    const words = top.name.split(" ");
+    if (words.length >= 2){
+      // multi-line
+      const t1 = document.createElementNS(svgNS, "text");
+      t1.setAttribute("x", lx); t1.setAttribute("y", ly - 6);
+      t1.setAttribute("text-anchor","middle");
+      t1.setAttribute("class","slicelbl inner");
+      t1.setAttribute("fill", labelColor(INNER_COLORS[top.name]));
+      t1.textContent = words[0];
+      svg.appendChild(t1);
+      const t2 = document.createElementNS(svgNS, "text");
+      t2.setAttribute("x", lx); t2.setAttribute("y", ly + 8);
+      t2.setAttribute("text-anchor","middle");
+      t2.setAttribute("class","slicelbl inner");
+      t2.setAttribute("fill", labelColor(INNER_COLORS[top.name]));
+      t2.textContent = words.slice(1).join(" ");
+      svg.appendChild(t2);
+      const pct = document.createElementNS(svgNS, "text");
+      pct.setAttribute("x", lx); pct.setAttribute("y", ly + 24);
+      pct.setAttribute("text-anchor","middle");
+      pct.setAttribute("class","slicelbl");
+      pct.setAttribute("fill", labelColor(INNER_COLORS[top.name]));
+      pct.setAttribute("opacity","0.75");
+      pct.textContent = `${top.total.toFixed(0)}h · ${(top.total/grand*100).toFixed(1)}%`;
+      svg.appendChild(pct);
+    } else {
+      const txt = document.createElementNS(svgNS, "text");
+      txt.setAttribute("x", lx); txt.setAttribute("y", ly);
+      txt.setAttribute("text-anchor","middle");
+      txt.setAttribute("class","slicelbl inner");
+      txt.setAttribute("fill", labelColor(INNER_COLORS[top.name]));
+      txt.textContent = top.name;
+      svg.appendChild(txt);
+      const pct = document.createElementNS(svgNS, "text");
+      pct.setAttribute("x", lx); pct.setAttribute("y", ly + 16);
+      pct.setAttribute("text-anchor","middle");
+      pct.setAttribute("class","slicelbl");
+      pct.setAttribute("fill", labelColor(INNER_COLORS[top.name]));
+      pct.setAttribute("opacity","0.75");
+      pct.textContent = `${top.total.toFixed(0)}h · ${(top.total/grand*100).toFixed(1)}%`;
+      svg.appendChild(pct);
+    }
+  }
+
+  let ca = a0;
+  for (const ch of top.children){
+    const cang = (ch.value / top.total) * (a1 - a0);
+    const c0 = ca, c1 = ca + cang;
+    const cPath = document.createElementNS(svgNS, "path");
+    cPath.setAttribute("d", arcPath(rOuterInner, rOuterOuter, c0, c1));
+    cPath.setAttribute("fill", OUTER_COLORS[ch.name] || "#888");
+    cPath.setAttribute("class", "slice");
+    cPath.addEventListener("mousemove", e => showTip(e, `<b>${ch.name}</b><br>${ch.value.toFixed(0)}h · ${(ch.value/grand*100).toFixed(1)}% of year<br><span style="color:#8fa0a8">(${top.name})</span>`));
+    cPath.addEventListener("mouseleave", hideTip);
+    svg.appendChild(cPath);
+
+    const cMid = (c0 + c1) / 2;
+    const cSpan = c1 - c0;
+    if (cSpan > 0.12){
+      const [lx, ly] = polar((rOuterInner + rOuterOuter) / 2, cMid);
+      const txt = document.createElementNS(svgNS, "text");
+      txt.setAttribute("x", lx); txt.setAttribute("y", ly);
+      txt.setAttribute("text-anchor","middle");
+      txt.setAttribute("class","slicelbl");
+      txt.setAttribute("fill", labelColor(OUTER_COLORS[ch.name]));
+      txt.textContent = ch.name;
+      svg.appendChild(txt);
+      const pct = document.createElementNS(svgNS, "text");
+      pct.setAttribute("x", lx); pct.setAttribute("y", ly + 13);
+      pct.setAttribute("text-anchor","middle");
+      pct.setAttribute("class","slicelbl small");
+      pct.setAttribute("fill", labelColor(OUTER_COLORS[ch.name]));
+      pct.setAttribute("opacity","0.8");
+      pct.textContent = fmtH(ch.value);
+      svg.appendChild(pct);
+    } else {
+      outerLabelRequests.push({name: ch.name, value: ch.value, angMid: cMid, color: OUTER_COLORS[ch.name]});
+    }
+    ca = c1;
+  }
+  a = a1;
+}
+
+outerLabelRequests.sort((a,b)=>a.angMid - b.angMid);
+// Simple stagger
+const usedYs = { left: [], right: [] };
+for (const req of outerLabelRequests){
+  const [ax, ay] = polar(rOuterOuter + 4, req.angMid);
+  const rightSide = Math.cos(req.angMid) >= 0;
+  const lx = rightSide ? cx + rOuterOuter + 40 : cx - rOuterOuter - 40;
+  let ly = ay;
+  const list = rightSide ? usedYs.right : usedYs.left;
+  const MIN_GAP = 14;
+  while (list.some(y => Math.abs(y - ly) < MIN_GAP)) ly += MIN_GAP;
+  list.push(ly);
+  const line = document.createElementNS(svgNS, "polyline");
+  line.setAttribute("points", `${ax},${ay} ${(rightSide? ax+10 : ax-10)},${ly} ${lx},${ly}`);
+  line.setAttribute("class", "leader");
+  svg.appendChild(line);
+  const dot = document.createElementNS(svgNS, "circle");
+  dot.setAttribute("cx", lx + (rightSide?2:-2)); dot.setAttribute("cy", ly);
+  dot.setAttribute("r", 3); dot.setAttribute("fill", req.color);
+  svg.appendChild(dot);
+  const txt = document.createElementNS(svgNS, "text");
+  txt.setAttribute("x", lx + (rightSide? 8 : -8));
+  txt.setAttribute("y", ly + 3.5);
+  txt.setAttribute("text-anchor", rightSide ? "start" : "end");
+  txt.setAttribute("class","slicelbl small");
+  txt.textContent = `${req.name} · ${fmtH(req.value)}`;
+  svg.appendChild(txt);
+}
+
+const c1 = document.createElementNS(svgNS, "text");
+c1.setAttribute("x", cx); c1.setAttribute("y", cy - 6);
+c1.setAttribute("text-anchor","middle");
+c1.setAttribute("fill","#e6edf0");
+c1.setAttribute("font-size","14"); c1.setAttribute("font-weight","600");
+c1.textContent = "2021";
+svg.appendChild(c1);
+const c2 = document.createElementNS(svgNS, "text");
+c2.setAttribute("x", cx); c2.setAttribute("y", cy + 12);
+c2.setAttribute("text-anchor","middle");
+c2.setAttribute("fill","#8fa0a8");
+c2.setAttribute("font-size","11");
+c2.textContent = "8,760 hours";
+svg.appendChild(c2);
+
+function showTip(evt, html){
+  tip.innerHTML = html;
+  tip.style.display = "block";
+  const pad = 14;
+  let left = evt.clientX + pad, top = evt.clientY + pad;
+  const r = tip.getBoundingClientRect();
+  if (left + r.width > window.innerWidth - 10) left = evt.clientX - r.width - pad;
+  if (top + r.height > window.innerHeight - 10) top = evt.clientY - r.height - pad;
+  tip.style.left = left + "px"; tip.style.top = top + "px";
+}
+function hideTip(){ tip.style.display = "none"; }
+document.getElementById("plot").appendChild(svg);
+if (!matchMedia("(min-width: 900px)").matches) document.querySelector(".legend-wrap").open = false;
+function reportH(){ parent.postMessage({ttH:document.body.scrollHeight, ttSrc:location.pathname.split("/").pop()}, "*"); }
+new ResizeObserver(reportH).observe(document.body);
+addEventListener("load", reportH);
+
+const legend = document.getElementById("legend");
+for (const top of DATA){
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <div class="sw" style="background:${INNER_COLORS[top.name]}"></div>
+    <div class="name"><b>${top.name}</b></div>
+    <div class="hrs">${Math.round(top.total)}h · ${(top.total/grand*100).toFixed(1)}%</div>`;
+  legend.appendChild(row);
+  if (top.children.length > 1 || top.children[0].name !== top.name){
+    for (const ch of top.children){
+      const r = document.createElement("div");
+      r.className = "row child";
+      r.innerHTML = `
+        <div class="sw" style="background:${OUTER_COLORS[ch.name]}"></div>
+        <div class="name">${ch.name}</div>
+        <div class="hrs">${Math.round(ch.value)}h · ${(ch.value/grand*100).toFixed(1)}%</div>`;
+      legend.appendChild(r);
+    }
+  }
+}
+</script>
+</body>
+</html>

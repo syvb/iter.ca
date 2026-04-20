@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { background:#0f1416; color:#e6edf0; font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; margin:0; }
+  .wrap { padding: 16px; }
+  .chart { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
+  svg { background:#14191c; border-radius: 6px; max-width:100%; height:auto; }
+  .legend-wrap { flex:0 1 auto; font-size:12px; }
+  .legend-wrap summary { cursor:pointer; padding:6px 10px; background:#14191c; border-radius:6px; user-select:none; color:#bcc6cc; list-style:none; font-size:12px; }
+  .legend-wrap summary::-webkit-details-marker { display:none; }
+  .legend-wrap summary::before { content:"▸ "; display:inline-block; transition:transform .15s; color:#7b8b92; }
+  .legend-wrap[open] summary::before { transform:rotate(90deg); }
+  .legend-wrap[open] { flex:1 1 210px; min-width:0; }
+  .legend-wrap[open] summary { margin-bottom:6px; }
+  .legend { display:flex; flex-direction:column; gap:3px; }
+  .legend .row { display:flex; align-items:center; gap:8px; padding:3px 6px; border-radius:4px; }
+  .legend .sw { width:12px; height:12px; border-radius:2px; flex:none; }
+  .legend .name { flex:1; }
+  .legend .hrs { color:#8fa0a8; font-variant-numeric: tabular-nums; font-size:11px; }
+  .axis { fill:#7b8b92; font-size:11px; }
+  .tick { stroke:#2a3236; }
+  .monthlbl { fill:#c9d1d6; font-size:12px; font-weight:500; }
+  .hrlbl { font-size:10px; font-weight:600; pointer-events:none; }
+  #tip {
+    position: fixed; pointer-events:none; background:#1a2124; border:1px solid #2a3236;
+    border-radius:6px; padding:8px 10px; font-size:12px; color:#e6edf0;
+    box-shadow:0 6px 24px rgba(0,0,0,.45); display:none; z-index:10; min-width:220px;
+  }
+  #tip .d { font-weight:600; margin-bottom:4px; }
+  #tip table { border-collapse:collapse; font-variant-numeric: tabular-nums; }
+  #tip td { padding: 1px 4px; }
+  #tip td.v { text-align:right; color:#bcc6cc; }
+  #tip td.s { width:10px; }
+  #tip td.s span { display:inline-block; width:8px; height:8px; border-radius:2px; }
+  .bar rect.stack { transition: filter .15s; }
+  .bar:hover rect.stack { filter: brightness(1.12); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="chart">
+    <div id="plot"></div>
+    <details class="legend-wrap" open><summary>Legend</summary><div class="legend" id="legend"></div></details>
+  </div>
+</div>
+<div id="tip"></div>
+
+<script id="data" type="application/json">{"labels":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"categories":["Sleep","Video","Social/News","Eating","Transit","Outdoors","Coding","Security","Research","Job search","School","Self-directed","Finance","Wiki","Creative","Gaming","Web browsing","Personal care","Other"],"data":[[664.6153846153846,77.68231768231767,73.36663336663337,27.33266733266733,34.52547452547453,46.03396603396603,149.61038961038963,7.192807192807193,23.016983016983016,0,106.45354645354645,28.77122877122877,0,15.824175824175825,11.508491508491508,31.64835164835165,51.7882117882118,18.701298701298704,71.92807192807193],[613.2743362831859,71.68141592920354,73.27433628318585,46.19469026548673,23.893805309734514,12.743362831858407,180,7.964601769911504,38.230088495575224,4.778761061946903,43.008849557522126,74.86725663716814,3.185840707964602,14.336283185840708,20.707964601769913,68.49557522123894,60.53097345132744,30.26548672566372,52.56637168141593],[596.16,122.4,66.24,40.32,43.199999999999996,47.52,167.04000000000002,11.52,15.84,5.76,50.400000000000006,60.480000000000004,2.88,5.76,27.36,38.88,56.16,30.240000000000002,51.839999999999996],[653.9872068230277,175.01066098081023,58.336886993603414,46.05543710021322,15.35181236673774,27.633262260127935,175.01066098081023,16.886993603411515,9.211087420042643,4.605543710021322,41.449893390191896,69.08315565031984,6.140724946695096,21.492537313432834,19.957356076759062,36.84434968017057,29.168443496801707,10.746268656716417,23.02771855010661],[670.6653426017875,94.3793445878848,114.39920556107249,61.489572989076464,35.749751737835155,48.61966236345581,218.78848063555114,0,5.719960278053624,5.719960278053624,71.49950347567031,28.599801390268123,0,7.149950347567031,12.869910625620657,15.729890764647466,27.169811320754715,2.859980139026812,18.58987090367428],[660.2489626556016,103.07053941908713,103.07053941908713,44.81327800829875,17.925311203319502,17.925311203319502,279.33609958506224,8.962655601659751,7.468879668049793,0,70.20746887966806,25.394190871369293,2.987551867219917,1.4937759336099585,11.950207468879668,8.962655601659751,29.87551867219917,16.431535269709542,29.87551867219917],[686.5454545454546,100.36363636363637,88.72727272727273,53.81818181818181,34.90909090909091,42.18181818181819,218.1818181818182,26.18181818181818,27.636363636363633,4.363636363636363,1.4545454545454546,64,1.4545454545454546,2.909090909090909,4.363636363636363,4.363636363636363,40.72727272727273,11.636363636363637,26.18181818181818],[619.2592592592592,97.77777777777777,171.85185185185185,77.03703703703704,29.62962962962963,29.62962962962963,198.51851851851853,8.88888888888889,22.22222222222222,13.333333333333332,1.4814814814814816,50.370370370370374,0,0,42.96296296296296,0,40,4.444444444444445,32.592592592592595],[567.7207392197125,109.40451745379877,104.96919917864476,50.26694045174538,50.26694045174538,47.310061601642715,128.62422997946612,22.17659137577002,13.305954825462011,5.913757700205339,153.7577002053388,45.831622176591374,4.435318275154004,7.392197125256673,76.8788501026694,1.4784394250513349,19.21971252566735,7.392197125256673,23.655030800821358],[523.501544799176,71.18434603501545,140.88568486096807,34.1091658084449,90.46343975283213,112.70854788877445,174.99485066941298,11.864057672502573,11.864057672502573,0,139.40267765190526,13.347064881565396,4.449021627188466,28.177136972193612,57.83728115345006,0,4.449021627188466,4.449021627188466,16.31307929969104],[551.0359408033827,76.10993657505286,200.93023255813952,38.05496828752643,60.887949260042284,27.39957716701903,129.38689217758986,12.177589852008458,18.266384778012686,10.6553911205074,150.69767441860466,22.832980972515855,4.5665961945031714,9.133192389006343,44.143763213530654,6.088794926004229,22.832980972515855,3.0443974630021144,51.75475687103594],[499.1411042944785,66.25766871165644,154.60122699386503,39.75460122699386,38.282208588957054,116.31901840490798,142.82208588957056,4.41717791411043,2.94478527607362,13.25153374233129,111.90184049079755,32.392638036809814,8.83435582822086,17.66871165644172,78.03680981595092,11.77914110429448,30.92024539877301,20.61349693251534,50.061349693251536]],"daysIn":[31,28,31,30,31,30,31,31,30,31,30,31],"pingsIn":[1001,904,1000,938,1007,964,990,972,974,971,946,978]}
+</script>
+<!-- <script id="data" type="application/json">{"labels":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"categories":["Sleep","Video","Social/News","Eating","Transit","Outdoors","Coding","Security","Research","Job search","School","Self-directed","Finance","Wiki","Creative","Gaming","Web browsing","Personal care","Other"],"data":[[664.6153846153846,77.68231768231767,73.36663336663337,28.77122877122877,73.36663336663337,56.103896103896105,105.01498501498502,8.631368631368632,31.64835164835165,0,90.62937062937064,28.77122877122877,0,15.824175824175825,11.508491508491508,31.64835164835165,51.7882117882118,18.701298701298704,71.92807192807193],[613.2743362831859,71.68141592920354,73.27433628318585,47.78761061946903,46.19469026548673,15.929203539823009,154.5132743362832,7.964601769911504,39.823008849557525,4.778761061946903,39.823008849557525,74.86725663716814,3.185840707964602,14.336283185840708,20.707964601769913,68.49557522123894,60.53097345132744,30.26548672566372,52.56637168141593],[596.16,122.4,66.24,43.199999999999996,57.6,54.72,145.44,15.84,15.84,5.76,43.199999999999996,60.480000000000004,2.88,5.76,27.36,38.88,56.16,30.240000000000002,51.839999999999996],[653.9872068230277,175.01066098081023,58.336886993603414,49.12579957356077,26.098081023454156,29.168443496801707,159.6588486140725,18.422174840085287,9.211087420042643,4.605543710021322,39.914712153518124,69.08315565031984,6.140724946695096,21.492537313432834,19.957356076759062,36.84434968017057,29.168443496801707,10.746268656716417,23.02771855010661],[670.6653426017875,94.3793445878848,114.39920556107249,64.34955312810328,54.33962264150943,52.90963257199603,195.90863952333663,0,7.149950347567031,5.719960278053624,67.20953326713008,28.599801390268123,0,7.149950347567031,12.869910625620657,15.729890764647466,27.169811320754715,2.859980139026812,18.58987090367428],[660.2489626556016,103.07053941908713,103.07053941908713,47.80082987551867,28.38174273858921,20.91286307053942,270.37344398340247,8.962655601659751,7.468879668049793,0,62.738589211618255,25.394190871369293,2.987551867219917,1.4937759336099585,11.950207468879668,8.962655601659751,29.87551867219917,16.431535269709542,29.87551867219917],[686.5454545454546,100.36363636363637,88.72727272727273,53.81818181818181,61.09090909090909,43.63636363636364,190.54545454545453,26.18181818181818,29.090909090909093,4.363636363636363,0,64,1.4545454545454546,2.909090909090909,4.363636363636363,4.363636363636363,40.72727272727273,11.636363636363637,26.18181818181818],[619.2592592592592,97.77777777777777,171.85185185185185,81.48148148148148,38.51851851851852,32.592592592592595,182.22222222222223,8.88888888888889,23.703703703703706,13.333333333333332,0,50.370370370370374,0,0,42.96296296296296,0,40,4.444444444444445,32.592592592592595],[567.7207392197125,109.40451745379877,104.96919917864476,60.616016427104725,65.05133470225873,76.8788501026694,113.83983572895278,23.655030800821358,19.21971252566735,5.913757700205339,106.44763860369609,45.831622176591374,4.435318275154004,7.392197125256673,76.8788501026694,1.4784394250513349,19.21971252566735,7.392197125256673,23.655030800821358],[523.501544799176,71.18434603501545,140.88568486096807,47.456230690010294,118.64057672502575,134.9536560247168,134.9536560247168,17.796086508753863,13.347064881565396,0,108.259526261586,13.347064881565396,4.449021627188466,28.177136972193612,57.83728115345006,0,4.449021627188466,4.449021627188466,16.31307929969104],[551.0359408033827,76.10993657505286,200.93023255813952,39.577167019027485,77.6321353065539,57.84355179704016,112.64270613107823,13.699788583509514,18.266384778012686,18.266384778012686,109.59830866807611,22.832980972515855,4.5665961945031714,9.133192389006343,44.143763213530654,6.088794926004229,22.832980972515855,3.0443974630021144,51.75475687103594],[501.4553014553014,65.86278586278587,155.67567567567568,46.4033264033264,46.4033264033264,140.7068607068607,127.23492723492724,7.484407484407485,2.993762993762994,13.471933471933472,88.31600831600832,32.931392931392935,8.981288981288982,17.962577962577964,79.33471933471934,7.484407484407485,29.93762993762994,20.95634095634096,46.4033264033264]],"daysIn":[31,28,31,30,31,30,31,31,30,31,30,31],"pingsIn":[1001,904,1000,938,1007,964,990,972,974,971,946,962]}</script> -->
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+// Order matches DATA.categories:
+// Sleep, Video, Social/News, Eating, Transit, Outdoors, Coding, Security,
+// Research, Job search, School, Self-directed, Finance, Wiki, Creative,
+// Gaming, Web browsing, Personal care, Other
+const COLORS = [
+  "#2a3c4a", // Sleep
+  "#a0c44e", // Video
+  "#6fbda6", // Social/News
+  "#d9a96b", // Eating
+  "#8a6fa8", // Transit
+  "#6fb07f", // Outdoors
+  "#22d3ee", // Coding (cyan)
+  "#f5c542", // Security
+  "#b891d9", // Research
+  "#f07ea8", // Job search
+  "#e25f5f", // School
+  "#d98aa0", // Self-directed
+  "#4fb678", // Finance
+  "#cdd3d8", // Wiki
+  "#5f9ee0", // Creative
+  "#e08a3e", // Gaming
+  "#9aa1a9", // Web browsing
+  "#c7b299", // Personal care
+  "#3d464a", // Other
+];
+
+const CATS = DATA.categories;
+const months = DATA.labels;
+const data = DATA.data;
+
+const W = 980, H = 560, PAD_L = 54, PAD_R = 24, PAD_T = 14, PAD_B = 52;
+const plotW = W - PAD_L - PAD_R;
+const plotH = H - PAD_T - PAD_B;
+const barW = plotW / months.length;
+const barPad = 10;
+
+const svgNS = "http://www.w3.org/2000/svg";
+const svg = document.createElementNS(svgNS, "svg");
+svg.setAttribute("width", W); svg.setAttribute("height", H);
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+
+const yFor = hrs => PAD_T + plotH * (1 - hrs/24);
+
+for (let h = 0; h <= 24; h += 2){
+  const y = yFor(h);
+  const line = document.createElementNS(svgNS, "line");
+  line.setAttribute("x1", PAD_L); line.setAttribute("x2", W-PAD_R);
+  line.setAttribute("y1", y); line.setAttribute("y2", y);
+  line.setAttribute("class", "tick");
+  svg.appendChild(line);
+  if (h % 4 === 0){
+    const lbl = document.createElementNS(svgNS, "text");
+    lbl.setAttribute("x", PAD_L - 8); lbl.setAttribute("y", y+3);
+    lbl.setAttribute("text-anchor", "end");
+    lbl.setAttribute("class", "axis");
+    lbl.textContent = h + "h";
+    svg.appendChild(lbl);
+  }
+}
+
+function fmtHours(mins){
+  const h = mins/60;
+  if (h >= 1) return h.toFixed(1) + "h";
+  return Math.round(mins) + "m";
+}
+function fmtHM(mins){
+  const h = Math.floor(mins/60);
+  const m = Math.round(mins - h*60);
+  if (h === 0 && m === 0) return "0";
+  if (h === 0) return m + "m";
+  if (m === 0) return h + "h";
+  return h + "h " + m + "m";
+}
+function labelColor(hex){
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  const L = 0.2126*r + 0.7152*g + 0.0722*b;
+  return L > 150 ? "#0f1416" : "#f3f6f8";
+}
+
+const tip = document.getElementById("tip");
+for (let i = 0; i < months.length; i++){
+  const g = document.createElementNS(svgNS, "g");
+  g.setAttribute("class","bar");
+  const bx = PAD_L + i*barW + barPad/2;
+  const bw = barW - barPad;
+  let yAcc = PAD_T + plotH;
+  for (let c = 0; c < CATS.length; c++){
+    const mins = data[i][c];
+    if (mins <= 0) continue;
+    const hrs = mins/60;
+    const h = plotH * (hrs/24);
+    const rect = document.createElementNS(svgNS, "rect");
+    rect.setAttribute("class","stack");
+    rect.setAttribute("x", bx);
+    rect.setAttribute("y", yAcc - h);
+    rect.setAttribute("width", bw);
+    rect.setAttribute("height", h);
+    rect.setAttribute("fill", COLORS[c]);
+    g.appendChild(rect);
+    if (mins >= 30 && h >= 14){
+      const t = document.createElementNS(svgNS, "text");
+      t.setAttribute("class","hrlbl");
+      t.setAttribute("x", bx + bw/2);
+      t.setAttribute("y", yAcc - h/2 + 3.5);
+      t.setAttribute("text-anchor","middle");
+      t.setAttribute("fill", labelColor(COLORS[c]));
+      t.textContent = fmtHours(mins);
+      g.appendChild(t);
+    }
+    yAcc -= h;
+  }
+  const mlbl = document.createElementNS(svgNS, "text");
+  mlbl.setAttribute("class","monthlbl");
+  mlbl.setAttribute("x", bx + bw/2);
+  mlbl.setAttribute("y", PAD_T + plotH + 18);
+  mlbl.setAttribute("text-anchor","middle");
+  mlbl.textContent = months[i];
+  svg.appendChild(mlbl);
+  const sub = document.createElementNS(svgNS, "text");
+  sub.setAttribute("class","axis");
+  sub.setAttribute("x", bx + bw/2);
+  sub.setAttribute("y", PAD_T + plotH + 34);
+  sub.setAttribute("text-anchor","middle");
+  sub.textContent = DATA.pingsIn[i] + " pings";
+  svg.appendChild(sub);
+  const hit = document.createElementNS(svgNS, "rect");
+  hit.setAttribute("x", bx); hit.setAttribute("y", PAD_T);
+  hit.setAttribute("width", bw); hit.setAttribute("height", plotH);
+  hit.setAttribute("fill","transparent");
+  hit.addEventListener("mousemove", e => showTip(e, i));
+  hit.addEventListener("mouseleave", () => tip.style.display="none");
+  g.appendChild(hit);
+  svg.appendChild(g);
+}
+function showTip(evt, i){
+  const rows = data[i].map((m,c) => ({m, c, n: CATS[c], col: COLORS[c]}))
+    .filter(r => r.m > 0).sort((a,b) => b.m - a.m);
+  let html = `<div class="d">${months[i]} 2021 · ${DATA.daysIn[i]} days, ${DATA.pingsIn[i]} pings</div><table>`;
+  for (const r of rows){
+    html += `<tr><td class="s"><span style="background:${r.col}"></span></td><td>${r.n}</td><td class="v">${fmtHM(r.m)}</td></tr>`;
+  }
+  html += "</table>";
+  tip.innerHTML = html;
+  tip.style.display = "block";
+  const pad = 14;
+  let left = evt.clientX + pad, top = evt.clientY + pad;
+  const r = tip.getBoundingClientRect();
+  if (left + r.width > window.innerWidth - 10) left = evt.clientX - r.width - pad;
+  if (top + r.height > window.innerHeight - 10) top = evt.clientY - r.height - pad;
+  tip.style.left = left + "px"; tip.style.top = top + "px";
+}
+document.getElementById("plot").appendChild(svg);
+if (!matchMedia("(min-width: 900px)").matches) document.querySelector(".legend-wrap").open = false;
+function reportH(){ parent.postMessage({ttH:document.body.scrollHeight, ttSrc:location.pathname.split("/").pop()}, "*"); }
+new ResizeObserver(reportH).observe(document.body);
+addEventListener("load", reportH);
+const legend = document.getElementById("legend");
+const yearTotals = CATS.map((_, c) => data.reduce((s, row, i) => s + (row[c]/60)*DATA.daysIn[i], 0));
+const yearSum = yearTotals.reduce((a,b)=>a+b, 0);
+for (let c = 0; c < CATS.length; c++){
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <div class="sw" style="background:${COLORS[c]}"></div>
+    <div class="name">${CATS[c]}</div>
+    <div class="hrs">${Math.round(yearTotals[c])}h · ${((yearTotals[c]/yearSum)*100).toFixed(1)}%</div>`;
+  legend.appendChild(row);
+}
+</script>
+</body>
+</html>

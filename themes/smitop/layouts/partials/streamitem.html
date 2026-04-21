@@ -39,6 +39,8 @@
             {{- else -}}
                 Note
             {{- end -}}
+        {{- else if (hasPrefix .Item.File.Dir "p/") -}}
+            Page
         {{- else -}}
             Blog post
         {{- end -}}
@@ -110,7 +112,11 @@
                 ><a href="{{- .Item.Permalink -}}">{{- .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
             </h2>
             <div class="stream-item-date">
-                {{- if (.scr.Get "mini") }} on {{ end -}}
+                {{- if (hasPrefix .Item.File.Dir "p/") -}}
+                    {{- if (.scr.Get "mini") }} updated {{ else }}Updated {{ end -}}
+                {{- else -}}
+                    {{- if (.scr.Get "mini") }} on {{ end -}}
+                {{- end -}}
                 {{- .Item.Date.Format "January 2, 2006" -}}
             </div>
             {{- if (and (isset .Item.Params "image") (not (isset .Item.Params "no_stream_image")) (not (.scr.Get "mini"))) -}}

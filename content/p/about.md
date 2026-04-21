@@ -17,9 +17,9 @@ So, I quit my job in December 2025 to focus on learning and deciding what I shou
 
 Here are some problems I have.
 
-- I worry too much about saving trivial amounts of money
 - I have too much of a tendency to just follow the default path without considering it enough.
 - I often waste my time doing activities that I don't endorse as a good use of my time in hindsight.
+- I worry too much about saving trivial amounts of money.
 - I have [nr-axSpA](https://en.wikipedia.org/wiki/Axial_spondyloarthritis), which prevents me from bending over all the way (I can't get close to touching my toes) and sometimes makes it hard for me to walk.
 
 ## Interests

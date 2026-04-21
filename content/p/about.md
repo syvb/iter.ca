@@ -1,6 +1,6 @@
 +++
 topbar_id = "about"
-Title = "About"
+Title = "About me"
 +++
 
 Hi, I'm Smitty (aka loops on the Internet)! I have a lot of varied interests. I really like having fun! Most of what I do is guided by what I find interesting to work on. I really like working with computers. I also really like having interesting conversations with other people; I find discussing things with people is a really fun way for me to expand my knowledge of the world. I get an almost euphoric high from having really good conversations. (I find discussion-based games like [BoTC](https://bloodontheclocktower.com) really fun for that reason.)

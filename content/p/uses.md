@@ -1,6 +1,8 @@
 +++
 topbar_id = "uses"
 Title = "Things I use"
+date = 2026-04-22
+Verbose = 0
 +++
 
 Here’s a list of the stuff I use in my life, based on [uses.tech](https://uses.tech/). See also [my post about software I use](https://iter.ca/post/programs-like/).

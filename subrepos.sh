@@ -35,7 +35,9 @@ rm -rf segmerepo
     wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032801897.RAW-01.COVER.jpg'
     wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032815315.RAW-01.COVER.jpg'
     wget 'https://archive.org/download/lifelogging-2026-03-31/PXL_20260401_032826782.RAW-01.COVER.jpg'
-    wget -O inds-main.jpg 'https://gist.github.com/user-attachments/assets/4d86b7a6-4776-4813-9f42-835a830a72fc'
+    wget -O inds-main-orig.png 'https://gist.github.com/user-attachments/assets/4d86b7a6-4776-4813-9f42-835a830a72fc'
+    convert inds-main-orig.png -define jpeg:extent=1MB inds-main.jpg
+    rm inds-main-orig.png
     wget -O bad-math-poster-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55190563458&secret=29ceebc973'
     convert bad-math-poster-orig.jpg -define jpeg:extent=1MB bad-math-poster.jpg
     rm bad-math-poster-orig.jpg

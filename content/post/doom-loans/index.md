@@ -3,6 +3,8 @@ date = "2026-04-28T00:00:00Z"
 description = "How to bet on the end of the world"
 tags = ["ai"]
 title = "Loans are bets on doom"
+image = "/post/doom-loans/dia2.svg"
+image_alt = "Cash flow diagram: a green \"+$100 now\" bar on the left, a taller red \"−$200 in 10 years\" bar on the right, on a shared timeline."
 verbose = 1
 +++
 

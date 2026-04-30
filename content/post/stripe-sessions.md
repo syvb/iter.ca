@@ -43,6 +43,6 @@ They took over a park near the conference venue for serving food to the attendee
 ## misc
 The conference had unusually intense security compared to any of the conferences I’ve been to before. You have to go through a metal detector, then have someone look through your bags for a few seconds.
 
-There were some advertising trucks that were driving around the front of the conference venue. Like trucks with signs on the side to advertise something. They pulled over in front of the venue for like a minute before circling around and doing that again.
+There were some advertising trucks that were driving around the front of the conference venue. Like trucks with signs on the side to advertise something. They pulled over in front of the venue for like a minute before circling around and doing that again. It seems kinda bad that advertisers abuse publicly funded road infrastructure that's intended for transporting people?
 
 ![Outside the venue with trucks](https://iter.ca/ext/sessions-outside.jpg)

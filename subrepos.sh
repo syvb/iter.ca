@@ -50,6 +50,18 @@ rm -rf segmerepo
     wget -O andon-storage-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55209483707&secret=cd6e0aa8c1'
     convert andon-storage-orig.jpg -define jpeg:extent=1MB andon-storage.jpg
     rm andon-storage-orig.jpg
+    wget -O sessions-floor-3.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55240095850&secret=4f19325fca'
+    wget -O sessions-book-table.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239836408&secret=5f60675dcf'
+    wget -O sessions-test-card-front.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239836468&secret=6bb51b3ebe'
+    wget -O sessions-test-card-back.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55238789602&secret=856e8ed328'
+    wget -O sessions-game-play.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55238789622&secret=52c3d89a97'
+    wget -O sessions-game-terminal.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239935584&secret=4686c091a1'
+    wget -O sessions-lobby.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239691891&secret=7b77a2f12d'
+    wget -O sessions-lunch.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55240095980&secret=defddec9be'
+    wget -O sessions-lunch-menu.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239691946&secret=f5943efd04'
+    wget -O sessions-outside.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55238789552&secret=64f4e617b8'
+    wget -O sessions-terminal-devices.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239836443&secret=e3fcb4a34f'
+    wget -O sessions-posthog.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239691781&secret=19f1442acf'
 )
 
 rm -rf fmat

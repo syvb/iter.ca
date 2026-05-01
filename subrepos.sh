@@ -62,6 +62,9 @@ rm -rf segmerepo
     wget -O sessions-outside.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55238789552&secret=64f4e617b8'
     wget -O sessions-terminal-devices.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239836443&secret=e3fcb4a34f'
     wget -O sessions-posthog.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239691781&secret=19f1442acf'
+    wget -O lighthaven-night-orig.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55241304261&secret=64d147b08b'
+    convert lighthaven-night-orig.jpg -define jpeg:extent=1MB lighthaven-night.jpg
+    rm lighthaven-night-orig.jpg
 )
 
 rm -rf fmat

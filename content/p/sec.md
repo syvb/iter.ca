@@ -9,3 +9,4 @@ Title = "Security issues I've found"
 - [CVE-2023-2030](https://nvd.nist.gov/vuln/detail/CVE-2023-2030) - signed commit verification issue in GitLab
 - [DoS risk via zero-fee transactions](https://forum.penumbra.zone/t/usdc-withdrawal-issues-and-proposed-fix/53/28#p-148-dos-risk-via-zero-fee-transactions-4) in Penumbra
 - [CVE-2024-8263](https://nvd.nist.gov/vuln/detail/CVE-2024-8263)
+- [CVE-2026-45033](https://nvd.nist.gov/vuln/detail/CVE-2026-45033) - code exceution in untrusted directories in Copilot CLI

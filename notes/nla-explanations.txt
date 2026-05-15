@@ -1,0 +1,5 @@
+Date=May 14 2026
+Title=Some observations about NLA explanations
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/ahu9BCHPFDg9AJF75/some-observations-about-nla-explanations

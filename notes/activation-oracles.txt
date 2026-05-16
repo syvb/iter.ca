@@ -1,0 +1,5 @@
+Date=May 16 2026
+Title=Notes on decomposing AO inputs
+Verbose=0
+NoteType=Bluesky post
+Uri=https://bsky.app/profile/iter.ca/post/3mlyoaww5gc2y

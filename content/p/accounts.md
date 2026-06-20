@@ -20,6 +20,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>crates.io: <a href="https://crates.io/users/syvb">@syvb</a></li>
 <li>Observable: <a href="https://observablehq.com/@smitop">@smitop</a></li>
 <li>Kaggle: <a href="https://www.kaggle.com/smitop">@smitop</a></li>
+<li>Hugging Face: <a href="https://huggingface.co/syvb">@syvb</a></li>
 <li class="inactive">sr.ht: <a href="https://sr.ht/~smitop/">~smitop</a></li>
 </ul>
 

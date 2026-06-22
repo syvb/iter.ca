@@ -1,0 +1,5 @@
+Date=Jun 21 2026
+Title=NLA explanations can be shortened without harming reconstruction
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/NazprRfWJ4qkwcSro/nla-explanations-can-be-shortened-without-harming

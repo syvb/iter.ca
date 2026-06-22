@@ -1,5 +1,5 @@
 Date=Apr 27 2026
 Title=Latent reasoning models might be a good thing
-Verbose=0
+Verbose=1
 NoteType=Blog post
 Uri=https://www.lesswrong.com/posts/JAYYFKYMwoq6zd4S3/latent-reasoning-models-might-be-a-good-thing

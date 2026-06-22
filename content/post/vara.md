@@ -3,6 +3,7 @@ date = "2026-04-26T00:00:00Z"
 description = "it's a mysterious hedge fund"
 tags = ["ai"]
 title = "What is Value Aligned Research Advisors?"
+verbose = 1
 +++
 
 

@@ -3,6 +3,7 @@ date = "2026-04-18T00:00:00Z"
 description = "Rough notes that aren't really that interesting"
 tags = ["ai", "programming"]
 title = "Quick thoughts on meta-models for interpreting model weights"
+verbose = 1
 +++
 
 (These are some rough notes that I wrote up quickly; there are many more issues with this that I haven't documented or realized yet.)

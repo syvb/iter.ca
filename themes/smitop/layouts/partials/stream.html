@@ -29,12 +29,12 @@
             {{- end -}}
         {{- end -}}
         {{- if (ne .Params.Featured nil) -}}
-            {{- $.Set "verbose" -1 -}}
+            {{- $scr.Set "verbose" -1 -}}
         {{- end -}}
         {{- if (eq .Params nil) -}}
             {{- if (ne .Id nil) -}}
                 {{- if (ne (index ($scr.Get "overrides") .Id) nil) -}}
-                    {{- $scr.Set "verbose" (index ($scr.Get "overrides") .Id) -}}
+                    {{- $scr.Set "verbose" (int (index ($scr.Get "overrides") .Id)) -}}
                 {{- end -}}
             {{- end -}}
             {{- if (and (eq .HNType "story") ($scr.Get "selfOnly")) -}}
@@ -69,12 +69,12 @@
             {{- end -}}
         {{- end -}}
         {{- if (ne .Params.Featured nil) -}}
-            {{- $.Set "verbose" -1 -}}
+            {{- $scr.Set "verbose" -1 -}}
         {{- end -}}
         {{- if (eq .Params nil) -}}
             {{- if (ne .Id nil) -}}
                 {{- if (ne (index ($scr.Get "overrides") .Id) nil) -}}
-                    {{- $scr.Set "verbose" (index ($scr.Get "overrides") .Id) -}}
+                    {{- $scr.Set "verbose" (int (index ($scr.Get "overrides") .Id)) -}}
                 {{- end -}}
             {{- end -}}
             {{- if (and (eq .HNType "story") ($scr.Get "selfOnly")) -}}

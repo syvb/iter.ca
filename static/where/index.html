@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where is loops?</title>
+<meta name="description" content="Where in the world Smitty (loops) is right now, and everywhere they've been.">
+<meta name="rating" content="General">
+<link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
+<style>
+:root {
+  --ink: #141414;
+  --paper: #ffffff;
+  --link: #0a7285;
+  --hi: #ffe94d;
+  --shadow: 5px 5px 0 #111;
+  --shadow-lg: 7px 8px 0 #111;
+  --ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--ui);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* topbar, echoing the site's */
+#topbar {
+  background: #fff;
+  border-bottom: 3px solid #111;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+#topbar a { color: var(--link); text-decoration: none; }
+#topbar a:hover { text-decoration: underline; }
+#topbar .sep { color: #bbb; margin: 0 0.15rem; }
+
+main { max-width: 54rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+a { color: var(--link); }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6a6a6a;
+}
+
+/* ---- hero postcard ---- */
+.postcard {
+  position: relative;
+  border: 3px solid #111;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
+    conic-gradient(from 200deg at 78% 22%, #cdeefc, #e7d7fb, #fdf3c4, #d3f4dd, #cdeefc);
+  padding: 1.6rem 1.7rem 1.7rem;
+  margin-top: 0.75rem;
+  overflow: hidden;
+}
+.postcard .eyebrow { color: #4a4a4a; }
+.live-dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  background: #14b866; margin-right: 0.4rem; vertical-align: middle;
+  box-shadow: 0 0 0 0 rgba(20,184,102,0.6);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(20,184,102,0.55); }
+  70% { box-shadow: 0 0 0 9px rgba(20,184,102,0); }
+  100% { box-shadow: 0 0 0 0 rgba(20,184,102,0); }
+}
+.hero-lead { font-size: 1.1rem; margin: 0.5rem 0 0.1rem; color: #333; }
+.hero-place {
+  font-size: clamp(2.6rem, 10vw, 4.6rem);
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  margin: 0.1rem 0 0;
+  display: inline-block;
+}
+.hero-place .flag { -webkit-text-fill-color: initial; }
+.hero-place .name {
+  background: linear-gradient(180deg, transparent 58%, var(--hi) 58%);
+  padding: 0 0.1em;
+}
+.hero-meta { font-size: 1.05rem; margin-top: 0.8rem; color: #2b2b2b; }
+.hero-meta b { font-weight: 750; }
+.hero-chips { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 999px;
+  padding: 3px 11px;
+}
+
+/* ---- stat tiles ---- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+.stat {
+  border: 3px solid #111;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  background: #fff;
+  padding: 0.85rem 0.9rem;
+}
+.stat:nth-child(4n+1) { background: #dff4fb; }
+.stat:nth-child(4n+2) { background: #fff5cf; }
+.stat:nth-child(4n+3) { background: #f4e6fb; }
+.stat:nth-child(4n+4) { background: #ddf6e4; }
+.stat .num { font-size: 1.8rem; font-weight: 850; letter-spacing: -0.02em; line-height: 1; }
+.stat .lbl { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: #444; margin-top: 0.35rem; }
+
+/* ---- section heading ---- */
+.sec-h {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  margin: 2.4rem 0 0.4rem;
+  transform: rotate(-0.6deg);
+  background: linear-gradient(180deg, transparent 60%, var(--hi) 60%);
+  padding: 0 6px;
+}
+.sec-sub { color: #666; font-size: 0.95rem; margin: 0 0 1rem; }
+
+/* ---- timeline ---- */
+.year {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: #111;
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 6px;
+  margin: 1.4rem 0 0.8rem;
+}
+.year:first-of-type { margin-top: 0.4rem; }
+.trip {
+  position: relative;
+  border: 3px solid #111;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  background: #fff;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.9rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+.trip:nth-child(even) { transform: rotate(0.35deg); }
+.trip:nth-child(odd) { transform: rotate(-0.35deg); }
+.trip .tflag { font-size: 1.6rem; line-height: 1; flex: 0 0 auto; }
+.trip .tbody { flex: 1 1 auto; min-width: 0; }
+.trip .tplace { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; }
+.trip .tcountry { font-weight: 600; color: #666; font-size: 0.9rem; }
+.trip .tdates { font-family: var(--mono); font-size: 0.82rem; color: #555; margin-top: 0.15rem; }
+.trip .tdur {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 2px solid #111;
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: var(--hi);
+  white-space: nowrap;
+  align-self: center;
+}
+/* ---- states ---- */
+.note { font-size: 1rem; color: #555; }
+.loading .pin { display: inline-block; animation: bob 1.1s ease-in-out infinite; font-size: 1.4rem; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.errbox {
+  border: 3px solid #111; border-radius: 12px; box-shadow: var(--shadow);
+  background: #fff5cf; padding: 1rem 1.1rem;
+}
+
+footer {
+  margin-top: 3rem; text-align: center; color: #777; font-size: 0.85rem;
+}
+footer a { color: var(--link); }
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot, .loading .pin { animation: none; }
+}
+@media (max-width: 560px) {
+  .trip { flex-wrap: wrap; }
+  .trip .tdur { align-self: flex-start; }
+}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="/">iter.ca</a><span class="sep">&bull;</span><a href="/p/about/">About</a><span class="sep">&bull;</span><span>Where</span>
+</div>
+
+<main>
+  <p class="eyebrow">Where in the world is loops?</p>
+  <div id="app">
+    <p class="note loading"><span class="pin">📍</span> Finding out where I am&hellip;</p>
+  </div>
+  <footer>
+    Live from a spreadsheet I keep &bull; <a href="/">iter.ca</a>
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwY0BcIwkuSHr14Ad5KzmHa5rfM9OerVqJdqTTr_Oa9fAcmyYjwCWfdDl0RM6TQLWPT/exec";
+  var app = document.getElementById("app");
+
+  // --- static enrichment: flags + coordinates (home = Toronto) ---
+  var FLAG = {
+    "Canada": "🇨🇦", "United States": "🇺🇸", "France": "🇫🇷",
+    "Germany": "🇩🇪", "United Kingdom": "🇬🇧"
+  };
+  // places that are really just "home" for our purposes
+  var ALIAS = { "Toronto/Waterloo/Ayr": "Toronto" };
+  var COORD = {
+    "Toronto": [43.65, -79.38],
+    "Montreal": [45.50, -73.57],
+    "Niagara Falls": [43.10, -79.06],
+    "NYC": [40.71, -74.01],
+    "SF": [37.77, -122.42],
+    "Paris": [48.85, 2.35],
+    "Hamburg": [53.55, 9.99],
+    "London": [51.51, -0.13]
+  };
+  var HOME = COORD["Toronto"];
+
+  function haversine(a, b) {
+    if (!a || !b) return null;
+    var R = 6371, toR = Math.PI / 180;
+    var dLat = (b[0] - a[0]) * toR, dLon = (b[1] - a[1]) * toR;
+    var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(a[0] * toR) * Math.cos(b[0] * toR) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return Math.round(2 * R * Math.asin(Math.sqrt(s)));
+  }
+  function km(n) { return n == null ? null : n.toLocaleString("en-CA") + " km"; }
+
+  function parseDate(s) {
+    var p = s.split("-");
+    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+  }
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function fmt(d, withYear) {
+    return MONTHS[d.getUTCMonth()] + " " + d.getUTCDate() + (withYear ? ", " + d.getUTCFullYear() : "");
+  }
+  function fmtRange(f, t) {
+    var sameYear = f.getUTCFullYear() === t.getUTCFullYear();
+    return fmt(f, !sameYear) + " – " + fmt(t, true);
+  }
+  function days(f, t) { return Math.max(1, Math.round((t - f) / 86400000)); }
+  function human(n) {
+    if (n < 14) return n + (n === 1 ? " day" : " days");
+    if (n < 60) return Math.round(n / 7) + " weeks";
+    return Math.round(n / 30.44) + " months";
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function render(raw) {
+    // normalise + sort chronologically; drop "Plane" rows (they only exist
+    // in the sheet to bridge overnight flights) and fold Waterloo/Ayr into
+    // Toronto, which is home for our purposes
+    var stays = raw
+      .filter(function (s) { return s.country !== "Plane"; })
+      .map(function (s) {
+        return {
+          from: parseDate(s.from), to: parseDate(s.to),
+          country: s.country, place: ALIAS[s.place] || s.place
+        };
+      })
+      .sort(function (a, b) { return a.from - b.from; });
+
+    var now = new Date();
+    var today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+    // current stay = today within [from, to); else the most recent past stay
+    var current = null;
+    for (var i = 0; i < stays.length; i++) {
+      if (stays[i].from <= today && today < stays[i].to) { current = stays[i]; break; }
+    }
+    var isLive = !!current;
+    if (!current && stays.length) current = stays[stays.length - 1];
+
+    // --- stats ---
+    var countries = {};
+    stays.forEach(function (s) { countries[s.country] = 1; });
+    // total distance covered: straight-line between each consecutive stay
+    var travelled = 0;
+    for (var j = 1; j < stays.length; j++) {
+      var d = haversine(COORD[stays[j - 1].place], COORD[stays[j].place]);
+      if (d) travelled += d;
+    }
+
+    // --- hero ---
+    var here = current;
+    var flag = FLAG[here.country] || "🌍";
+    var distHome = haversine(COORD[here.place], HOME);
+    var out = "";
+    out += '<div class="postcard">';
+    out += '<p class="eyebrow">' + (isLive
+      ? '<span class="live-dot"></span>right now i\'m in'
+      : 'last seen in') + '</p>';
+    out += '<h1 class="hero-place"><span class="flag">' + flag + '</span> ' +
+      '<span class="name">' + esc(here.place) + '</span></h1>';
+    out += '<p class="hero-meta">';
+    if (isLive) {
+      out += '<b>' + esc(here.country) + '</b> &middot; here since <b>' + fmt(here.from, true) + '</b>';
+      out += ' &middot; day <b>' + days(here.from, today) + '</b>';
+    } else {
+      out += '<b>' + esc(here.country) + '</b> &middot; ' + fmtRange(here.from, here.to);
+    }
+    out += '</p>';
+    out += '<div class="hero-chips">';
+    if (here.place === "Toronto") {
+      out += '<span class="chip">🏠 home base</span>';
+    } else if (distHome != null) {
+      out += '<span class="chip">' + km(distHome) + ' from home 🏠</span>';
+    }
+    out += '</div>';
+    out += '</div>';
+
+    // --- stat tiles ---
+    out += '<div class="stats">';
+    out += tile(Object.keys(countries).length, "countries");
+    out += tile("≈" + Math.round(travelled / 1000) + "k", "km covered");
+    out += '</div>';
+
+    // --- timeline of past stays, newest first ---
+    out += '<h2 class="sec-h">The trail</h2>';
+    out += '<p class="sec-sub">Everywhere I\'ve been, most recent first.</p>';
+
+    // merge adjacent identical stays into one span
+    var merged = [];
+    stays.forEach(function (s) {
+      var last = merged[merged.length - 1];
+      if (last && last.place === s.place && last.country === s.country && +last.to === +s.from) {
+        last.to = s.to;
+      } else {
+        merged.push({ from: s.from, to: s.to, country: s.country, place: s.place });
+      }
+    });
+    // drop the current stay from the trail (it's already the hero) when live
+    var trail = merged.slice();
+    if (isLive) {
+      trail = merged.filter(function (s) {
+        return !(s.place === current.place && +s.from === +current.from && +s.to === +current.to);
+      });
+    }
+    trail.reverse();
+
+    var lastYear = null;
+    trail.forEach(function (s) {
+      var yr = s.from.getUTCFullYear();
+      if (yr !== lastYear) { out += '<div class="year">' + yr + '</div>'; lastYear = yr; }
+
+      var flag2 = FLAG[s.country] || "🌍";
+      var dist = haversine(COORD[s.place], HOME);
+      var distChip = s.place === "Toronto"
+        ? '<span class="tcountry"> &middot; 🏠 home</span>'
+        : (dist != null ? '<span class="tcountry"> &middot; ' + km(dist) + ' from home</span>' : '');
+      out += '<div class="trip">';
+      out += '<span class="tflag" aria-hidden="true">' + flag2 + '</span>';
+      out += '<div class="tbody">';
+      out += '<div class="tplace">' + esc(s.place) + ' <span class="tcountry">' + esc(s.country) + '</span></div>';
+      out += '<div class="tdates">' + fmtRange(s.from, s.to) + distChip + '</div>';
+      out += '</div>';
+      out += '<span class="tdur">' + human(days(s.from, s.to)) + '</span>';
+      out += '</div>';
+    });
+
+    app.innerHTML = out;
+  }
+
+  function tile(num, lbl) {
+    return '<div class="stat"><div class="num">' + num + '</div><div class="lbl">' + lbl + '</div></div>';
+  }
+
+  function fail() {
+    app.innerHTML = '<div class="errbox"><p class="note" style="margin:0 0 .5rem">' +
+      "🧭 Couldn't load my location right now.</p>" +
+      '<p class="note" style="margin:0">You can peek at the ' +
+      '<a href="' + ENDPOINT + '">raw data</a> directly.</p></div>';
+  }
+
+  fetch(ENDPOINT, { mode: "cors" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) {
+      if (!Array.isArray(data) || !data.length) throw new Error("empty");
+      render(data);
+    })
+    .catch(fail);
+})();
+</script>
+</body>
+</html>

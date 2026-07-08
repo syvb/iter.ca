@@ -1,6 +1,6 @@
 [
 {"Type":"note","Id":"note-0friction","NoteType":"Game","Date":{"Unix":1567900800},"Uri":"https://smitop.com/no-friction.html","Title":"0friction","Verbose":0,"Text":"\nA game with slippery controls.\n"},
-{"Type":"note","Id":"note-activation-oracles","Date":{"Unix":1778889600},"Title":"Notes on decomposing AO inputs","Verbose":0,"NoteType":"Bluesky post","Uri":"https://bsky.app/profile/iter.ca/post/3mlyoaww5gc2y","Text":"\n"},
+{"Type":"note","Id":"note-activation-oracles","Date":{"Unix":1778889600},"Title":"Notes on decomposing AO inputs","Verbose":1,"NoteType":"Bluesky post","Uri":"https://bsky.app/profile/iter.ca/post/3mlyoaww5gc2y","Text":"\n"},
 {"Type":"note","Id":"note-bash-eof","Date":{"Unix":1626307200},"Title":"CTRL-D exits bash right away","Verbose":1,"NoteType":"tip","Text":"\nFun fact! You can hit CTRL-D to exit bash (and most Unix shells) quickly. CTRL-D is the combination for EOF, and most Unix programs stop when they hit EOF, bash included.\n\n"},
 {"Type":"note","Id":"note-battle-fight-icon","NoteType":"Art","Title":"Battle/fight icon","Date":{"Unix":1551916800},"Uri":"https://opengameart.org/content/battlefight-icon-with-two-swords-svg-vector","Thumb":"/fight.svg","Verbose":1,"Text":"\n"},
 {"Type":"note","Id":"note-bench-af-hackathon","Date":{"Unix":1755388800},"Title":"Model organism of misalignment for hackathon","Verbose":0,"NoteType":"Hackathon submission","Uri":"https://github.com/syvb/bench-af-hackathon/tree/0cd77715edf081321c9e52ccf9e82b2440f00c63/environments/food_selection","Text":"\n"},

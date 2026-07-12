@@ -3,6 +3,7 @@ date = "2026-07-07T00:00:00-04:00"
 description = "you can malleate Git signatures but it's not that bad"
 tags = ["programming", "git", "security"]
 title = "Malleating Git commit signatures"
+verbose = 1
 +++
 
 Recently there was [an article published about how you can malleate Git commit signatures (*Git Hash Chain Malleability*)](https://arxiv.org/pdf/2607.02820): given a signed commit A, anyone can create a new signed commit A’ that is identical in all respects except that it has a different (still valid) signature and therefore also a different commit hash.

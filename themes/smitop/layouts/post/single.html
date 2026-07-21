@@ -68,6 +68,80 @@
           Part of this text was drafted with <a href="https://www.anthropic.com/news/claude-3-5-sonnet">Claude 3.5 Sonnet</a>.
         </div>
       {{ end }}
+      {{ $commentQuery := slice }}
+      {{ with .Params.bsky }}{{ $commentQuery = $commentQuery | append (querify "bsky" .) }}{{ end }}
+      {{ if gt (len $commentQuery) 0 }}
+        <hr>
+        <section id="comments">
+          <h2>Comments</h2>
+          <div id="comments-body">Loading comments&hellip;</div>
+          <script>
+            (function () {
+              var body = document.getElementById("comments-body");
+              var sourceNames = { bsky: "Bluesky" };
+              function link(href, text, cls) {
+                var a = document.createElement("a");
+                if (/^https:\/\//.test(href)) a.href = href;
+                a.textContent = text;
+                if (cls) a.className = cls;
+                return a;
+              }
+              function render(data) {
+                body.textContent = "";
+                data.comments.forEach(function (c) {
+                  var div = document.createElement("div");
+                  div.className = "comment";
+                  div.style.marginLeft = Math.min(c.depth, 6) * 1.5 + "em";
+                  var meta = document.createElement("div");
+                  meta.className = "comment-meta";
+                  if (c.author.avatar) {
+                    var img = document.createElement("img");
+                    img.src = c.author.avatar;
+                    img.alt = "";
+                    img.loading = "lazy";
+                    img.className = "comment-avatar";
+                    meta.appendChild(img);
+                  }
+                  meta.appendChild(link(c.author.url, c.author.name, "comment-author"));
+                  if (c.isAuthor) {
+                    var badge = document.createElement("span");
+                    badge.className = "comment-author-badge";
+                    badge.textContent = "blog author";
+                    meta.appendChild(badge);
+                  }
+                  meta.appendChild(document.createTextNode(" · "));
+                  var when = new Date(c.createdAt);
+                  meta.appendChild(link(c.url, isNaN(when) ? "permalink" : when.toLocaleDateString("en-CA", { dateStyle: "medium" }), "comment-date"));
+                  div.appendChild(meta);
+                  var text = document.createElement("div");
+                  text.className = "comment-text";
+                  text.textContent = c.text;
+                  div.appendChild(text);
+                  body.appendChild(div);
+                });
+                if (!data.comments.length) {
+                  var none = document.createElement("p");
+                  none.textContent = "No comments yet.";
+                  body.appendChild(none);
+                }
+                (data.sources || []).forEach(function (s) {
+                  if (!s.replyUrl) return;
+                  var p = document.createElement("p");
+                  p.className = "comment-reply-cta";
+                  p.appendChild(document.createTextNode("Comment by replying "));
+                  p.appendChild(link(s.replyUrl, "on " + (sourceNames[s.type] || s.type)));
+                  p.appendChild(document.createTextNode("."));
+                  body.appendChild(p);
+                });
+              }
+              fetch("https://i--435e5bde84d411f196151607ee4eb77e.web.val.run/?{{ delimit $commentQuery "&" | safeJS }}")
+                .then(function (r) { return r.json(); })
+                .then(render)
+                .catch(function () { body.textContent = "Couldn't load comments."; });
+            })();
+          </script>
+        </section>
+      {{ end }}
       <hr>
       <div class="footer-newsletter">
         Subscribe to my occasional email newsletter:

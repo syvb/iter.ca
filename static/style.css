@@ -438,6 +438,56 @@ dl {
     color: #121212;
 }
 
+#comments h2 {
+    margin-bottom: 0.5em;
+}
+
+.comment {
+    margin-bottom: 1em;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.comment-avatar {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-meta a {
+    text-decoration: none;
+}
+
+.comment-meta a:hover {
+    text-decoration: underline;
+}
+
+.comment-author-badge {
+    background: #1d3557;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0.05em 0.4em;
+    font-size: 80%;
+}
+
+.comment-date {
+    color: #555;
+    font-size: 90%;
+}
+
+.comment-text {
+    margin-top: 0.2em;
+    white-space: pre-wrap;
+}
+
 .list-date {
     width: 9em;
     display: inline-block;

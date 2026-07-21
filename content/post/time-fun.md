@@ -3,6 +3,7 @@ date = "2026-04-19T00:00:00Z"
 description = "Every hour of my time in 2021"
 tags = ["life"]
 title = "How I spent my time in 2021"
+bsky = "https://bsky.app/profile/syvb-test.bsky.social/post/3mr5b6ohyqs25"
 +++
 
 Yesterday I read fellow Inkhavener Nicky's [post about what she did on one day of her childhood](https://blog.sus.cat/p/i-will-waste-my-childhood-and-i-will). I *also* tracked how I spent my time as a child, but instead of for one day, [tracked what I was doing every ~45 minutes](https://iter.ca/post/tt-retro/) (sampled at random seconds, where each second had a 1 in 2700 chance of being sampled) from July 2020 to May 2023 (ages 15-18), with 33,235 data points in total. Excited to outdo Nicky, I'm going to go bigger and give you a much more detailed breakdown of how I spent my time in 2021 specifically, when I was 16 years old for most of the year. I had Claude do most of the annoying data analysis work since there was so much data here.

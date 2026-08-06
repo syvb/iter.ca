@@ -1,0 +1,5 @@
+Date=Aug 6 2026
+Title=Matryoshka NLAs: training activation verbalizers to frontload reconstruction-relevant information
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/aWYQHh2pEFCLYh85C/matryoshka-nlas-training-activation-verbalizers-to-frontload-1

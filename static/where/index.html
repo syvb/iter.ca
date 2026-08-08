@@ -270,9 +270,11 @@ footer a { color: var(--link); }
     var sameYear = f.getUTCFullYear() === t.getUTCFullYear();
     return fmt(f, !sameYear) + " – " + fmt(t, true);
   }
-  function days(f, t) { return Math.max(1, Math.round((t - f) / 86400000)); }
+  // day count inclusive of both the enter and exit days
+  function daysIncl(f, t) { return Math.round((t - f) / 86400000) + 1; }
+  function nDays(n) { return n + (n === 1 ? " day" : " days"); }
   function human(n) {
-    if (n < 14) return n + (n === 1 ? " day" : " days");
+    if (n < 14) return nDays(n);
     if (n < 60) return Math.round(n / 7) + " weeks";
     return Math.round(n / 30.44) + " months";
   }
@@ -330,9 +332,10 @@ footer a { color: var(--link); }
     out += '<p class="hero-meta">';
     if (isLive) {
       out += '<b>' + esc(here.country) + '</b> &middot; here since <b>' + fmt(here.from, true) + '</b>';
-      out += ' &middot; day <b>' + days(here.from, today) + '</b>';
+      out += ' &middot; day <b>' + daysIncl(here.from, today) + '</b>';
     } else {
       out += '<b>' + esc(here.country) + '</b> &middot; ' + fmtRange(here.from, here.to);
+      out += ' &middot; <b>' + nDays(daysIncl(here.from, here.to)) + '</b>';
     }
     out += '</p>';
     out += '<div class="hero-chips">';
@@ -389,7 +392,8 @@ footer a { color: var(--link); }
       out += '<div class="tplace">' + esc(s.place) + ' <span class="tcountry">' + esc(s.country) + '</span></div>';
       out += '<div class="tdates">' + fmtRange(s.from, s.to) + distChip + '</div>';
       out += '</div>';
-      out += '<span class="tdur">' + human(days(s.from, s.to)) + '</span>';
+      var nd = daysIncl(s.from, s.to);
+      out += '<span class="tdur">' + human(nd) + (nd < 14 ? '' : ' (' + nDays(nd) + ')') + '</span>';
       out += '</div>';
     });
 

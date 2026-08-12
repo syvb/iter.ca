@@ -444,6 +444,9 @@ dl {
 
 .comment {
     margin-bottom: 1em;
+    border-left: 1px dashed black;
+    padding: 0.25em;
+    padding-left: 0.5em;
 }
 
 .comment-meta {

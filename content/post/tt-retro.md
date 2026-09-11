@@ -3,6 +3,7 @@ date = "2026-04-01T00:00:00Z"
 description = "I tracked all my time for three years"
 tags = ["ttw"]
 title = "Tracking all my time, a retrospective"
+bsky = "https://bsky.app/profile/iter.ca/post/3mstuoul3ic2l"
 +++
 
 So several years ago I created a [time tracking system](https://github.com/syvb/ttw) that randomly pinged me and asked what I was doing at that moment, based on [TagTime](https://github.com/tagtime/TagTime). I used it from 2020 to 2023 and I don't think that it really delivered the benefits I was hoping for.

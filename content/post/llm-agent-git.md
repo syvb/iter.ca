@@ -52,7 +52,7 @@ The security model for Claude Code is pretty non-obvious to me! My current impre
 
 I found that in accept edits mode, Claude could create a nested bare Git repo (by creating the directories and relevant files in it) and do `cd ... && git status` to run arbitrary code without user approval, since `git status` is on the readonly allowlist, and the agent can always change the path. The harness blocked writing to `.git/` directly, but didn’t block writing to bare repos (since you can’t know if a path is in a bare repo from just the path).
 
-I told Anthropic about this; my report was marked as a duplicate[^antdup] and it’s now fixed by not allowlisting `cd` and `git` in the same command.
+I told Anthropic about this in February; my report was marked as a duplicate[^antdup] and it’s now fixed by not allowlisting `cd` and `git` in the same command.
 
 [^antdup]: Originally it was closed because I misunderstood the security model and thought this was an issue in manual mode, but after I understood the actual security model I noted that it was an issue in accept edits mode; it was then re-opened and closed as a duplicate.
 

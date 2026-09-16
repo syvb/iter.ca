@@ -1,6 +1,6 @@
 +++
 date = "2026-09-16T00:00:00Z"
-description = "Training a meta-model to read future tokens off an activation"
+description = "Training a meta-model to read future tokens from an activation"
 tags = ["ai"]
 title = "Future oracles"
 image = "/future-oracle-sizes.png"

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="318" viewBox="0 0 520 318" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <g stroke="#E6EBE8" stroke-width="1">
+    <line x1="64" y1="48" x2="470" y2="48"/>
+    <line x1="64" y1="88.4" x2="470" y2="88.4"/>
+    <line x1="64" y1="128.8" x2="470" y2="128.8"/>
+    <line x1="64" y1="169.2" x2="470" y2="169.2"/>
+    <line x1="64" y1="209.6" x2="470" y2="209.6"/>
+  </g>
+  <line x1="64" y1="250" x2="470" y2="250" stroke="#B9C4BF"/>
+
+  <g font-size="11" fill="#71807A" text-anchor="end">
+    <text x="56" y="52">1.0</text>
+    <text x="56" y="92">0.8</text>
+    <text x="56" y="133">0.6</text>
+    <text x="56" y="173">0.4</text>
+    <text x="56" y="214">0.2</text>
+    <text x="56" y="254">0</text>
+  </g>
+  <g font-size="11" fill="#71807A" text-anchor="middle">
+    <text x="64" y="286">1</text>
+    <text x="114.75" y="286">2</text>
+    <text x="165.5" y="286">3</text>
+    <text x="216.25" y="286">4</text>
+    <text x="267" y="286">5</text>
+    <text x="317.75" y="286">6</text>
+    <text x="368.5" y="286">7</text>
+    <text x="419.25" y="286">8</text>
+    <text x="470" y="286">9</text>
+    <text x="267" y="307">tokens ahead</text>
+  </g>
+  <text x="20" y="150" font-size="11" fill="#71807A" text-anchor="middle" transform="rotate(-90 20 150)">fraction correct</text>
+
+  <polyline fill="none" stroke="#7A8C84" stroke-width="2" points="64,109.4 114.75,160.3 165.5,190.9 216.25,211.5 267,222.8 317.75,231.1 368.5,235.7 419.25,239.3 470,242.1"/>
+  <polyline fill="none" stroke="#B5760A" stroke-width="2.2" points="64,104.2 114.75,153.3 165.5,183.9 216.25,204.0 267,218.0 317.75,225.7 368.5,231.1 419.25,235.7 470,237.9"/>
+  <polyline fill="none" stroke="#2A78D6" stroke-width="3" points="64,92.7 114.75,139.3 165.5,172.0 216.25,194.0 267,208.6 317.75,219.3 368.5,226.1 419.25,231.4 470,234.4"/>
+
+  <g fill="#7A8C84">
+    <circle cx="64" cy="109.4" r="3.2"/><circle cx="114.75" cy="160.3" r="3.2"/><circle cx="165.5" cy="190.9" r="3.2"/>
+    <circle cx="216.25" cy="211.5" r="3.2"/><circle cx="267" cy="222.8" r="3.2"/><circle cx="317.75" cy="231.1" r="3.2"/>
+    <circle cx="368.5" cy="235.7" r="3.2"/><circle cx="419.25" cy="239.3" r="3.2"/><circle cx="470" cy="242.1" r="3.2"/>
+  </g>
+  <g fill="#B5760A">
+    <circle cx="64" cy="104.2" r="3.4"/><circle cx="114.75" cy="153.3" r="3.4"/><circle cx="165.5" cy="183.9" r="3.4"/>
+    <circle cx="216.25" cy="204" r="3.4"/><circle cx="267" cy="218" r="3.4"/><circle cx="317.75" cy="225.7" r="3.4"/>
+    <circle cx="368.5" cy="231.1" r="3.4"/><circle cx="419.25" cy="235.7" r="3.4"/><circle cx="470" cy="237.9" r="3.4"/>
+  </g>
+  <g fill="#2A78D6">
+    <circle cx="64" cy="92.7" r="4.2"/><circle cx="114.75" cy="139.3" r="4.2"/><circle cx="165.5" cy="172" r="4.2"/>
+    <circle cx="216.25" cy="194" r="4.2"/><circle cx="267" cy="208.6" r="4.2"/><circle cx="317.75" cy="219.3" r="4.2"/>
+    <circle cx="368.5" cy="226.1" r="4.2"/><circle cx="419.25" cy="231.4" r="4.2"/><circle cx="470" cy="234.4" r="4.2"/>
+  </g>
+
+  <g font-size="12" fill="#42504A">
+    <line x1="330" y1="72" x2="348" y2="72" stroke="#2A78D6" stroke-width="3"/>
+    <text x="354" y="76" font-weight="600">Qwen3-8B</text>
+    <line x1="330" y1="92" x2="348" y2="92" stroke="#B5760A" stroke-width="2.2"/>
+    <text x="354" y="96">Qwen3-1.7B</text>
+    <line x1="330" y1="112" x2="348" y2="112" stroke="#7A8C84" stroke-width="2"/>
+    <text x="354" y="116">Qwen3-0.6B</text>
+  </g>
+</svg>

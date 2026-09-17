@@ -5,6 +5,7 @@ tags = ["ai"]
 title = "Future oracles"
 image = "/future-oracle-sizes.png"
 image_alt = "Line chart of fraction correct vs. tokens ahead for future oracles on three Qwen3 model sizes, decaying from about 0.8 to under 0.1."
+bsky = "https://bsky.app/profile/iter.ca/post/3mvpktmjcok2l"
 +++
 
 How accurately can you predict future tokens given an activation of an LLM? It seems interesting to know how far in advance an LLM is planning output tokens. There's some work from 2023, [Future Lens](https://future.baulab.info), that tries to answer with a few methods, most interestingly by training a soft prompt (i.e. learning soft tokens to put at the beginning to get the model to predict future tokens given an injected activation). But now we live in the glorious meta-modeling future: can I train something like an [Activation Oracle](https://arxiv.org/abs/2512.15674) to read out future tokens given a past activation? It turns out I can; I call this meta-model a **future oracle**.

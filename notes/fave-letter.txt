@@ -1,0 +1,6 @@
+NoteType=Web app
+Date=Oct 4 2026
+Uri=https://iter.ca/fave-letter/
+Title=What's your favorite letter?
+
+A knockout tournament to find your favorite letter of the alphabet.

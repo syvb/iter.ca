@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What's your favorite letter?</title>
+<meta name="description" content="26 letters enter, 1 letter leaves. A knockout tournament to find your one true favorite letter of the alphabet.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔠</text></svg>">
+<style>
+:root {
+  --ink: #141414;
+  --paper: #fff8ec;
+  --cyan: #22e0e8;
+  --pink: #ff5fa2;
+  --yellow: #ffd93b;
+  --purple: #8b5cf6;
+  --round: ui-rounded, "SF Pro Rounded", "Nunito", "Varela Round", "Quicksand", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--round);
+  line-height: 1.45;
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(20, 20, 20, 0.11) 1.5px, transparent 1.6px);
+  background-size: 22px 22px;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+button { font: inherit; color: inherit; }
+a { color: #0a7285; }
+
+/* ---------- floating background letters ---------- */
+#floaties { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+#floaties span {
+  position: absolute;
+  font-weight: 900;
+  opacity: 0.3;
+  animation: drift ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: translate(0, 0) rotate(-15deg); }
+  to { transform: translate(24px, -44px) rotate(15deg); }
+}
+
+/* ---------- screens ---------- */
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+.screen.active { display: flex; }
+
+.card {
+  margin: auto;
+  width: 100%;
+  max-width: 660px;
+  background: #fff;
+  border: 4px solid var(--ink);
+  border-radius: 28px;
+  box-shadow: 10px 10px 0 var(--ink);
+  padding: clamp(20px, 4.5vw, 40px);
+  animation: popin 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.eyebrow {
+  display: inline-block;
+  background: var(--pink);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3em 0.9em;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  transform: rotate(-2deg);
+}
+h1 {
+  font-size: clamp(2.3rem, 8vw, 4rem);
+  line-height: 1.05;
+  font-weight: 900;
+  margin: 0.45em 0 0.4em;
+  letter-spacing: -0.01em;
+}
+.word { white-space: nowrap; }
+.wave span {
+  display: inline-block;
+  color: var(--c);
+  -webkit-text-stroke: 0.035em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.05em 0.05em 0 var(--ink);
+  animation: wave 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.09s);
+}
+@keyframes wave {
+  0%, 60%, 100% { transform: translateY(0) rotate(0); }
+  30% { transform: translateY(-0.18em) rotate(-6deg); }
+}
+.lede { font-size: 1.15rem; margin: 0 0 1.2em; }
+.rules { list-style: none; padding: 0; margin: 0 0 1.3em; display: grid; gap: 0.7em; }
+.rules li { display: flex; align-items: center; gap: 0.8em; font-size: 1.08rem; font-weight: 600; }
+.rules .num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  font-weight: 900;
+  background: var(--c);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.tip {
+  background: #e8fdfd;
+  border: 3px dashed var(--ink);
+  border-radius: 16px;
+  padding: 0.7em 1em;
+  font-size: 0.98rem;
+  margin: 0 0 1.5em;
+}
+kbd {
+  font-family: inherit;
+  font-weight: 900;
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-bottom-width: 4px;
+  border-radius: 7px;
+  padding: 0 0.4em;
+}
+.center { text-align: center; }
+.home { display: block; text-align: center; margin-top: 1.4em; font-weight: 700; font-size: 0.9rem; }
+
+.big-btn, .btn {
+  cursor: pointer;
+  font-weight: 900;
+  border: 4px solid var(--ink);
+  border-radius: 999px;
+  transition: transform 0.1s, box-shadow 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.big-btn {
+  font-size: 1.35rem;
+  padding: 0.75em 1.6em;
+  background: var(--cyan);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+#start { animation: nudge 3s ease-in-out 1.5s infinite; }
+@keyframes nudge {
+  0%, 84%, 100% { transform: rotate(0) scale(1); }
+  88% { transform: rotate(-4deg) scale(1.06); }
+  92% { transform: rotate(4deg) scale(1.06); }
+  96% { transform: rotate(-2deg) scale(1.03); }
+}
+.btn {
+  font-size: 1rem;
+  padding: 0.5em 1.1em;
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+@media (hover: hover) {
+  .big-btn:hover, .btn:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); animation: none; }
+  .btn:hover { box-shadow: 6px 6px 0 var(--ink); }
+}
+.big-btn:active, .btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--ink); animation: none; }
+.btn:disabled { opacity: 0.4; cursor: default; transform: none; box-shadow: 2px 2px 0 var(--ink); }
+.big-btn:focus-visible, .btn:focus-visible { outline: 4px dashed var(--purple); outline-offset: 4px; }
+
+/* ---------- game ---------- */
+#game { padding: 0; overflow: hidden; }
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 0;
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+.pill {
+  background: var(--ink);
+  color: var(--cyan);
+  font-weight: 900;
+  padding: 0.35em 0.95em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.progress {
+  flex: 1;
+  min-width: 50px;
+  height: 20px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  overflow: hidden;
+}
+#bar {
+  height: 100%;
+  width: 0;
+  background: repeating-linear-gradient(45deg, var(--cyan) 0 10px, #8ff4f7 10px 20px);
+  background-size: 28.28px 28.28px;
+  animation: stripes 1s linear infinite;
+  transition: width 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+@keyframes stripes { to { background-position: 28.28px 0; } }
+.count { font-weight: 900; white-space: nowrap; font-variant-numeric: tabular-nums; }
+#undo { padding: 0.3em 0.9em; font-size: 0.95rem; }
+#prompt {
+  text-align: center;
+  font-weight: 900;
+  font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+  margin: 8px 16px 0;
+}
+#prompt.pop { animation: promptpop 0.45s cubic-bezier(0.3, 1.8, 0.5, 1); }
+@keyframes promptpop { from { transform: scale(0.6) rotate(-3deg); opacity: 0; } }
+
+.arena {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 22px;
+  padding: 14px 18px 18px;
+  position: relative;
+}
+.arena.busy .side { pointer-events: none; }
+.side {
+  --bg: #ccc;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vh, 20px);
+  padding: 16px;
+  background: var(--bg);
+  border: 4px solid var(--ink);
+  border-radius: 30px;
+  box-shadow: 8px 8px 0 var(--ink);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.12s, box-shadow 0.12s, filter 0.35s;
+  -webkit-tap-highlight-color: transparent;
+}
+.side::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 0 20px, transparent 20px 40px);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .side:hover { transform: translate(-3px, -3px) rotate(-0.6deg); box-shadow: 11px 11px 0 var(--ink); }
+  #sideB:hover { transform: translate(-3px, -3px) rotate(0.6deg); }
+  .side:hover .letter { animation: wiggle 0.55s ease-in-out infinite; }
+}
+.side:active { transform: translate(5px, 5px); box-shadow: 3px 3px 0 var(--ink); }
+.side:focus-visible { outline: 5px dashed var(--ink); outline-offset: 5px; }
+.lw { position: relative; }
+.letter {
+  display: block;
+  font-size: min(24vw, 50vh);
+  font-size: min(24vw, 50dvh);
+  line-height: 0.95;
+  font-weight: 900;
+  color: #fff;
+  -webkit-text-stroke: 0.035em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.045em 0.045em 0 var(--ink);
+  animation: bob 2.6s ease-in-out infinite;
+}
+#sideB .letter { animation-delay: -1.3s; }
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-5%) rotate(3deg); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0) scale(1.06); }
+  25% { transform: rotate(-8deg) scale(1.1); }
+  75% { transform: rotate(8deg) scale(1.1); }
+}
+.quip {
+  position: relative;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 0.4em 0.9em;
+  font-weight: 700;
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+  max-width: 24em;
+  text-align: center;
+}
+.key {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-bottom-width: 5px;
+  border-radius: 10px;
+  padding: 0 0.45em;
+  font-weight: 900;
+  font-size: 1rem;
+}
+.key .v { display: none; }
+@media (hover: none) { .key { display: none; } }
+
+.side.enter .lw { animation: popin 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+#sideB.enter .lw { animation-delay: 0.07s; }
+.side.enter .quip { animation: popin 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) 0.12s both; }
+@keyframes popin { from { transform: scale(0) rotate(-25deg); opacity: 0; } }
+.side.won .lw { animation: jump 0.5s cubic-bezier(0.3, 1.8, 0.5, 1); }
+.side.lost { filter: grayscale(1) brightness(0.92); transform: scale(0.96); }
+.side.lost .lw { animation: fall 0.45s ease-in forwards; }
+.side.lost .quip { transition: opacity 0.3s; opacity: 0; }
+@keyframes jump {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.28) rotate(-8deg); }
+  60% { transform: scale(0.94) rotate(5deg); }
+  100% { transform: scale(1); }
+}
+@keyframes fall {
+  20% { transform: translateY(-8%) rotate(-10deg); }
+  100% { transform: translateY(70%) rotate(40deg) scale(0.4); opacity: 0; }
+}
+
+.vs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 82px;
+  height: 82px;
+  margin: -41px 0 0 -41px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 4px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  font-weight: 900;
+  font-size: 1.75rem;
+  font-style: italic;
+  pointer-events: none;
+  animation: vs 1.7s ease-in-out infinite;
+}
+.arena.busy .vs { animation: vsspin 0.6s cubic-bezier(0.3, 1.4, 0.5, 1); }
+@keyframes vs {
+  0%, 100% { transform: rotate(-10deg) scale(1); }
+  50% { transform: rotate(10deg) scale(1.1); }
+}
+@keyframes vsspin { from { transform: rotate(-370deg) scale(0.6); } }
+
+/* stacked layout for phones and other tall screens */
+@media (max-width: 700px), (max-aspect-ratio: 4/5) {
+  .arena { flex-direction: column; gap: 18px; padding: 12px 14px 14px; }
+  .letter { font-size: min(46vw, 23vh); font-size: min(46vw, 23dvh); }
+  .vs { width: 64px; height: 64px; margin: -32px 0 0 -32px; font-size: 1.35rem; }
+  .side { border-radius: 24px; padding: 10px; }
+  .key .h { display: none; }
+  .key .v { display: inline; }
+  .hud { gap: 8px; padding-left: 12px; padding-right: 12px; }
+  .pill { font-size: 0.85rem; padding: 0.35em 0.75em; }
+  #undo { font-size: 0.85rem; padding: 0.3em 0.7em; }
+  .count { font-size: 0.9rem; }
+}
+
+/* ---------- toast + burst ---------- */
+.toast {
+  position: fixed;
+  z-index: 25;
+  width: max-content;
+  max-width: 90vw;
+  text-align: center;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 900;
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  padding: 0.35em 1em;
+  border-radius: 999px;
+  border: 3px solid #fff;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  animation: toast 1s forwards;
+}
+@keyframes toast {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(-12deg); }
+  18% { transform: translate(-50%, -50%) scale(1.15) rotate(3deg); }
+  30% { transform: translate(-50%, -50%) scale(1) rotate(-2deg); }
+  75% { opacity: 1; }
+  100% { transform: translate(-50%, -140%) scale(1) rotate(-2deg); opacity: 0; }
+}
+.bit { position: fixed; z-index: 24; pointer-events: none; font-size: 1.7rem; line-height: 1; }
+.bit.dot { width: 13px; height: 13px; border-radius: 4px; border: 2px solid var(--ink); }
+
+/* ---------- round interstitial ---------- */
+#roundCard {
+  position: fixed;
+  inset: 0;
+  z-index: 26;
+  display: flex;
+  padding: 16px;
+  overflow-y: auto;
+  background: rgba(255, 248, 236, 0.78);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+#roundCard[hidden] { display: none; }
+#roundCard .card { max-width: 560px; text-align: center; }
+#roundCard h2 { font-size: clamp(2.2rem, 8vw, 3.4rem); line-height: 1.05; margin: 0.4em 0 0.25em; font-weight: 900; }
+#rcText { font-size: 1.12rem; margin: 0 0 1.1em; }
+.chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0 0 1.4em; }
+.chip {
+  --bg: #ccc;
+  display: inline-grid;
+  place-items: center;
+  width: 2.3em;
+  height: 2.3em;
+  font-weight: 900;
+  font-size: 1.25rem;
+  background: var(--bg);
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--ink);
+  animation: popin 0.45s cubic-bezier(0.3, 1.7, 0.5, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.04s);
+}
+.chips.big .chip { font-size: 2.2rem; border-radius: 18px; }
+.chip.small { font-size: 1rem; width: 2.1em; height: 2.1em; border-radius: 10px; box-shadow: 2px 2px 0 var(--ink); }
+.vs-mini { align-self: center; font-weight: 900; font-style: italic; font-size: 1.4rem; }
+
+/* ---------- winner ---------- */
+#win .card { max-width: 680px; text-align: center; }
+.sunburst {
+  --bg: #ccc;
+  position: relative;
+  width: min(72vw, 300px);
+  aspect-ratio: 1;
+  margin: 1.4em auto 0.6em;
+  display: grid;
+  place-items: center;
+}
+.sunburst::before {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(var(--bg) 0 10deg, transparent 10deg 20deg);
+  -webkit-mask: radial-gradient(circle, #000 35%, transparent 70%);
+  mask: radial-gradient(circle, #000 35%, transparent 70%);
+  animation: spin 14s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.medal {
+  position: relative;
+  width: 74%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 5px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  display: grid;
+  place-items: center;
+  animation: popin 0.7s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.medal .letter { font-size: min(34vw, 150px); }
+.crown {
+  position: absolute;
+  top: -4%;
+  left: 50%;
+  z-index: 2;
+  font-size: min(17vw, 74px);
+  line-height: 1;
+  animation: crown 2s ease-in-out infinite;
+}
+@keyframes crown {
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(-12deg); }
+  50% { transform: translateX(-50%) translateY(-10%) rotate(-4deg); }
+}
+#win h2 { font-size: clamp(1.8rem, 6vw, 2.8rem); line-height: 1.1; margin: 0.4em 0 0.3em; font-weight: 900; }
+.hl { background: linear-gradient(transparent 55%, var(--cyan) 55%); padding: 0 0.1em; }
+#champQuip { font-size: 1.15rem; font-weight: 700; margin: 0 0 1.4em; }
+.section-title { font-weight: 900; font-size: 1.05rem; margin: 1.2em 0 0.6em; }
+.path { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.path .arrow { font-weight: 900; }
+.tiers { display: grid; gap: 10px; margin: 0 0 1.6em; text-align: left; }
+.tier {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  background: #fbfbfb;
+}
+.tier-label { font-weight: 900; flex: 0 0 100%; font-size: 0.95rem; }
+.btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 30; pointer-events: none; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div id="floaties" aria-hidden="true"></div>
+
+<section id="intro" class="screen active">
+  <div class="card">
+    <span class="eyebrow">The Great Alphabet Showdown</span>
+    <h1>What's your <span class="wave" data-text="favorite letter"></span>?</h1>
+    <p class="lede">You've used all 26 letters your whole life. But have you ever stopped to ask which one you truly <em>love</em>? Today, we settle it. 🥊</p>
+    <ol class="rules">
+      <li><span class="num" style="--c: var(--cyan)">1</span><span>Two letters step into the ring.</span></li>
+      <li><span class="num" style="--c: var(--pink)">2</span><span>You pick the one you like more. Don't overthink it, go with your gut!</span></li>
+      <li><span class="num" style="--c: var(--yellow)">3</span><span>It's a knockout bracket: the loser goes home, the winner moves on.</span></li>
+      <li><span class="num" style="--c: #a78bfa">4</span><span>After 25 picks, one letter is crowned your favorite. 👑</span></li>
+    </ol>
+    <p class="tip">The bracket is shuffled every time, and six lucky letters get a bye straight to the Round of 16. Tap or click a letter to pick it, press its key on your keyboard (or use the <kbd>←</kbd> <kbd>→</kbd> arrow keys). Picked the wrong one? <kbd>Backspace</kbd> (or the Undo button) takes it back.</p>
+    <div class="center"><button id="start" class="big-btn">Let the games begin!</button></div>
+    <a class="home" href="/">← back to iter.ca</a>
+  </div>
+</section>
+
+<section id="game" class="screen" aria-label="Pick a letter">
+  <div class="hud">
+    <span class="pill" id="roundName">Qualifiers</span>
+    <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+    <span class="count" id="count">1 / 25</span>
+    <button class="btn" id="undo" title="Undo last pick (Backspace)">↶ Undo</button>
+  </div>
+  <div id="prompt" aria-live="polite">Pick your fighter!</div>
+  <div class="arena" id="arena">
+    <button class="side" id="sideA">
+      <span class="key" aria-hidden="true"><span class="h">←</span><span class="v">↑</span> or <span class="lk"></span></span>
+      <span class="sr-only">Choose</span>
+      <span class="lw"><span class="letter"></span></span>
+      <span class="quip"></span>
+    </button>
+    <div class="vs" aria-hidden="true">VS</div>
+    <button class="side" id="sideB">
+      <span class="key" aria-hidden="true"><span class="h">→</span><span class="v">↓</span> or <span class="lk"></span></span>
+      <span class="sr-only">Choose</span>
+      <span class="lw"><span class="letter"></span></span>
+      <span class="quip"></span>
+    </button>
+  </div>
+</section>
+
+<section id="win" class="screen" aria-live="polite">
+  <div class="card">
+    <span class="eyebrow">We have a champion!</span>
+    <div class="sunburst" id="sunburst">
+      <span class="crown" aria-hidden="true">👑</span>
+      <div class="medal"><span class="letter" id="champLetter"></span></div>
+    </div>
+    <h2>Your favorite letter is <span class="hl" id="champName"></span>!</h2>
+    <p id="champQuip"></p>
+    <div class="section-title" id="pathTitle">The road to glory</div>
+    <div class="path" id="path"></div>
+    <div class="section-title">The rest of the field</div>
+    <div class="tiers" id="tiers"></div>
+    <div class="btns">
+      <button class="big-btn" id="again">Play again!</button>
+      <button class="btn" id="share">📋 Copy my result</button>
+      <button class="btn" id="back">↶ Wait, undo that</button>
+    </div>
+    <a class="home" href="/">← back to iter.ca</a>
+  </div>
+</section>
+
+<div id="roundCard" hidden>
+  <div class="card" role="dialog" aria-modal="true" aria-labelledby="rcTitle">
+    <span class="eyebrow">Next up</span>
+    <h2 id="rcTitle"></h2>
+    <p id="rcText"></p>
+    <div class="chips" id="rcChips"></div>
+    <button class="big-btn" id="rcGo">Let's go!</button>
+  </div>
+</div>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+"use strict";
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const TOTAL_PICKS = LETTERS.length - 1;
+const BYES = 6; // 26 letters into a 16-slot bracket: 10 qualifier matches + 6 byes
+const ROUND_NAMES = ["Qualifiers", "Round of 16", "Quarterfinals", "Semifinals", "Grand Final"];
+const QUIPS = {
+  A: "First in line. Every. Single. Time.",
+  B: "Buzzing with confidence. 🐝",
+  C: "Can't decide if it wants to be an S or a K.",
+  D: "Dependable, delightful, a little dramatic.",
+  E: "The most common letter in English. A people-pleaser.",
+  F: "Press F to pay respects.",
+  G: "Hard or soft? Keeps you guessing.",
+  H: "Silent in \"hour\", loud in \"HELLO!\"",
+  I: "Tall, thin, and all about me. Er, I.",
+  J: "Just a fancy I until a few centuries ago.",
+  K: "Silent in \"knight\", \"knife\", and \"knock\". Mysterious.",
+  L: "Shaped like a corner. Lives for lemons, llamas, and lullabies.",
+  M: "Mmm. The letter of delicious things.",
+  N: "Nine, nice, nap, nachos. No notes.",
+  O: "Perfectly round. Zero corners. Zero drama.",
+  P: "Silent in \"psychology\", loud in \"POP!\"",
+  Q: "Rarely seen without its bestie, U.",
+  R: "The pirate's favorite. Arrr! 🏴‍☠️",
+  S: "Makes everything plural. Ssso powerful. 🐍",
+  T: "Time for tea. ☕",
+  U: "Q's ride-or-die. Also, it's all about U.",
+  V: "Shaped like victory. Very vivacious.",
+  W: "The only letter with a three-syllable name. Show-off.",
+  X: "Marks the spot. 🗺️",
+  Y: "Sometimes a vowel. Always asking why.",
+  Z: "Zed? Zee? Either way, it brings the zing. ⚡",
+};
+const REACTIONS = [
+  "{w} advances! 🎉", "Bye bye, {l}! 👋", "Great taste. ✨", "Ooh, bold choice!",
+  "{l} never stood a chance.", "The crowd goes wild! 📣", "Ruthless. I love it.",
+  "{w} is on fire! 🔥", "Called it.", "Sorry, {l}. 💔", "Iconic.",
+  "{w} thanks you for your support.", "Flawless victory!", "{l} is going home. 🧳",
+  "Spicy pick! 🌶️", "Ice cold. 🧊", "{w} does a little dance. 💃",
+];
+const PROMPTS = [
+  "Pick your fighter!", "Which one sparks joy?", "Follow your heart. 💘",
+  "Quick, don't overthink it!", "Who's it gonna be?", "Choose wisely…",
+  "Tough one? Trust your gut.", "Which letter vibes harder?", "Tap your favorite!",
+  "Who deserves to move on?",
+];
+const ROUND_INTROS = [
+  null,
+  { title: "Round of 16!", text: "The qualifiers are done! These 16 letters are still standing, including six well-rested ones who got a bye." },
+  { title: "Quarterfinals!", text: "Eight letters left. Things are getting serious. 😤" },
+  { title: "Semifinals!", text: "The Final Four! Every one of them is a legend." },
+  { title: "The Grand Final!", text: "Two letters. One crown. No pressure. 😅" },
+];
+const CONFETTI_COLORS = ["#22e0e8", "#ff5fa2", "#ffd93b", "#8b5cf6", "#3ddc84", "#ff8c42"];
+const BITS = ["✨", "⭐", "💖", "🎉", "💥", "🌟"];
+
+const $ = (s) => document.querySelector(s);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const rand = (n) => Math.floor(Math.random() * n);
+const pickOne = (a) => a[rand(a.length)];
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = rand(i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+// Golden-angle hues so neighboring letters get very different colors.
+const hue = (l) => Math.round((l.charCodeAt(0) - 65) * 137.508) % 360;
+const letterBg = (l) => `hsl(${hue(l)}, 92%, 70%)`;
+// Pick from a list without repeating the previous pick.
+function freshPicker(list) {
+  let last = -1;
+  return () => {
+    let i;
+    do i = rand(list.length); while (list.length > 1 && i === last);
+    last = i;
+    return list[i];
+  };
+}
+const nextReaction = freshPicker(REACTIONS);
+const nextPrompt = freshPicker(PROMPTS);
+
+const sides = [$("#sideA"), $("#sideB")];
+const arena = $("#arena");
+
+/* ---------- bracket ---------- */
+// A source is either {letter} (seeded directly) or {match} (winner of a match).
+let matches, picks, current, lastWinner, busy = false, screen = "intro";
+
+function makeMatch(round, a, b) {
+  const m = { round, src: [a, b], winner: null };
+  matches.push(m);
+  return { match: m };
+}
+const letterOf = (s) => s.letter || (s.match && s.match.winner) || null;
+
+function buildBracket() {
+  matches = [];
+  const ls = shuffle(LETTERS.slice());
+  const slots = ls.slice(0, BYES).map((letter) => ({ letter }));
+  for (let i = BYES; i < ls.length; i += 2) {
+    slots.push(makeMatch(0, { letter: ls[i] }, { letter: ls[i + 1] }));
+  }
+  let level = shuffle(slots);
+  for (let round = 1; level.length > 1; round++) {
+    const next = [];
+    for (let i = 0; i < level.length; i += 2) next.push(makeMatch(round, level[i], level[i + 1]));
+    level = next;
+  }
+}
+
+// Play rounds in order, but within a round pick a random ready match,
+// preferring ones that don't feature the letter that just won.
+function nextMatch() {
+  const ready = matches.filter((m) => !m.winner && m.src.every(letterOf));
+  if (!ready.length) return null;
+  const minRound = Math.min(...ready.map((m) => m.round));
+  let pool = ready.filter((m) => m.round === minRound);
+  const fresh = pool.filter((m) => !m.src.some((s) => letterOf(s) === lastWinner));
+  if (fresh.length) pool = fresh;
+  const m = pickOne(pool);
+  const pair = m.src.map(letterOf);
+  if (Math.random() < 0.5) pair.reverse();
+  return { m, pair };
+}
+
+/* ---------- screens ---------- */
+function showScreen(id) {
+  screen = id;
+  document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("active", s.id === id));
+  $("#floaties").style.display = id === "game" ? "none" : "";
+}
+
+function newGame() {
+  buildBracket();
+  picks = [];
+  lastWinner = null;
+  busy = false;
+  arena.classList.remove("busy");
+  stopConfetti();
+  showMatch(nextMatch());
+}
+
+function showMatch(n) {
+  current = n;
+  showScreen("game");
+  const done = picks.length;
+  $("#roundName").textContent = ROUND_NAMES[n.m.round];
+  $("#count").textContent = `${done + 1} / ${TOTAL_PICKS}`;
+  $("#bar").style.width = (done / TOTAL_PICKS) * 100 + "%";
+  $("#undo").disabled = done === 0;
+  const prompt = $("#prompt");
+  prompt.textContent = n.m.round === 4 ? "This is it. Crown your champion! 👑" : nextPrompt();
+  restartClass(prompt, "pop");
+  sides.forEach((side, i) => {
+    const l = n.pair[i];
+    side.style.setProperty("--bg", letterBg(l));
+    side.querySelector(".letter").textContent = l;
+    side.querySelector(".lk").textContent = l;
+    side.querySelector(".quip").textContent = QUIPS[l];
+    side.classList.remove("won", "lost");
+    restartClass(side, "enter");
+  });
+}
+
+function restartClass(el, cls) {
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+}
+
+function choose(i) {
+  if (busy || !current || screen !== "game" || !$("#roundCard").hidden) return;
+  busy = true;
+  arena.classList.add("busy");
+  const winner = current.pair[i], loser = current.pair[1 - i];
+  current.m.winner = winner;
+  picks.push({ m: current.m, pair: current.pair, winner, loser });
+  lastWinner = winner;
+  current = null;
+  sides[i].classList.add("won");
+  sides[1 - i].classList.add("lost");
+  $("#bar").style.width = (picks.length / TOTAL_PICKS) * 100 + "%";
+  $("#undo").disabled = false;
+  burst(sides[i]);
+  toast(sides[i], nextReaction().replace("{w}", winner).replace("{l}", loser));
+  setTimeout(() => {
+    busy = false;
+    arena.classList.remove("busy");
+    advance();
+  }, reduceMotion ? 250 : 600);
+}
+
+function advance() {
+  const n = nextMatch();
+  if (!n) return showWinner();
+  const prev = picks[picks.length - 1];
+  if (prev && n.m.round !== prev.m.round) showRoundCard(n.m.round, () => showMatch(n));
+  else showMatch(n);
+}
+
+function undo() {
+  if (busy || !picks.length) return;
+  hideRoundCard();
+  stopConfetti();
+  const h = picks.pop();
+  h.m.winner = null;
+  lastWinner = picks.length ? picks[picks.length - 1].winner : null;
+  showMatch({ m: h.m, pair: h.pair });
+  toast(arena, "Rewind! ⏪");
+}
+
+/* ---------- round interstitial ---------- */
+let roundCardCb = null, roundCardShownAt = 0;
+function showRoundCard(round, cb) {
+  const info = ROUND_INTROS[round];
+  const out = new Set(picks.map((p) => p.loser));
+  const alive = LETTERS.filter((l) => !out.has(l));
+  $("#rcTitle").textContent = info.title;
+  $("#rcText").textContent = info.text;
+  const chips = $("#rcChips");
+  chips.replaceChildren();
+  chips.classList.toggle("big", alive.length <= 4);
+  alive.forEach((l, i) => {
+    if (round === 4 && i === 1) {
+      const vs = document.createElement("span");
+      vs.className = "vs-mini";
+      vs.textContent = "vs";
+      chips.append(vs);
+    }
+    chips.append(chip(l, "", i));
+  });
+  roundCardCb = cb;
+  roundCardShownAt = performance.now();
+  $("#roundCard").hidden = false;
+  restartClass($("#roundCard .card"), "card");
+  $("#rcGo").focus({ preventScroll: true });
+}
+function hideRoundCard() {
+  $("#roundCard").hidden = true;
+  roundCardCb = null;
+}
+function continueFromRoundCard() {
+  if (performance.now() - roundCardShownAt < 350) return; // don't let a mashed key skip it
+  const cb = roundCardCb;
+  hideRoundCard();
+  if (cb) cb();
+}
+
+function chip(l, extra, i) {
+  const c = document.createElement("span");
+  c.className = "chip " + (extra || "");
+  c.textContent = l;
+  c.style.setProperty("--bg", letterBg(l));
+  c.style.setProperty("--i", i || 0);
+  return c;
+}
+
+/* ---------- winner ---------- */
+function showWinner() {
+  const champ = picks[picks.length - 1].winner;
+  $("#bar").style.width = "100%";
+  $("#sunburst").style.setProperty("--bg", letterBg(champ));
+  $("#champLetter").textContent = champ;
+  $("#champName").textContent = champ;
+  $("#champQuip").textContent = QUIPS[champ];
+
+  const beaten = picks.filter((p) => p.winner === champ).map((p) => p.loser);
+  const path = $("#path");
+  path.replaceChildren();
+  beaten.forEach((l, i) => {
+    if (i) {
+      const a = document.createElement("span");
+      a.className = "arrow";
+      a.textContent = "→";
+      path.append(a);
+    }
+    path.append(chip(l, "small", i));
+  });
+  $("#pathTitle").textContent =
+    beaten.length === 4 ? `The road to glory (${champ} got a bye in the qualifiers!)` : "The road to glory";
+
+  const outRound = {};
+  picks.forEach((p) => (outRound[p.loser] = p.m.round));
+  const tiers = $("#tiers");
+  tiers.replaceChildren();
+  [
+    [4, "🥈 Runner-up"],
+    [3, "🥉 Semifinalists"],
+    [2, "🎖️ Quarterfinalists"],
+    [1, "Knocked out in the Round of 16"],
+    [0, "Knocked out in the Qualifiers"],
+  ].forEach(([round, label]) => {
+    const ls = LETTERS.filter((l) => outRound[l] === round);
+    const row = document.createElement("div");
+    row.className = "tier";
+    const lab = document.createElement("span");
+    lab.className = "tier-label";
+    lab.textContent = label;
+    row.append(lab, ...ls.map((l, i) => chip(l, "small", i)));
+    tiers.append(row);
+  });
+
+  $("#share").textContent = "📋 Copy my result";
+  showScreen("win");
+  $("#win").scrollTop = 0;
+  confetti(champ);
+}
+
+async function share() {
+  const champ = picks[picks.length - 1].winner;
+  const beaten = picks.filter((p) => p.winner === champ).map((p) => p.loser);
+  const text = `My favorite letter is ${champ}! 👑 It beat ${beaten.join(", ")} on the road to glory. Find yours: ${location.origin}${location.pathname}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    $("#share").textContent = "✅ Copied!";
+  } catch (e) {
+    $("#share").textContent = "😿 Couldn't copy";
+  }
+}
+
+/* ---------- juice ---------- */
+function toast(el, text) {
+  const r = el.getBoundingClientRect();
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = text;
+  t.style.left = r.left + r.width / 2 + "px";
+  t.style.top = r.top + r.height * (el === arena ? 0.5 : 0.22) + "px";
+  document.body.append(t);
+  setTimeout(() => t.remove(), 1100);
+}
+
+function burst(side) {
+  if (reduceMotion || !side.animate) return;
+  const r = side.querySelector(".letter").getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  for (let i = 0; i < 18; i++) {
+    const s = document.createElement("span");
+    s.className = "bit";
+    if (i % 2) s.textContent = pickOne(BITS);
+    else {
+      s.classList.add("dot");
+      s.style.background = pickOne(CONFETTI_COLORS);
+    }
+    s.style.left = cx + "px";
+    s.style.top = cy + "px";
+    document.body.append(s);
+    const ang = Math.random() * Math.PI * 2, dist = 90 + Math.random() * 170;
+    const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+    const anim = s.animate(
+      [
+        { transform: "translate(-50%, -50%) scale(0.3)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1.2) rotate(${rand(360)}deg)`, opacity: 0 },
+      ],
+      { duration: 650 + rand(450), easing: "cubic-bezier(.2,.8,.3,1)" }
+    );
+    anim.onfinish = () => s.remove();
+  }
+}
+
+let confettiRaf = 0;
+function stopConfetti() {
+  cancelAnimationFrame(confettiRaf);
+  const c = $("#confetti");
+  c.getContext("2d").clearRect(0, 0, c.width, c.height);
+}
+function confetti(champ) {
+  if (reduceMotion) return;
+  stopConfetti();
+  const c = $("#confetti"), ctx = c.getContext("2d");
+  const dpr = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
+  c.width = W * dpr;
+  c.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const ps = Array.from({ length: 200 }, () => ({
+    x: Math.random() * W,
+    y: -20 - Math.random() * H * 0.7,
+    vx: (Math.random() - 0.5) * 3,
+    vy: 2.5 + Math.random() * 3.5,
+    size: 6 + Math.random() * 8,
+    rot: Math.random() * Math.PI * 2,
+    vr: (Math.random() - 0.5) * 0.25,
+    wob: Math.random() * Math.PI * 2,
+    color: pickOne(CONFETTI_COLORS),
+    kind: Math.random() < 0.22 ? "letter" : Math.random() < 0.5 ? "rect" : "circle",
+  }));
+  const start = performance.now();
+  const frame = (t) => {
+    ctx.clearRect(0, 0, W, H);
+    let alive = 0;
+    for (const p of ps) {
+      if (p.dead) continue;
+      p.wob += 0.06;
+      p.x += p.vx + Math.sin(p.wob) * 0.9;
+      p.y += p.vy;
+      p.rot += p.vr;
+      if (p.y > H + 40) {
+        if (t - start < 2600) {
+          p.y = -20;
+          p.x = Math.random() * W;
+        } else {
+          p.dead = true;
+          continue;
+        }
+      }
+      alive++;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.strokeStyle = "#141414";
+      ctx.lineWidth = 1.5;
+      if (p.kind === "letter") {
+        ctx.font = `900 ${p.size * 2.4}px system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.strokeText(champ, 0, 0);
+        ctx.fillText(champ, 0, 0);
+      } else if (p.kind === "rect") {
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        ctx.strokeRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    if (alive) confettiRaf = requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, W, H);
+  };
+  confettiRaf = requestAnimationFrame(frame);
+}
+
+/* ---------- setup ---------- */
+(function decorate() {
+  const wave = $(".wave");
+  let i = 0;
+  wave.dataset.text.split(" ").forEach((word, wi) => {
+    if (wi) wave.append(" ");
+    const w = document.createElement("span");
+    w.className = "word";
+    for (const ch of word) {
+      const s = document.createElement("span");
+      s.textContent = ch;
+      s.style.setProperty("--i", i);
+      s.style.setProperty("--c", `hsl(${(i * 37 + 180) % 360}, 90%, 62%)`);
+      w.append(s);
+      i++;
+    }
+    wave.append(w);
+  });
+  const fl = $("#floaties");
+  LETTERS.forEach((l) => {
+    const s = document.createElement("span");
+    s.textContent = l;
+    s.style.left = Math.random() * 95 + "%";
+    s.style.top = Math.random() * 95 + "%";
+    s.style.fontSize = 2 + Math.random() * 5 + "rem";
+    s.style.color = `hsl(${hue(l)}, 85%, 58%)`;
+    s.style.animationDuration = 5 + Math.random() * 8 + "s";
+    s.style.animationDelay = -Math.random() * 10 + "s";
+    fl.append(s);
+  });
+})();
+
+sides.forEach((side, i) => side.addEventListener("click", () => choose(i)));
+$("#start").addEventListener("click", newGame);
+$("#again").addEventListener("click", newGame);
+$("#undo").addEventListener("click", undo);
+$("#back").addEventListener("click", undo);
+$("#share").addEventListener("click", share);
+$("#rcGo").addEventListener("click", continueFromRoundCard);
+$("#roundCard").addEventListener("click", (e) => {
+  if (e.target.id === "roundCard") continueFromRoundCard();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  const isUndo = k === "Backspace";
+  if (!$("#roundCard").hidden) {
+    if (isUndo) {
+      e.preventDefault();
+      undo();
+    } else if (["Enter", " ", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(k)) {
+      e.preventDefault();
+      continueFromRoundCard();
+    }
+    return;
+  }
+  if (screen === "game") {
+    if (["ArrowLeft", "ArrowUp", "1"].includes(k)) {
+      e.preventDefault();
+      choose(0);
+    } else if (["ArrowRight", "ArrowDown", "2"].includes(k)) {
+      e.preventDefault();
+      choose(1);
+    } else if (isUndo) {
+      e.preventDefault();
+      undo();
+    } else if (current && k.length === 1 && current.pair.includes(k.toUpperCase())) {
+      e.preventDefault();
+      choose(current.pair.indexOf(k.toUpperCase()));
+    }
+  } else if (screen === "win" && isUndo) {
+    e.preventDefault();
+    undo();
+  } else if (screen === "intro" && k === "Enter" && document.activeElement === document.body) {
+    newGame();
+  }
+});
+</script>
+</body>
+</html>

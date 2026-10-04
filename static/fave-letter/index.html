@@ -126,6 +126,11 @@ h1 {
   font-size: 0.98rem;
   margin: 0 0 1.5em;
 }
+.for-touch { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .for-touch { display: inline; }
+  .for-mouse { display: none; }
+}
 kbd {
   font-family: inherit;
   font-weight: 900;
@@ -533,7 +538,7 @@ kbd {
       <li><span class="num" style="--c: var(--yellow)">3</span><span>It's a knockout bracket: the loser goes home, the winner moves on.</span></li>
       <li><span class="num" style="--c: #a78bfa">4</span><span>After 25 picks, one letter is crowned your favorite. 👑</span></li>
     </ol>
-    <p class="tip">The bracket is shuffled every time, and six lucky letters get a bye straight to the Round of 16. Tap or click a letter to pick it, press its key on your keyboard (or use the <kbd>←</kbd> <kbd>→</kbd> arrow keys). Picked the wrong one? <kbd>Backspace</kbd> (or the Undo button) takes it back.</p>
+    <p class="tip">The bracket is shuffled every time, and six lucky letters get a bye straight to the Round of 16. <span class="for-touch">Tap a letter to pick it. Picked the wrong one? The Undo button takes it back.</span><span class="for-mouse">Click a letter to pick it, or press its key on your keyboard (or use the <kbd>←</kbd> <kbd>→</kbd> arrow keys). Picked the wrong one? <kbd>Backspace</kbd> (or the Undo button) takes it back. Press <kbd>Space</kbd> to start!</span></p>
     <div class="center"><button id="start" class="big-btn">Let the games begin!</button></div>
     <a class="home" href="/">← back to iter.ca</a>
   </div>
@@ -579,7 +584,8 @@ kbd {
     <div class="tiers" id="tiers"></div>
     <div class="btns">
       <button class="big-btn" id="again">Play again!</button>
-      <button class="btn" id="share">📋 Copy my result</button>
+      <button class="btn" id="copyImg">🖼️ Copy image</button>
+      <button class="btn" id="share">📋 Copy text</button>
       <button class="btn" id="back">↶ Wait, undo that</button>
     </div>
     <a class="home" href="/">← back to iter.ca</a>
@@ -903,10 +909,213 @@ function showWinner() {
     tiers.append(row);
   });
 
-  $("#share").textContent = "📋 Copy my result";
+  $("#share").textContent = "📋 Copy text";
+  $("#copyImg").textContent = "🖼️ Copy image";
   showScreen("win");
   $("#win").scrollTop = 0;
   confetti(champ);
+}
+
+/* ---------- result image ---------- */
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+// Draw text with its visible glyph box centered on (x, y).
+function centerText(ctx, text, x, y, stroke) {
+  const m = ctx.measureText(text);
+  const bx = x - (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2 + m.actualBoundingBoxLeft;
+  const by = y + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  if (stroke) ctx.strokeText(text, bx, by);
+  ctx.fillText(text, bx, by);
+}
+
+function drawResult() {
+  const champ = picks[picks.length - 1].winner;
+  const beaten = picks.filter((p) => p.winner === champ).map((p) => p.loser);
+  const S = 1080, INK = "#141414";
+  const FONT = getComputedStyle(document.body).fontFamily;
+  const EMOJI = '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const ctx = c.getContext("2d");
+  ctx.lineJoin = "round";
+
+  // dotted paper
+  ctx.fillStyle = "#fff8ec";
+  ctx.fillRect(0, 0, S, S);
+  ctx.fillStyle = "rgba(20, 20, 20, 0.11)";
+  for (let x = 15; x < S; x += 30) {
+    for (let y = 15; y < S; y += 30) {
+      ctx.beginPath();
+      ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // card
+  const cardX = 52, cardW = 960, cx = cardX + cardW / 2;
+  rrect(ctx, cardX + 16, cardX + 16, cardW, cardW, 44);
+  ctx.fillStyle = INK;
+  ctx.fill();
+  rrect(ctx, cardX, cardX, cardW, cardW, 44);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = INK;
+  ctx.stroke();
+
+  // sunburst, faded out toward the edges
+  const cy = 445, R = 300;
+  const sb = document.createElement("canvas");
+  sb.width = sb.height = R * 2;
+  const sctx = sb.getContext("2d");
+  sctx.fillStyle = letterBg(champ);
+  for (let i = 0; i < 36; i += 2) {
+    sctx.beginPath();
+    sctx.moveTo(R, R);
+    sctx.arc(R, R, R, (i * Math.PI) / 18, ((i + 1) * Math.PI) / 18);
+    sctx.closePath();
+    sctx.fill();
+  }
+  const fade = sctx.createRadialGradient(R, R, 0, R, R, R);
+  fade.addColorStop(0.5, "#000");
+  fade.addColorStop(1, "rgba(0, 0, 0, 0)");
+  sctx.globalCompositeOperation = "destination-in";
+  sctx.fillStyle = fade;
+  sctx.fillRect(0, 0, R * 2, R * 2);
+  ctx.drawImage(sb, cx - R, cy - R);
+
+  // eyebrow pill
+  ctx.save();
+  ctx.translate(cx, 132);
+  ctx.rotate(-0.035);
+  ctx.font = `900 28px ${FONT}`;
+  const ew = ctx.measureText("THE GREAT ALPHABET SHOWDOWN").width + 60;
+  rrect(ctx, -ew / 2, -29, ew, 58, 29);
+  ctx.fillStyle = "#ff5fa2";
+  ctx.fill();
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.fillStyle = "#fff";
+  centerText(ctx, "THE GREAT ALPHABET SHOWDOWN", 0, 0);
+  ctx.restore();
+
+  // medal
+  const mr = 185;
+  ctx.beginPath();
+  ctx.arc(cx + 12, cy + 12, mr, 0, Math.PI * 2);
+  ctx.fillStyle = INK;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(cx, cy, mr, 0, Math.PI * 2);
+  ctx.fillStyle = letterBg(champ);
+  ctx.fill();
+  ctx.lineWidth = 9;
+  ctx.stroke();
+
+  // champion letter: offset shadow, then outline behind a white fill
+  ctx.font = `900 270px ${FONT}`;
+  ctx.lineWidth = 20;
+  ctx.fillStyle = INK;
+  centerText(ctx, champ, cx + 13, cy + 13, true);
+  ctx.fillStyle = "#fff";
+  centerText(ctx, champ, cx, cy, true);
+
+  // crown
+  ctx.save();
+  ctx.translate(cx, cy - mr - 5);
+  ctx.rotate(-0.2);
+  ctx.font = `110px ${EMOJI}`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("👑", 0, 0);
+  ctx.restore();
+
+  // headline, with the letter highlighted
+  ctx.font = `900 64px ${FONT}`;
+  const pre = "My favorite letter is ", post = "!";
+  const wPre = ctx.measureText(pre).width, wL = ctx.measureText(champ).width;
+  const total = wPre + wL + ctx.measureText(post).width;
+  let x = cx - total / 2;
+  const hy = 745;
+  ctx.fillStyle = "#22e0e8";
+  ctx.fillRect(x + wPre - 8, hy - 26, wL + 16, 40);
+  ctx.fillStyle = INK;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText(pre + champ + post, x, hy);
+
+  // road to glory
+  ctx.font = `700 30px ${FONT}`;
+  ctx.fillStyle = "#555";
+  centerText(ctx, "On the road to glory, it beat:", cx, 812);
+  const chipS = 76, arrowW = 46;
+  const rowW = beaten.length * chipS + (beaten.length - 1) * arrowW;
+  x = cx - rowW / 2;
+  const chipY = 850;
+  beaten.forEach((l, i) => {
+    if (i) {
+      ctx.font = `900 34px ${FONT}`;
+      ctx.fillStyle = INK;
+      centerText(ctx, "→", x - arrowW / 2, chipY + chipS / 2);
+    }
+    rrect(ctx, x + 5, chipY + 5, chipS, chipS, 16);
+    ctx.fillStyle = INK;
+    ctx.fill();
+    rrect(ctx, x, chipY, chipS, chipS, 16);
+    ctx.fillStyle = letterBg(l);
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.font = `900 42px ${FONT}`;
+    ctx.fillStyle = INK;
+    centerText(ctx, l, x + chipS / 2, chipY + chipS / 2);
+    x += chipS + arrowW;
+  });
+
+  // footer
+  const site = location.host ? location.host + location.pathname.replace(/index\.html$/, "") : "iter.ca/fave-letter/";
+  ctx.font = `800 30px ${FONT}`;
+  ctx.fillStyle = "#0a7285";
+  centerText(ctx, `What's yours? ${site}`, cx, 975);
+  return c;
+}
+
+async function copyImage() {
+  const btn = $("#copyImg");
+  const champ = picks[picks.length - 1].winner;
+  // Build the blob promise synchronously so Safari still sees the click gesture.
+  const blob = new Promise((res, rej) =>
+    drawResult().toBlob((b) => (b ? res(b) : rej(new Error("toBlob failed"))), "image/png")
+  );
+  try {
+    if (!window.ClipboardItem || !navigator.clipboard || !navigator.clipboard.write) throw new Error("no image clipboard");
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+    btn.textContent = "✅ Image copied!";
+  } catch (e) {
+    // No image clipboard here, so save the image instead.
+    try {
+      const url = URL.createObjectURL(await blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `favorite-letter-${champ}.png`;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      btn.textContent = "⬇️ Image saved";
+    } catch (e2) {
+      btn.textContent = "😿 Couldn't copy";
+    }
+  }
 }
 
 async function share() {
@@ -1074,6 +1283,7 @@ $("#again").addEventListener("click", newGame);
 $("#undo").addEventListener("click", undo);
 $("#back").addEventListener("click", undo);
 $("#share").addEventListener("click", share);
+$("#copyImg").addEventListener("click", copyImage);
 $("#rcGo").addEventListener("click", continueFromRoundCard);
 $("#roundCard").addEventListener("click", (e) => {
   if (e.target.id === "roundCard") continueFromRoundCard();
@@ -1110,7 +1320,8 @@ document.addEventListener("keydown", (e) => {
   } else if (screen === "win" && isUndo) {
     e.preventDefault();
     undo();
-  } else if (screen === "intro" && k === "Enter" && document.activeElement === document.body) {
+  } else if (screen === "intro" && (k === " " || k === "Enter") && !e.target.closest("button, a")) {
+    e.preventDefault();
     newGame();
   }
 });

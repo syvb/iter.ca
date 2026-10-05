@@ -1,7 +1,7 @@
 +++
 topbar_id = "about"
 Title = "About me"
-date = 2026-04-20
+date = 2026-10-04
 Verbose = 0
 +++
 

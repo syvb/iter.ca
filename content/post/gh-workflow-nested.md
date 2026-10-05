@@ -19,7 +19,7 @@ If you had a three-layer nested tag, the part of the code[^source] that checked 
 This could let an attacker with just a `repo`-scoped token push workflows and steal workflow secrets. I don’t think this is really that big of a deal – in practice nobody is giving adversaries `repo`-only OAuth access. Furthermore, if you have complicated workflows that run code from files in the repo outside `.github/workflows` (with access to workflow secrets), an attacker could modify those non-workflow files to cause a workflow run and steal those secrets.
 
 ## conclusion
-I reported this issue to GitHub, and they apparently thought this is a medium-bad problem (that’s the severity they gave this issue, and other similar workflow-permission-bypasses I reported) so they fixed it and paid and me $4000 and assigned it CVE-2024-8263.
+I reported this issue to GitHub in Feb 2024, and they apparently thought this is a medium-bad problem (that’s the severity they gave this issue, and other similar workflow-permission-bypasses I reported) so they fixed it and paid and me $4000 and assigned it CVE-2024-8263 in October 2024.
 
 [^gitrpc]: GitHub's (closed-source) thingie for letting the Rails monolith make Git calls but not directly.
 [^commits]: It has always been possible to cause a commit that changes workflows to exist in a repo; this isn’t an issue because you can’t trigger workflows on an arbitrary commit with just the `repo` scope. For public repos you can just fork it and push a workflow-changing commit to your fork; GitHub pools Git data across forks such that the same set of commits exists across the base repo and all forks. For private repos that you can’t fork, there’s a more roundabout way to accomplish that.

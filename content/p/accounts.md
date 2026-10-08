@@ -6,8 +6,7 @@ Title = "Accounts on various services"
 Email to {{< email >}} is the best way to reach me, do feel free to contact me. Keep in mind that I don't actively use all of these accounts.
 
 ### Email
-- {{< email >}} is my preferred address
-- smitop2@gmail.com also works if the previous email doesn't work for you
+{{< email >}}
 
 <style>
 .acc-list > li.inactive, .acc-list > li.inactive > a { color: #585858; font-style: italic; }

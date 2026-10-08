@@ -6,6 +6,29 @@ NEVER manually regenerate `data/data.json` or run `regen.sh`. Regeneration is ha
 
 When adding posts (notes in `notes/`), use Toronto time for the `Date` field.
 
+## Adding LessWrong posts
+
+A LessWrong post is linked as a note, not copied into `content/post/`. Add `notes/<short-name>.txt` (the filename becomes the `note-<short-name>` ID) with just this header and no body:
+
+```
+Date=Oct 7 2026
+Title=Anthropic's corporate structure
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/Hb5aCFtLuHc5uvAgX/anthropic-s-corporate-structure
+```
+
+Always use `Verbose=0` for new LW notes; the homepage stream only shows `Verbose=0` items.
+
+Take the title and date from the LW API instead of guessing from the URL slug:
+
+```sh
+curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application/json' \
+  -d '{"query":"{ post(input: {selector: {_id: \"<postId>\"}}) { result { title slug postedAt } } }"}'
+```
+
+`postedAt` is UTC; convert it to Toronto time for `Date`. Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
+
 ## Building
 
 Don't run `hugo` directly (no `hugo build`, `hugo server`, version checks, etc.).

@@ -1,0 +1,5 @@
+Date=Oct 7 2026
+Title=Anthropic's corporate structure
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/Hb5aCFtLuHc5uvAgX/anthropic-s-corporate-structure

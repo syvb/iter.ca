@@ -1,0 +1,5 @@
+Date=Oct 29 2026
+Title=Interpreting attention head outputs with NLAs
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/nNYc5qddHXwdk5kix/interpreting-attention-head-outputs-with-nlas

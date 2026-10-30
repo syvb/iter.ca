@@ -27,7 +27,16 @@ curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application
   -d '{"query":"{ post(input: {selector: {_id: \"<postId>\"}}) { result { title slug postedAt } } }"}'
 ```
 
-`postedAt` is UTC; convert it to Toronto time for `Date`. Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
+To find recent posts, list the user's posts newest first (the `/api/user/loops` Markdown page from https://www.lesswrong.com/api/SKILL.md also lists recent posts, but may lag behind a just-published post):
+
+```sh
+curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application/json' \
+  -d '{"query":"{ posts(input: {terms: {view: \"userPosts\", userId: \"nDWrtEhgEPvoYqyyk\", sortedBy: \"new\", limit: 5}}) { results { _id title slug postedAt shortform } } }"}'
+```
+
+Skip `shortform: true` results (the shortform container, not a post), and skip posts whose `_id` already appears in a `Uri` under `notes/`.
+
+`postedAt` is UTC; convert it to Toronto time for `Date` (e.g. `TZ=America/Toronto date -d <postedAt>`). Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
 
 ## Building
 

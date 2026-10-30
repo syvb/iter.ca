@@ -1,0 +1,5 @@
+Date=Oct 14 2026
+Title=Some interesting internal documents from Anthropic litigation
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/em5wnA7gpQSvfsuxQ/some-interesting-internal-documents-from-anthropic

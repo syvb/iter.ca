@@ -24,11 +24,23 @@ on:
   schedule:
     - cron: 0 0 * * *
   workflow_dispatch:
+    inputs:
+      audit_only:
+        description: Build and compare with Neocities without deploying
+        type: boolean
+        default: false
+      expected_deletions:
+        description: Optional JSON array of reviewed deployed-only paths; abort if it differs
+        type: string
+        default: ''
 
 jobs:
   deploy:
     runs-on: ubuntu-24.04
     name: Deploy to Neocities
+    concurrency:
+      group: iter-ca-neocities
+      cancel-in-progress: false
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -46,44 +58,111 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      # we only regen subrepos on scheduled jobs, since the Neocities actions never deletes files
-      # we don't lose anything
-      - name: Check if subrepos.sh changed
-        id: subrepos-changed
-        if: ${{ github.event_name == 'push' }}
+      # Blog/notes updates stay fast and never delete files. Daily/manual runs
+      # (or changes to generation itself) build the complete tree before cleanup.
+      - name: Choose full or fast generation
+        id: generation
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
         run: |
-          if git diff --name-only HEAD~1 HEAD | grep -q '^subrepos\.sh$'; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+          full=false
+          if [[ "$EVENT_NAME" != push && "$EVENT_NAME" != workflow_run ]]; then
+            full=true
+          elif [[ "$EVENT_NAME" == push ]]; then
+            if ! changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA"); then
+              full=true
+            elif grep -qE '^(subrepos\.sh|static/pngcomp/gen\.sh|binformats/)' <<< "$changed"; then
+              full=true
+            fi
           fi
+          echo "full=$full" >> "$GITHUB_OUTPUT"
       - name: Install stable toolchain
-        if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
+        if: ${{ steps.generation.outputs.full == 'true' }}
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
       - name: Install wasm-pack
-        if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
+        if: ${{ steps.generation.outputs.full == 'true' }}
         run: |
            curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Install ImageMagick
-        if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
+        if: ${{ steps.generation.outputs.full == 'true' }}
         run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Create subrepos
-        if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
+        if: ${{ steps.generation.outputs.full == 'true' }}
         run: ./subrepos.sh
       - name: Build
-        run: ./hugo -v -t smitop
+        run: |
+          rm -rf public
+          ./hugo -v -t smitop
       - name: Prep for Neocities
         run: |
           # uncomment for free plan:
           # find ./public -type f | grep -vE '(asc|atom|bin|css|csv|dae|eot|epub|geojson|gif|gltf|htm|html|ico|jpeg|jpg|js|json|key|kml|knowl|less|manifest|markdown|md|mf|mid|midi|mtl|obj|opml|otf|pdf|pgp|png|rdf|rss|sass|scss|svg|text|tsv|ttf|txt|webapp|webmanifest|webp|woff|woff2|xcf|xml)' | xargs rm
           cp public/404.html public/not_found.html
+      - name: Test Neocities audit
+        run: python3 -B -m unittest discover -s .github/tests -p 'test_neocities*.py' -v
+      - name: Test full asset generation failure handling
+        if: ${{ steps.generation.outputs.full == 'true' }}
+        run: python3 -B -m unittest discover -s .github/tests -p 'test_subrepos.py' -v
+      - name: Compare build with Neocities (read-only)
+        id: audit
+        env:
+          NEOCITIES_API_TOKEN: ${{ secrets.NEOCITIES_API_TOKEN }}
+          EXPECTED_DELETIONS: ${{ inputs.expected_deletions }}
+          BACKUP_ORPHANS: ${{ steps.generation.outputs.full }}
+        run: |
+          python3 -B .github/neocities-audit.py public neocities-audit
+          if [[ "$BACKUP_ORPHANS" == true ]]; then
+            cp public/ext/611px-Circuit-playground-sideview.jpg neocities-audit/generated-thumbnail.jpg
+          fi
+      - name: Save Neocities inventories and diff
+        if: ${{ always() && (steps.audit.outcome == 'success' || steps.audit.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: neocities-audit
+          path: neocities-audit/
+          if-no-files-found: error
       # When the dist_dir is ready, deploy it to neocities
       - name: Deploy to neocities
+        if: ${{ !inputs.audit_only }}
         uses: bcomnes/deploy-to-neocities@v3
         with:
           api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
           cleanup: false
           dist_dir: public
           neocities_supporter: true
+      # The action can delete files even when uploads fail. Verify a non-deleting
+      # upload first, then permit cleanup only for a successful complete build.
+      - name: Verify uploads before cleanup
+        id: uploaded
+        if: ${{ !inputs.audit_only }}
+        env:
+          NEOCITIES_API_TOKEN: ${{ secrets.NEOCITIES_API_TOKEN }}
+          EXPECTED_DELETIONS: ${{ inputs.expected_deletions }}
+        run: python3 -B .github/neocities-audit.py public neocities-audit-uploaded --check --allow-extra
+      - name: Purge stale files after full regeneration
+        if: ${{ !inputs.audit_only && steps.generation.outputs.full == 'true' }}
+        uses: bcomnes/deploy-to-neocities@v3
+        with:
+          api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
+          cleanup: true
+          dist_dir: public
+          neocities_supporter: true
+      - name: Verify full regeneration exactly matches Neocities
+        if: ${{ !inputs.audit_only && steps.generation.outputs.full == 'true' }}
+        env:
+          NEOCITIES_API_TOKEN: ${{ secrets.NEOCITIES_API_TOKEN }}
+        run: python3 -B .github/neocities-audit.py public neocities-audit-after --check
+      - name: Save post-deploy verification
+        if: ${{ always() && (steps.uploaded.outcome == 'success' || steps.uploaded.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: neocities-audit-after
+          path: |
+            neocities-audit-uploaded/
+            neocities-audit-after/
+          if-no-files-found: error

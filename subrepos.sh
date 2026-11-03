@@ -28,6 +28,10 @@ rm -rf transform-playground
 git clone https://github.com/syvb/transform-playground.git
 rm -rf transform-playground/.git
 
+rm -rf bn
+git clone https://github.com/syvb/bayesian-network.git bn
+rm -rf bn/.git
+
 (
     rm -rf segme segmerepo
     git clone https://github.com/syvb/segme.git segmerepo

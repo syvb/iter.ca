@@ -35,6 +35,8 @@ jobs:
       uses: actions/checkout@master
       with:
         path: smitop-blog
+    - name: Test sync metadata
+      run: python3 -B -m unittest discover -s smitop-blog/.github/tests -v
     - name: Do sync
       run: |
         ls -a .
@@ -43,6 +45,10 @@ jobs:
         cd $GITHUB_WORKSPACE/smitop-blog
         LASTMSG=$(git log --format=format:"%s" -1)
         LASTHASH=$(git log --format=format:"%H" -1)
+        LASTAUTHOR=$(git log --format='%an <%ae>' -1)
+        LASTAUTHORDATE=$(git log --format='%aI' -1)
+        # Include credits even inside squash-merge bodies, but no other source body lines.
+        COAUTHORS=$(git log --format='%b' -1 | awk 'tolower($0) ~ /^co-authored-by:/')
         cd $GITHUB_WORKSPACE/smitop.com
         cp -r $GITHUB_WORKSPACE/smitop-blog/.github .github-internal
         rm -rf {work,.github,self,selfdata,270,chromelol,bin,consulting}/
@@ -51,8 +57,15 @@ jobs:
         rm README.md
         mv README.public.md README.md
         git add .
-        git config --global user.email "me@smitop.com"
-        git config --global user.name "syvb (via script)"
-        # only commit if there are no changes
-        git diff-index --quiet HEAD -- || git commit -m "$LASTMSG" -m "This commit was automatically generated from $LASTHASH"
+        git config user.email "me@iter.ca"
+        git config user.name "syvb"
+        # Only commit if there are public changes.
+        if ! git diff-index --quiet HEAD --; then
+          {
+            printf '%s\n\nThis commit was automatically generated from %s\n' "$LASTMSG" "$LASTHASH"
+            if [ -n "$COAUTHORS" ]; then
+              printf '\n%s\n' "$COAUTHORS"
+            fi
+          } | git commit --author="$LASTAUTHOR" --date="$LASTAUTHORDATE" -F -
+        fi
         git push

@@ -1,0 +1,5 @@
+Date=Nov 3 2026
+Title=Bayesian network editor
+Verbose=0
+NoteType=Web app
+Uri=https://iter.ca/bn/

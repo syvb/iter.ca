@@ -65,7 +65,10 @@ jobs:
       - name: Install wasm-pack
         if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
         run: |
-           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh 
+           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Install ImageMagick
+        if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Create subrepos
         if: ${{ (github.event_name != 'push' && github.event_name != 'workflow_run') || steps.subrepos-changed.outputs.changed == 'true' }}
         run: ./subrepos.sh

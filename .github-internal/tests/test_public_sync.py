@@ -12,7 +12,7 @@ WORKFLOW = Path(__file__).resolve().parents[1] / "workflows/sync-with-public.yml
 
 
 class PublicSyncTest(unittest.TestCase):
-    def test_commit_metadata(self):
+    def test_commit_metadata_and_repeat_sync(self):
         cases = [
             ("Amp <amp@ampcode.com>", "Publish feature", [
                 "Private implementation details.",
@@ -67,7 +67,12 @@ class PublicSyncTest(unittest.TestCase):
                     "-F", "-", cwd=source, input=message)
                 source_hash = run("git", "rev-parse", "HEAD", cwd=source)
                 init(public)
-                run("git", "commit", "--allow-empty", "-m", "Initial public commit", cwd=public)
+                (public / ".github-internal/.github").mkdir(parents=True)
+                (public / ".github-internal/.github/stale.yml").write_text("Old nested workflow\n")
+                (public / ".github-internal/stale.yml").write_text("Deleted source workflow\n")
+                (public / ".github-internal/sync.yml").write_text("Outdated workflow\n")
+                run("git", "add", ".", cwd=public)
+                run("git", "commit", "-m", "Initial public commit", cwd=public)
                 run("git", "init", "--bare", str(remote))
                 run("git", "remote", "add", "origin", str(remote), cwd=public)
                 run("git", "push", "-u", "origin", "master", cwd=public)
@@ -82,6 +87,13 @@ class PublicSyncTest(unittest.TestCase):
                 if credits:
                     expected += "\n\n" + "\n".join(credits)
                 self.assertEqual(run("git", "log", "-1", "--format=%B", cwd=remote), expected)
+                self.assertEqual(run("git", "ls-tree", "-r", "--name-only", "master",
+                                     "--", ".github-internal", cwd=remote), ".github-internal/sync.yml")
+                self.assertEqual(run("git", "show", "master:.github-internal/sync.yml", cwd=remote),
+                                 workflow.strip())
+                public_hash = run("git", "rev-parse", "master", cwd=remote)
+                run("bash", "-eo", "pipefail", "-c", script)
+                self.assertEqual(run("git", "rev-parse", "master", cwd=remote), public_hash)
 
 
 if __name__ == "__main__":

@@ -150,8 +150,8 @@ const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {};
         },
     */
     // merged PRs
-    for (let i = 0; i < 8; i++) { // never try to fetch too many pages, cause rate limits
-        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=1000&q=is:merged%20is:pr%20author:syvb%20archived:false%20-user:syvb`, { headers })).json();
+    for (let i = 1; i <= 8; i++) { // never try to fetch too many pages, cause rate limits
+        const res = await (await fetch(`https://api.github.com/search/issues?sort=created&page=${i}&per_page=100&q=is:merged%20is:pr%20author:syvb%20archived:false%20-user:syvb`, { headers })).json();
         res.items.forEach(iss => {
             console.log(JSON.stringify({
                 Type: "gh-pr",

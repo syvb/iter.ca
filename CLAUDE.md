@@ -1,6 +1,6 @@
 ## Regeneration
 
-NEVER manually regenerate `data/data.json` or run `regen.sh`. Regeneration is handled entirely by GitHub Actions (see `.github/workflows/regen.yml`). It runs automatically on pushes to `notes/` and on a daily schedule.
+You may run `./regen.sh` locally to test regeneration of `data/data.json`. Do not commit or push locally regenerated output; only the GitHub Action in `.github/workflows/regen.yml` should commit and push regeneration changes. Keep local test output out of commits without discarding pre-existing changes. The Action runs automatically on pushes to `notes/` and on a daily schedule, and can also be dispatched manually.
 
 ## Adding posts
 
@@ -40,7 +40,18 @@ Skip `shortform: true` results (the shortform container, not a post), and skip p
 
 ## Building
 
-Don't run `hugo` directly (no `hugo build`, `hugo server`, version checks, etc.).
+You may run Hugo when a build or preview is useful, but skip it when it is not needed (for example, for documentation-only changes).
+
+Only **Hugo 0.98.0 extended**, the exact version used in `.github/workflows/neocities.yml`, works for this site. Do not substitute another version or the non-extended build. On Linux x86-64, install and build from the repository root using the Action's commands:
+
+```sh
+curl -L https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz > hugo.tar.gz
+tar xvzf hugo.tar.gz
+rm -rf public
+./hugo -v -t smitop
+```
+
+The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 22, stable Rust, wasm-pack, and ImageMagick).
 
 ## Images and static files
 

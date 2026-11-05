@@ -54,10 +54,6 @@ jobs:
         run: |
           curl -L https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz > hugo.tar.gz
           tar xvzf hugo.tar.gz
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       # Blog/notes updates stay fast and never delete files. Daily/manual runs
       # (or changes to generation itself) build the complete tree before cleanup.
       - name: Choose full or fast generation
@@ -77,6 +73,11 @@ jobs:
             fi
           fi
           echo "full=$full" >> "$GITHUB_OUTPUT"
+      - name: Setup node
+        if: ${{ steps.generation.outputs.full == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Install stable toolchain
         if: ${{ steps.generation.outputs.full == 'true' }}
         uses: actions-rs/toolchain@v1
@@ -104,12 +105,14 @@ jobs:
           # find ./public -type f | grep -vE '(asc|atom|bin|css|csv|dae|eot|epub|geojson|gif|gltf|htm|html|ico|jpeg|jpg|js|json|key|kml|knowl|less|manifest|markdown|md|mf|mid|midi|mtl|obj|opml|otf|pdf|pgp|png|rdf|rss|sass|scss|svg|text|tsv|ttf|txt|webapp|webmanifest|webp|woff|woff2|xcf|xml)' | xargs rm
           cp public/404.html public/not_found.html
       - name: Test Neocities audit
+        if: ${{ steps.generation.outputs.full == 'true' }}
         run: python3 -B -m unittest discover -s .github/tests -p 'test_neocities*.py' -v
       - name: Test full asset generation failure handling
         if: ${{ steps.generation.outputs.full == 'true' }}
         run: python3 -B -m unittest discover -s .github/tests -p 'test_subrepos.py' -v
       - name: Compare build with Neocities (read-only)
         id: audit
+        if: ${{ steps.generation.outputs.full == 'true' }}
         env:
           NEOCITIES_API_TOKEN: ${{ secrets.NEOCITIES_API_TOKEN }}
           EXPECTED_DELETIONS: ${{ inputs.expected_deletions }}

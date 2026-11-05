@@ -1,3 +1,7 @@
+## About
+
+This is the my private monorepo. The primary thing this repo does is generate content for the iter.ca root domain. GitHub Actions syncs it with with [a public repo](https://github.com/syvb/iter.ca), with various stuff like drafts and some static files removed.
+
 ## Regeneration
 
 You may run `./regen.sh` locally to test regeneration of `data/data.json`. Do not commit or push locally regenerated output; only the GitHub Action in `.github/workflows/regen.yml` should commit and push regeneration changes. Keep local test output out of commits without discarding pre-existing changes. The Action runs automatically on pushes to `notes/` and on a daily schedule, and can also be dispatched manually.

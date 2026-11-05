@@ -62,6 +62,9 @@ elif command == "cargo":
             "inter-" + str(i) for i in range(1, 8)]:
         write_output("public/png/" + name + ".png", "binformats fixture")
         Path("public/png/" + name + ".ppm").write_text("intermediate fixture")
+elif command == "node":
+    Path(args[1]).read_bytes()
+    write_output(args[-1], "where fixture")
 elif command == "convert":
     Path(args[-1].removeprefix("jpg:")).write_text("converted fixture")
 elif command != "sleep":
@@ -79,9 +82,11 @@ class SubreposTest(unittest.TestCase):
         (self.root / "binformats/public/.gitkeep").touch()
         shutil.copy2(ROOT / "subrepos.sh", self.root)
         shutil.copy2(ROOT / "static/pngcomp/gen.sh", self.root / "static/pngcomp")
+        (self.root / "static/where").mkdir()
+        shutil.copy2(ROOT / "static/where/gen.js", self.root / "static/where")
         tools = self.root / "tools"
         tools.mkdir()
-        for command in ["wget", "git", "wasm-pack", "cargo", "convert", "sleep"]:
+        for command in ["wget", "git", "wasm-pack", "cargo", "convert", "node", "sleep"]:
             stub = tools / command
             stub.write_text(STUB)
             stub.chmod(0o755)
@@ -109,6 +114,8 @@ class SubreposTest(unittest.TestCase):
                      "ext/lighthaven-night.jpg"]:
             self.assertEqual((static / name).read_text(), "converted fixture", name)
         self.assertTrue((static / "segme/pkg/segme.js").is_file())
+        self.assertEqual((static / "where/index.html").read_text(), "where fixture")
+        self.assertFalse((static / "where/stays.json").exists())
         for name in PNG_NAMES:
             self.assertEqual((static / f"fmat/png/{name}.png").read_text(),
                              "binformats fixture")
@@ -132,7 +139,8 @@ class SubreposTest(unittest.TestCase):
 
     def test_missing_or_empty_project_entrypoints_fail_generation(self):
         for path in ["transform-playground/index.html", "bn/index.html",
-                     "segmerepo/public/index.html", "pkg/segme.js", "pkg/segme_bg.wasm"]:
+                     "segmerepo/public/index.html", "pkg/segme.js", "pkg/segme_bg.wasm",
+                     "where/index.html"]:
             for mode in ["OMIT_OUTPUT", "EMPTY_OUTPUT"]:
                 with self.subTest(path=path, mode=mode):
                     result = self.generate(**{mode: path})
@@ -164,6 +172,8 @@ class SubreposTest(unittest.TestCase):
             ("convert", "jpeg:extent"),
             ("cargo", ""),
             ("wget", "comp.html"),
+            ("wget", "script.google.com"),
+            ("node", "gen.js"),
         ]
         for command, match in cases:
             with self.subTest(command=command, match=match):

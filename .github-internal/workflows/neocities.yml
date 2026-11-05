@@ -72,7 +72,7 @@ jobs:
           elif [[ "$EVENT_NAME" == push ]]; then
             if ! changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA"); then
               full=true
-            elif grep -qE '^(subrepos\.sh|static/pngcomp/gen\.sh|binformats/)' <<< "$changed"; then
+            elif grep -qE '^(subrepos\.sh|static/pngcomp/gen\.sh|static/where/gen\.js|binformats/)' <<< "$changed"; then
               full=true
             fi
           fi

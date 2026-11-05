@@ -126,8 +126,14 @@ rm -f fmat/*/index.html
     ./gen.sh
 )
 
+# /where/ is rendered from the travel spreadsheet's Apps Script export.
+fetch where/stays.json 'https://script.google.com/macros/s/AKfycbwY0BcIwkuSHr14Ad5KzmHa5rfM9OerVqJdqTTr_Oa9fAcmyYjwCWfdDl0RM6TQLWPT/exec'
+rm -f where/index.html # never accept a stale page
+node where/gen.js where/stays.json where/index.html
+rm where/stays.json
+
 for entrypoint in transform-playground/index.html bn/index.html segme/index.html \
-    segme/pkg/segme.js segme/pkg/segme_bg.wasm pngcomp/index.html; do
+    segme/pkg/segme.js segme/pkg/segme_bg.wasm pngcomp/index.html where/index.html; do
     require_file "$entrypoint"
 done
 

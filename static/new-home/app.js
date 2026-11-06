@@ -134,7 +134,7 @@
     const GFS = `#version 300 es
     precision highp float;
     uniform vec2 uRes; uniform float uT; uniform float uAmt; uniform float uPh; uniform float uHero; uniform float uWave; uniform float uMask; uniform vec3 uWk[7];
-    uniform vec3 uM; uniform vec4 uRp[4];
+    uniform vec3 uM; uniform vec4 uRp[4]; uniform float uFoc;
     out vec4 o;
     ${PAL_GLSL}
     const float B[16] = float[16](0.,8.,2.,10.,12.,4.,14.,6.,3.,11.,1.,9.,15.,7.,13.,5.);
@@ -171,7 +171,8 @@
       col += pal(uv.x * .5 + uPh + .3) * .16 * smoothstep(.32, 0., uv.y);
       col *= uWave;   // ribbons only near the footer; the cursor glow below stays everywhere
       vec2 dm = vec2((uv.x - m.x) * asp, uv.y - m.y);
-      col += pal(m.x + uPh + uT * .05) * .5 * exp(-dot(dm, dm) * 60.) * uM.z;
+      float foc = 1. + 3. * uFoc;                           // pressing narrows the cursor glow in on the click point
+      col += pal(m.x + uPh + uT * .05) * (.5 + .25 * uFoc) * exp(-dot(dm, dm) * 60. * foc) * uM.z;
       col *= uAmt;
       if (uHero > .003) {   // whole page: a drifting "loss landscape" — domain-warped terrain drawn as marching contour lines
         vec2 fp = vec2(x, uv.y) * 1.9;
@@ -184,7 +185,7 @@
         }
         vec2 w = vec2(fbm(fp + vec2(0., uT * .05)), fbm(fp + vec2(5.2, 1.3) - uT * .04));
         float f = fbm(fp + 2.1 * w + vec2(uT * .02, 0.));
-        f += .3 * exp(-dot(dm, dm) * 12.) * uM.z;          // the cursor raises a peak; its contours ring around it
+        f += (.3 + .1 * uFoc) * exp(-dot(dm, dm) * 12. * foc) * uM.z;   // the cursor raises a peak; its contours ring around it (tighter while pressed)
         float fill = smoothstep(.55, .85, f) * .06;
         f += rip * 1.6 + wk * .14;                            // clicks (and moving letters) send rings through the terrain
         float lv = f * 11. - uT * .25;                        // contour levels march slowly downhill
@@ -276,9 +277,11 @@
   let tiltX = 0, tiltY = 0, hov = 0, pop = 0, popV = 0, flash = 0;
   let rips = [], sx = -1e4, sy = -1e4, boost = 0, flashK = 0, hovT = 0, curSt = { x: 0, y: 0, s: 0 }, drag = null, pokes = 0;
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; mOnT = 1; }, { passive: true });
-  addEventListener('pointerdown', (e) => { mx = e.clientX; my = e.clientY; mOnT = 1; }, { passive: true });
+  let pressed = false, pressT0 = -1, foc = 0;         // press focus: the cursor glow narrows while held (and briefly after a tap)
+  addEventListener('pointerdown', (e) => { mx = e.clientX; my = e.clientY; mOnT = 1; pressed = true; pressT0 = performance.now(); }, { passive: true });
+  addEventListener('pointercancel', () => { pressed = false; }, { passive: true });
   document.addEventListener('pointerleave', () => { mOnT = 0; });
-  addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') mOnT = 0; }, { passive: true });
+  addEventListener('pointerup', (e) => { pressed = false; if (e.pointerType !== 'mouse') mOnT = 0; }, { passive: true });
   window.FXglow = { ripple(x, y) { rips.push({ x, y, t0: performance.now() / 1000 }); if (rips.length > 4) rips.shift(); } };
   hit.addEventListener('pointerdown', (e) => {
     e.preventDefault(); hit.setPointerCapture(e.pointerId); hit.classList.add('drag');
@@ -372,6 +375,7 @@
       tiltX = lerp(tiltX, clamp((mx - curSt.x) / Math.max(80, curSt.s)) * tw2 * .6, .08);
       tiltY = lerp(tiltY, clamp((my - curSt.y) / Math.max(80, curSt.s)) * tw2 * .6, .08);
       mOn = lerp(mOn, mOnT, .06);
+      { const focT = pressed || now - pressT0 < 250 ? 1 : 0; foc += (focT - foc) * (1 - Math.exp(-dt * (focT > foc ? 12 : 3))); }   // eased both ways, never a jump
       const a = .55 + y * .0042 + time * .22 + spin + ux + tiltX;
       // mostly upright: the spin is around the vertical axis, with only a little lean toward the viewer and roll
       const b = .24 + Math.sin(y * .0011 + time * .15) * .12 + uy + tiltY;
@@ -416,7 +420,7 @@
         h.uniform1f(G.pg.u.uAmt, amt); h.uniform1f(G.pg.u.uPh, ph); h.uniform1f(G.pg.u.uWave, amt > 0 ? clamp(foot * (motion ? 1 + .5 * boost : 1) / amt) : 0); h.uniform1f(G.pg.u.uHero, field * (1 + .4 * boost)); h.uniform1f(G.pg.u.uMask, hero);
         { const WK = new Float32Array(21); wake.forEach((W, i) => WK.set([W.x / vw, 1 - W.y / vh, W.e], i * 3)); h.uniform3fv(G.pg.u['uWk[0]'], WK); }
         const gs = cGlow.width / vw;
-        h.uniform3f(G.pg.u.uM, sx * gs, (vh - sy) * gs, motion ? mOn : 0);
+        h.uniform3f(G.pg.u.uM, sx * gs, (vh - sy) * gs, motion ? mOn : 0); h.uniform1f(G.pg.u.uFoc, foc);
         const RP = new Float32Array(16);
         if (motion) rips.forEach((q, i) => RP.set([q.x * gs, (vh - q.y) * gs, nowS - q.t0, 1], i * 4));
         h.uniform4fv(G.pg.u['uRp[0]'], RP);

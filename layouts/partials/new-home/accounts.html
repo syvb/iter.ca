@@ -1,0 +1,15 @@
+{{- /* Every active account from /p/accounts/ (its `<li>Service: <a href="…">handle</a></li>` rows, skipping class="inactive"),
+     as "elsewhere" pills. Takes (dict "Site" .Site "Skip" (slice "GitHub" …)) to leave out services already shown. */ -}}
+{{- with .Site.GetPage "/p/accounts" -}}
+{{- range findRE `<li>[^<:]+: .*?</li>` .RawContent -}}
+    {{- $name := replaceRE `^<li>([^<:]+): .*$` "$1" . -}}
+    {{- if not (in $.Skip $name) -}}
+    {{- $handle := replaceRE `^.*>([^<>]+)</(a|code)></li>$` "$1" . -}}
+    {{- if in . "<a href=" }}
+          <li><a href="{{ replaceRE `^.*<a href="([^"]*)".*$` "$1" . }}">{{ $name }} <small>{{ $handle }}</small></a></li>
+    {{- else }}
+          <li><span class="acc-plain">{{ $name }} <small>{{ $handle }}</small></span></li>
+    {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- end -}}

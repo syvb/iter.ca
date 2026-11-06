@@ -102,6 +102,23 @@
   .intro-else { grid-area: else; }
   .intro-else .links { gap: 7px; }
   .intro-else .links a { padding: 6px 11px 5px; font-size: 12.5px; gap: 7px; }
+  /* chevron pill: expands every active account from /p/accounts/ (a panel over the lists on desktop, inline on phones) */
+  .intro-else { position: relative; }
+  .acc-more { display: inline-grid; place-items: center; width: 30px; height: 100%; min-height: 27px; padding: 0; border: 1px solid var(--line); border-radius: 99px;
+              background: rgba(18,18,20,.6); color: var(--dim); cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
+  .acc-more svg { transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+  .acc-more:hover, .acc-more:focus-visible, .acc-more[aria-expanded="true"] { border-color: var(--mag); background: rgba(231,0,206,.08); color: var(--fg); outline: none; }
+  .acc-more[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .acc-all { margin-top: 7px !important; } .acc-all[hidden] { display: none; }   /* .links sets display, which would override hidden */
+  .acc-all small, .acc-plain small { font-size: 10.5px; color: #a19dae; letter-spacing: .02em; }
+  .acc-plain { display: inline-flex; align-items: baseline; gap: 7px; padding: 6px 11px 5px; border: 1px dashed var(--line); border-radius: 99px;
+               font: 400 12.5px/1 var(--mono); color: var(--fg); }
+  @media (min-width: 700px) {
+    .acc-all:not([hidden]) { position: absolute; z-index: 8; left: -12px; right: -12px; top: 100%; padding: 12px; border-radius: 14px;
+             background: rgba(20,19,24,.96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+             border: 1px solid rgba(255,255,255,.1); box-shadow: 0 18px 50px rgba(0,0,0,.55); animation: accin .2s ease-out; }
+  }
+  @keyframes accin { from { opacity: 0; transform: translateY(-4px); } }
   #links, #recent, #done { display: none; }
   .no-else .intro-else { display: none; } .no-else #links { display: block; }   /* set by layout() when it would overflow */
   .no-else .intro-text { grid-column: 1 / -1; }

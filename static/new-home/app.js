@@ -909,3 +909,13 @@
   addEventListener('pointerdown', () => { clearTimeout(timer); el = null; show = 0; kick(); }, { passive: true });
   addEventListener('scroll', () => { if (el) kick(); }, { passive: true });
 })();
+
+/* elsewhere: the chevron pill expands every active account; Escape or a click elsewhere closes it */
+(() => {
+  const btn = document.querySelector('.acc-more'), all = document.getElementById('acc-all');
+  if (!btn || !all) return;
+  const set = (open) => { all.hidden = !open; btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'hide accounts' : 'show all accounts'); };
+  btn.addEventListener('click', () => set(all.hidden));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !all.hidden) { set(false); btn.focus(); } });
+  document.addEventListener('click', (e) => { if (!all.hidden && innerWidth >= 700 && !btn.contains(e.target) && !all.contains(e.target)) set(false); });
+})();

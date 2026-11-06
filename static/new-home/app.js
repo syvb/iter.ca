@@ -219,7 +219,7 @@
 
   // ---------- layout ----------
   let vw, vh, dpr, fs = 100, dotX = 0, dotY = 0, homeTop = 0, homeLeft = 0, maxScroll = 1;
-  let kCorner = 1, kFootStart = 1;
+  let kCorner = 1, kFootStart = 1, noMid = false;
 
   function layout() {
     vw = innerWidth; vh = innerHeight; dpr = Math.min(devicePixelRatio || 1, 2);
@@ -257,7 +257,7 @@
     }
     // with no layer sections left below the first screen (e.g. "elsewhere" moved up), drop the residual stream too
     const lay = document.getElementById('layers');
-    lay.classList.toggle('empty', [...lay.querySelectorAll(':scope > .sec')].every(s => getComputedStyle(s).display === 'none'));
+    noMid = lay.classList.toggle('empty', [...lay.querySelectorAll(':scope > .sec')].every(s => getComputedStyle(s).display === 'none'));
     maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
     kCorner = vh * .75;   // lands in the corner as the wordmark finishes shrinking into the bar
     kFootStart = Math.max(kCorner + 1, maxScroll - vh * .85);
@@ -342,7 +342,10 @@
       wmY = lerp(homeTop - y, 16, e);
       const dotS = { x: wmX + dotX * sc, y: wmY + (dotY - fs * .19) * sc, s: fs * .4 * sc };
       const corner = center(slotCorner), foot = center(slotFoot);
-      if (y <= kCorner) st = lerpS(dotS, corner, ease(clamp(y / kCorner)));
+      if (noMid) {   // top + bottom only: one unbroken trip from the dot to the footer, small and in the right margin past the content
+        const gut = { x: vw - Math.max(22, parseFloat(getComputedStyle(home.parentElement).paddingLeft) / 2), y: vh * .5, s: 40 };
+        st = lerpS(lerpS(dotS, gut, ease(clamp(y / (maxScroll * .4)))), foot, ease(clamp((y - maxScroll * .3) / (maxScroll * .7))));
+      } else if (y <= kCorner) st = lerpS(dotS, corner, ease(clamp(y / kCorner)));
       else if (y <= kFootStart) st = corner;
       else st = lerpS(corner, foot, ease((y - kFootStart) / (maxScroll - kFootStart)));
       // --- writes ---

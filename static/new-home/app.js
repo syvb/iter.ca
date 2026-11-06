@@ -896,18 +896,25 @@
   function setEl(a) {
     clearTimeout(timer);
     if (a) {
-      const go = () => { if (!render(a.getAttribute('href'))) return; el = a; show = 1; kick(); };
+      const go = () => { if (a !== document.activeElement && !a.matches(':hover')) return; if (!render(a.getAttribute('href'))) return; el = a; show = 1; kick(); };
       shown > .3 ? go() : (timer = setTimeout(go, 220));   // already open: switch right away (it glides over)
     } else { timer = setTimeout(() => { el = null; show = 0; kick(); }, 120); }
   }
   const linkOf = (t) => { const a = t.closest && t.closest('a[href]'); return a && PV[a.getAttribute('href')] && !a.closest('.where-hover') ? a : null; };
   document.addEventListener('pointerover', (e) => { if (e.pointerType !== 'mouse') return; const a = linkOf(e.target); px = e.clientX; if (a && a !== el) setEl(a); else if (a) clearTimeout(timer); });
   document.addEventListener('pointerout', (e) => { const a = linkOf(e.target); if (a && !(e.relatedTarget && a.contains(e.relatedTarget)) && !linkOf(e.relatedTarget || document.body)) setEl(null); });
-  addEventListener('pointermove', (e) => { px = e.clientX; }, { passive: true });
+  let py = -1, mouse = false;
+  addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; mouse = e.pointerType === 'mouse'; }, { passive: true });
   document.addEventListener('focusin', (e) => { const a = linkOf(e.target); if (a && e.target.matches(':focus-visible')) { px = a.getBoundingClientRect().left + 40; setEl(a); } });
   document.addEventListener('focusout', () => setEl(null));
   addEventListener('pointerdown', () => { clearTimeout(timer); el = null; show = 0; kick(); }, { passive: true });
-  addEventListener('scroll', () => { if (el) kick(); }, { passive: true });
+  // scrolling moves the page under a still mouse without firing pointerout, so check what's under the pointer now
+  // (capture: also catches the recent/done scroll boxes)
+  document.addEventListener('scroll', () => {
+    if (!el) return;
+    if (mouse && py >= 0 && el !== document.activeElement) { const u = document.elementFromPoint(px, py); if (!u || linkOf(u) !== el) setEl(u && linkOf(u)); }
+    kick();
+  }, { passive: true, capture: true });
 })();
 
 /* elsewhere: the chevron pill expands every active account; Escape or a click elsewhere closes it */

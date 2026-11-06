@@ -55,7 +55,7 @@ rm -rf public
 ./hugo -v -t smitop
 ```
 
-The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 22, stable Rust, wasm-pack, and ImageMagick).
+The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 22, stable Rust, wasm-pack, ImageMagick, zopfli, and Chrome for the social card).
 
 ## Images and static files
 

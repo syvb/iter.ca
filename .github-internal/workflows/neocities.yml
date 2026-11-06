@@ -68,7 +68,7 @@ jobs:
           elif [[ "$EVENT_NAME" == push ]]; then
             if ! changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA"); then
               full=true
-            elif grep -qE '^(subrepos\.sh|static/pngcomp/gen\.sh|static/where/gen\.js|binformats/)' <<< "$changed"; then
+            elif grep -qE '^(subrepos\.sh|static/pngcomp/gen\.sh|static/where/gen\.js|og/|binformats/)' <<< "$changed"; then
               full=true
             fi
           fi
@@ -89,9 +89,9 @@ jobs:
         if: ${{ steps.generation.outputs.full == 'true' }}
         run: |
            curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Install ImageMagick
+      - name: Install ImageMagick and zopfli
         if: ${{ steps.generation.outputs.full == 'true' }}
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick zopfli
       - name: Create subrepos
         if: ${{ steps.generation.outputs.full == 'true' }}
         run: ./subrepos.sh

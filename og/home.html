@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- Social preview card for the homepage (og:image), 1200×630. Edit freely: full deploys render it to /ext/og-home.png
+     with og/gen.js (see subrepos.sh). Preview by opening this file in a browser at a 1200×630 window.
+     home-bg.jpg and home-oct.jpg are captures of the homepage's loss landscape and octahedron. -->
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Plus Jakarta Sans"; font-weight: 400 800; src: url(../static/new-home/fonts/jakarta-latin.woff2); }
+  @font-face { font-family: "DM Mono"; font-weight: 400; src: url(../static/new-home/fonts/dm-mono-400-latin.woff2); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #121214; color: #eceaf2;
+               font-family: "Plus Jakarta Sans"; -webkit-font-smoothing: antialiased; }
+  .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .9; }
+  .shade { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 35% 45%, rgba(18,18,20,.75), rgba(18,18,20,0)); }
+  .wm { position: absolute; left: 64px; top: 120px; font-size: 300px; font-weight: 800; letter-spacing: -.055em; line-height: .9; white-space: nowrap; }
+  /* the octahedron is the dot */
+  .wm .dot { display: inline-block; width: .36em; height: 1px; position: relative; }
+  .wm .dot img { position: absolute; width: .95em; left: 50%; bottom: .19em; transform: translate(-50%, 50%); mix-blend-mode: lighten;
+                 mask-image: radial-gradient(circle closest-side, #000 55%, transparent 100%); }
+  .who { position: absolute; left: 72px; bottom: 58px; font: 22px/1.6 "DM Mono"; letter-spacing: .06em; }
+  .dim { color: #a19dae; }
+</style>
+<img class="bg" src="home-bg.jpg" alt="">
+<div class="shade"></div>
+<h1 class="wm">iter<span class="dot"><img src="home-oct.jpg" alt=""></span>ca</h1>
+<p class="who">smitty van bodegom <span class="dim">· aka loops</span></p>

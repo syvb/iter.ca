@@ -65,6 +65,9 @@ elif command == "cargo":
 elif command == "node":
     Path(args[1]).read_bytes()
     write_output(args[-1], "where fixture")
+elif command == "zopflipng":
+    Path(args[-2]).read_bytes()
+    write_output(args[-1], "compressed fixture")
 elif command == "convert":
     Path(args[-1].removeprefix("jpg:")).write_text("converted fixture")
 elif command != "sleep":
@@ -84,9 +87,10 @@ class SubreposTest(unittest.TestCase):
         shutil.copy2(ROOT / "static/pngcomp/gen.sh", self.root / "static/pngcomp")
         (self.root / "static/where").mkdir()
         shutil.copy2(ROOT / "static/where/gen.js", self.root / "static/where")
+        shutil.copytree(ROOT / "og", self.root / "og")
         tools = self.root / "tools"
         tools.mkdir()
-        for command in ["wget", "git", "wasm-pack", "cargo", "convert", "node", "sleep"]:
+        for command in ["wget", "git", "wasm-pack", "cargo", "convert", "node", "zopflipng", "sleep"]:
             stub = tools / command
             stub.write_text(STUB)
             stub.chmod(0o755)
@@ -140,7 +144,7 @@ class SubreposTest(unittest.TestCase):
     def test_missing_or_empty_project_entrypoints_fail_generation(self):
         for path in ["transform-playground/index.html", "bn/index.html",
                      "segmerepo/public/index.html", "pkg/segme.js", "pkg/segme_bg.wasm",
-                     "where/index.html"]:
+                     "where/index.html", "ext/og-home.png"]:
             for mode in ["OMIT_OUTPUT", "EMPTY_OUTPUT"]:
                 with self.subTest(path=path, mode=mode):
                     result = self.generate(**{mode: path})

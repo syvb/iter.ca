@@ -132,8 +132,15 @@ rm -f where/index.html # never accept a stale page
 node where/gen.js where/stays.json where/index.html
 rm where/stays.json
 
+# Social preview card for the homepage, rendered from editable HTML.
+rm -f ext/og-home.png ext/og-home-raw.png # never accept a stale card
+node ../og/gen.js ../og/home.html ext/og-home-raw.png
+zopflipng -y ext/og-home-raw.png ext/og-home.png
+rm ext/og-home-raw.png
+
 for entrypoint in transform-playground/index.html bn/index.html segme/index.html \
-    segme/pkg/segme.js segme/pkg/segme_bg.wasm pngcomp/index.html where/index.html; do
+    segme/pkg/segme.js segme/pkg/segme_bg.wasm pngcomp/index.html where/index.html \
+    ext/og-home.png; do
     require_file "$entrypoint"
 done
 

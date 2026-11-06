@@ -73,8 +73,8 @@
   .hero .intro p, .hero .hl-list a, .corner-meta { text-shadow: 0 0 3px var(--bg), 0 0 10px var(--bg), 0 0 18px rgba(18,18,20,.9); }
   .hero .intro .hl-h, .hero .hl-list .m, .hero .hl-list .ar, .hero .intro-text > ul a { color: #9a96a8; }
   .hero .intro-text p { color: #d4d1dd; }
-  /* first screen below the wordmark: intro + "elsewhere" on top, then things-I've-done and recent as scroll boxes that
-     always show at least 5.5 rows and grow into whatever height is left */
+  /* first screen below the wordmark: intro + "elsewhere" on top, then things-I've-done and recent; the wordmark is sized so at
+     least 5.5 rows show on the first screen (layout() measures with .fit), and the rest of the lists continue down the page */
   .intro { --rh: 34px; flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
            grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "text else" "done recent";
            gap: clamp(14px, 2.4vh, 26px) clamp(24px, 4vw, 64px); margin-top: clamp(34px, 5vh, 56px); max-width: 1240px; width: 100%; }
@@ -91,8 +91,10 @@
   .hl-h a.hl-self { margin-left: 0; color: inherit; letter-spacing: inherit; border-bottom: 1px solid var(--line); }   /* the heading itself links to everything */
   .hl-h a.hl-self:hover, .hl-h a.hl-self:focus-visible { color: var(--fg); border-color: var(--mag); }
   .intro-recent { grid-area: recent; } .intro-done { grid-area: done; }
+  .intro-done { align-self: start; }
+  .fit .intro-col .hl-list { height: calc(5.5 * var(--rh) + 2px); overflow: hidden; }
   .intro-col { display: flex; flex-direction: column; min-height: 0; }
-  .intro-col .hl-list { flex: 1 0 auto; height: calc(5.5 * var(--rh) + 2px); overflow-y: auto; margin: 0 -10px; padding-right: 4px;
+  .intro-col .hl-list { flex: 0 0 auto; margin: 0 -10px; padding-right: 4px;
                         scrollbar-width: thin; scrollbar-color: #3a3842 transparent; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .hero .hl-list a { grid-template-columns: 44px minmax(0, 1fr) auto 14px; gap: 10px; padding: 0 10px; margin: 0; height: var(--rh); align-items: center; border-radius: 6px; }
   .hero .hl-list .t { font-size: 14.5px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

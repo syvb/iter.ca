@@ -242,9 +242,9 @@
       const place = () => { const t = trimTop(); home.style.height = slotH() + 'px'; home.dataset.trim = t; };
       place();
       if (vw >= 700) {   // as big as fits: shrink only once the first screen overflows the window by more than 8%
-        const hero = home.parentElement, cl = document.documentElement.classList; hero.style.minHeight = '0';
+        const hero = home.parentElement, cl = document.documentElement.classList; hero.style.minHeight = '0'; cl.add('fit');   // measure with the lists at their 5.5-row first-screen height
         cl.remove('no-else'); if (hero.offsetHeight > vh) cl.add('no-else');   // "elsewhere" joins the first screen only if it fits at full wordmark size
-        const over = hero.offsetHeight - vh; hero.style.minHeight = '';
+        const over = hero.offsetHeight - vh; hero.style.minHeight = ''; cl.remove('fit');
         if (over > 0) { fs = Math.max(56, Math.min(fs, vh * .42), fs - over / (slotH() / fs)); wm.style.fontSize = fs + 'px'; place(); }  // never below 42% of the window height
       }
       dotX = dot.offsetLeft + dot.offsetWidth / 2;
@@ -348,7 +348,8 @@
       const corner = center(slotCorner), foot = center(slotFoot);
       if (noMid && vw >= 700) {   // top + bottom only (desktop; phones' long single page parks it in the corner): one unbroken trip from the dot to the footer, small and in the right margin past the content
         const gut = { x: vw - Math.max(22, parseFloat(getComputedStyle(home.parentElement).paddingLeft) / 2), y: vh * .5, s: 40 };
-        st = lerpS(lerpS(dotS, gut, ease(clamp(y / (maxScroll * .4)))), foot, ease(clamp((y - maxScroll * .3) / (maxScroll * .7))));
+        const f0 = Math.max(maxScroll * .3, maxScroll - vh * .85);   // drop into the footer only once it's coming into view
+        st = lerpS(lerpS(dotS, gut, ease(clamp(y / Math.min(maxScroll * .4, vh * .5)))), foot, ease(clamp((y - f0) / (maxScroll - f0))));
       } else if (y <= kCorner) st = lerpS(dotS, corner, ease(clamp(y / kCorner)));
       else if (y <= kFootStart) st = corner;
       else st = lerpS(corner, foot, ease((y - kFootStart) / (maxScroll - kFootStart)));

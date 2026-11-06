@@ -100,7 +100,6 @@
   .intro-else { grid-area: else; }
   .intro-else .links { gap: 7px; }
   .intro-else .links a { padding: 6px 11px 5px; font-size: 12.5px; gap: 7px; }
-  .intro-else .links a small { font-size: 10px; }
   #links, #recent, #done { display: none; }
   .no-else .intro-else { display: none; } .no-else #links { display: block; }   /* set by layout() when it would overflow */
   .no-else .intro-text { grid-column: 1 / -1; }
@@ -271,8 +270,6 @@
   .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
   .links a { display: inline-flex; align-items: baseline; gap: 10px; text-decoration: none; padding: 11px 16px 10px; border: 1px solid var(--line);
              border-radius: 99px; font: 400 14px/1 var(--mono); color: var(--fg); background: rgba(18,18,20,.6); transition: border-color .2s, background .2s; }
-  .links a small { font-size: 11px; color: #a19dae; letter-spacing: .05em; transition: color .2s; }
-  .links a:hover small, .links a:focus-visible small { color: #ff8ae6; }
   .links a:hover, .links a:focus-visible { border-color: var(--mag); background: rgba(231,0,206,.08); outline: none; }
   .links a.primary { border-color: #3d2340; }
 

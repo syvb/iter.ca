@@ -1,4 +1,4 @@
-{{- /* Renders a Markdown list from a /new-home/ bundle file (items written as `- [text](url) *tag*`) as the page's styled rows.
+{{- /* Renders a Markdown list from a /new-home/ bundle file (items written as `- [text](url) *tag*`; "links" items have no tag) as the page's styled rows.
      Takes (dict "Page" <resource page> "Style" "done"|"hl"|"links" ["Skip" html]); items whose link already appears in Skip are left out. */ -}}
 {{- $style := .Style -}}
 {{- range $i, $li := findRE `(?s)<li>.*?</li>` (string .Page.Content) -}}
@@ -10,7 +10,7 @@
     {{- $ext := hasPrefix $url "http" -}}
     {{- $ar := printf `<span class="ar%s">%s</span>` (cond $ext " ext" "") (cond $ext "↗" "→") | safeHTML -}}
     {{- if eq $style "links" }}
-        <li><a{{ if hasPrefix $url "mailto:" }} class="primary"{{ end }} href="{{ $url }}"><small>{{ $tag }}</small>{{ $text }}</a></li>
+        <li><a{{ if hasPrefix $url "mailto:" }} class="primary"{{ end }} href="{{ $url }}">{{ $text }}</a></li>
     {{- else if eq $style "hl" }}
           <li><a href="{{ $url }}"><span class="m">{{ $tag }}</span><span class="t">{{ $text }}</span>{{ $ar }}</a></li>
     {{- else }}

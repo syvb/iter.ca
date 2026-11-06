@@ -284,6 +284,7 @@
     }
   }
   @keyframes rise { from { opacity: 0; transform: translateY(28px); } }
+  .hero .list li, .hero .links li { animation: none; }   /* first-screen lists: a half-revealed row just looks disabled */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .scrollhint span { animation: none; }

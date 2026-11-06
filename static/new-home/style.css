@@ -111,15 +111,16 @@
     .hero .hl-list .t { font-size: 14px; }
   }
   @media (min-width: 700px) and (max-height: 640px) { .intro { --rh: 27px; } }
-  /* phones: the first screen shows the five newest items; the full lists keep their own sections */
+  /* phones: one continuous page, the desktop first screen stacked: bio and links, things I've done, elsewhere, then recent */
   @media (max-width: 699.98px) {
-    .intro-else, .intro-done { display: none; }
     .intro-col .hl-list { height: auto; overflow: visible; }
-    .intro-col .hl-list li:nth-child(n+6) { display: none; }
+    .intro-recent .hl-list li:nth-child(n+13) { display: none; }   /* "everything →" in its heading has the rest */
     .hero .intro-col .hl-list a { grid-template-columns: 44px minmax(0, 1fr) 14px; grid-template-areas: none; padding: 0 10px; margin: 0; }
     .hero .intro-col .hl-list a > * { grid-area: auto; }
+    .hero .intro-col .hl-list a { height: auto; min-height: var(--rh); padding-top: 7px; padding-bottom: 7px; align-items: baseline; }
+    .hero .intro-col .hl-list .t { white-space: normal; }   /* no scroll box here, so titles wrap instead of truncating */
     .hero .hl-list .kd { display: none; }
-    #links, #recent, #done { display: block; }
+    .no-else .intro-else { display: block; } .no-else #links { display: none; }
   }
   .scrollhint span { display: inline-block; animation: nudge 1.8s ease-in-out infinite; }
   @keyframes nudge { 50% { transform: translateY(4px); } }
@@ -308,7 +309,7 @@
     .list .ar { grid-area: ar; align-self: center; }
     .corner-meta.tr { display: none; }
     .hero { justify-content: flex-start; padding-top: 88px; }
-    .intro { grid-template-columns: 1fr; grid-template-rows: auto auto; grid-template-areas: "text" "recent"; flex: 0 0 auto; }
+    .intro { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "text" "done" "else" "recent"; flex: 0 0 auto; row-gap: 34px; }
     .corner-meta.bl, .corner-meta.br { display: none; }
     .sh .more { display: none; }
     .layers { --gx: 17px; --lpad: 46px; padding-right: 18px; }

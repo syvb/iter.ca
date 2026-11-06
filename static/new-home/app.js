@@ -345,7 +345,7 @@
       wmY = lerp(homeTop - y, 16, e);
       const dotS = { x: wmX + dotX * sc, y: wmY + (dotY - fs * .19) * sc, s: fs * .4 * sc };
       const corner = center(slotCorner), foot = center(slotFoot);
-      if (noMid) {   // top + bottom only: one unbroken trip from the dot to the footer, small and in the right margin past the content
+      if (noMid && vw >= 700) {   // top + bottom only (desktop; phones' long single page parks it in the corner): one unbroken trip from the dot to the footer, small and in the right margin past the content
         const gut = { x: vw - Math.max(22, parseFloat(getComputedStyle(home.parentElement).paddingLeft) / 2), y: vh * .5, s: 40 };
         st = lerpS(lerpS(dotS, gut, ease(clamp(y / (maxScroll * .4)))), foot, ease(clamp((y - maxScroll * .3) / (maxScroll * .7))));
       } else if (y <= kCorner) st = lerpS(dotS, corner, ease(clamp(y / kCorner)));

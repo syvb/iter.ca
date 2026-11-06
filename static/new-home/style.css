@@ -114,7 +114,7 @@
   /* phones: one continuous page, the desktop first screen stacked: bio and links, things I've done, elsewhere, then recent */
   @media (max-width: 699.98px) {
     .intro-col .hl-list { height: auto; overflow: visible; }
-    .intro-recent .hl-list li:nth-child(n+13) { display: none; }   /* "everything →" in its heading has the rest */
+    .intro-recent .hl-list li:nth-child(n+21) { display: none; }   /* the same 20 as the current homepage; "everything →" has the rest */
     .hero .intro-col .hl-list a { grid-template-columns: 44px minmax(0, 1fr) 14px; grid-template-areas: none; padding: 0 10px; margin: 0; }
     .hero .intro-col .hl-list a > * { grid-area: auto; }
     .hero .intro-col .hl-list a { height: auto; min-height: var(--rh); padding-top: 7px; padding-bottom: 7px; align-items: baseline; }

@@ -1,26 +1,29 @@
-{{- /* Recent items for /new-home/: the same Verbose=0 items as the current homepage stream, minus newsletter issues.
+{{- /* Recent items for /new-home/: the same Verbose=0 items as the current homepage's "Recent stuff" stream.
      Takes (dict "Site" .Site "Limit" n "Long" bool "Kind" bool); Long adds the year and a kind label, Kind just the label. */ -}}
+{{- /* walk the same sorted list as themes/smitop/layouts/partials/stream.html so ties on a date come out in the same order */ -}}
 {{- $items := slice -}}
-{{- range .Site.RegularPages -}}
-    {{- $v := 0 -}}
-    {{- if hasPrefix .File.Dir "p/" }}{{ $v = 1 }}{{ end -}}
-    {{- if ne .Params.Featured nil }}{{ $v = -1 }}{{ end -}}
-    {{- if ne .Params.Verbose nil }}{{ $v = .Params.Verbose }}{{ end -}}
-    {{- if eq $v 0 -}}
-        {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" .RelPermalink "kind" (cond (hasPrefix .File.Dir "p/") "page" "post")) -}}
+{{- range sort (.Site.RegularPages | append .Site.Data.data) ".Date.Unix" "desc" | uniq -}}
+    {{- if eq .Params nil -}}
+        {{- $v := .Verbose | default 0 -}}
+        {{- with .Id }}{{ with index $.Site.Data.voverrides . }}{{ $v = int . }}{{ end }}{{ end -}}
+        {{- if and (eq $v 0) .Title -}}
+            {{- $url := .Uri | default (printf "/stream/interesting/#stream-item-%s" .Id) -}}
+            {{- $kind := lower (.NoteType | default "note") -}}
+            {{- if eq .Type "buttondown" }}{{ $kind = "newsletter" }}{{ end -}}
+            {{- if strings.Contains $url "lesswrong.com" }}{{ $kind = "LessWrong" }}{{ end -}}
+            {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" (replace $url "https://iter.ca/" "/") "kind" $kind) -}}
+        {{- end -}}
+    {{- else -}}
+        {{- $v := 0 -}}
+        {{- if hasPrefix .File.Dir "p/" }}{{ $v = 1 }}{{ end -}}
+        {{- if ne .Params.Featured nil }}{{ $v = -1 }}{{ end -}}
+        {{- if ne .Params.Verbose nil }}{{ $v = .Params.Verbose }}{{ end -}}
+        {{- if eq $v 0 -}}
+            {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" .RelPermalink "kind" (cond (hasPrefix .File.Dir "p/") "page" "post")) -}}
+        {{- end -}}
     {{- end -}}
 {{- end -}}
-{{- range .Site.Data.data -}}
-    {{- $v := .Verbose | default 0 -}}
-    {{- with .Id }}{{ with index $.Site.Data.voverrides . }}{{ $v = int . }}{{ end }}{{ end -}}
-    {{- if and (eq $v 0) (ne .Type "buttondown") .Title -}}
-        {{- $url := .Uri | default (printf "/stream/interesting/#stream-item-%s" .Id) -}}
-        {{- $kind := lower (.NoteType | default "note") -}}
-        {{- if strings.Contains $url "lesswrong.com" }}{{ $kind = "LessWrong" }}{{ end -}}
-        {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" (replace $url "https://iter.ca/" "/") "kind" $kind) -}}
-    {{- end -}}
-{{- end -}}
-{{- range first .Limit (sort $items "t" "desc") -}}
+{{- range first .Limit $items -}}
     {{- $ext := hasPrefix .url "http" -}}
     <li><a href="{{ .url }}"><time class="m" datetime="{{ dateFormat "2006-01-02" .t }}">{{ if $.Long }}{{ dateFormat "2006·01·02" .t }}{{ else }}{{ dateFormat "Jan 2" .t }}{{ end }}</time><span class="t">{{ .title }}</span>
         {{- if or $.Long $.Kind }}<span class="kd{{ if eq .kind "LessWrong" }} lw{{ else if in .kind "app" }} app{{ end }}">{{ .kind }}</span>{{ end -}}

@@ -246,6 +246,10 @@
       }
       dotX = dot.offsetLeft + dot.offsetWidth / 2;
       dotY = bl.offsetTop;
+      // the fixed wordmark link sits above the page: clip its hit area to the letters so the empty line-box space
+      // above them and below the baseline ("iter.ca" has no descenders) doesn't swallow clicks on the intro links
+      const wa = wm.firstElementChild, trim = Math.max(0, (+home.dataset.trim || 0) - fs * .02);
+      wa.style.clipPath = `inset(${trim.toFixed(1)}px 0 ${Math.max(0, wa.offsetTop + wa.offsetHeight - dotY - fs * .04).toFixed(1)}px 0)`;
       const hr = home.getBoundingClientRect();
       homeTop = hr.top + scrollY - (+home.dataset.trim || 0); homeLeft = hr.left;   // the wordmark box starts above its trimmed slot
     }

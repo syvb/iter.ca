@@ -1,0 +1,22 @@
+{{- /* Renders a Markdown list from a /new-home/ bundle file (items written as `- [text](url) *tag*`) as the page's styled rows.
+     Takes (dict "Page" <resource page> "Style" "done"|"hl"|"links" ["Skip" html]); items whose link already appears in Skip are left out. */ -}}
+{{- $style := .Style -}}
+{{- range $i, $li := findRE `(?s)<li>.*?</li>` (string .Page.Content) -}}
+    {{- $url := htmlUnescape (replaceRE `(?s)^.*?<a href="([^"]*)".*$` "$1" $li) -}}
+    {{- $text := replaceRE `(?s)^.*?<a [^>]*>(.*?)</a>.*$` "$1" $li | safeHTML -}}
+    {{- $tag := "" -}}
+    {{- if in $li "<em>" }}{{ $tag = replaceRE `(?s)^.*<em>(.*?)</em>.*$` "$1" $li | safeHTML }}{{ end -}}
+    {{- if not (and $.Skip (in $.Skip (printf `href="%s"` $url))) -}}
+    {{- $ext := hasPrefix $url "http" -}}
+    {{- $ar := printf `<span class="ar%s">%s</span>` (cond $ext " ext" "") (cond $ext "↗" "→") | safeHTML -}}
+    {{- if eq $style "links" }}
+        <li><a{{ if hasPrefix $url "mailto:" }} class="primary"{{ end }} href="{{ $url }}"><small>{{ $tag }}</small>{{ $text }}</a></li>
+    {{- else if eq $style "hl" }}
+          <li><a href="{{ $url }}"><span class="m">{{ $tag }}</span><span class="t">{{ $text }}</span>{{ $ar }}</a></li>
+    {{- else }}
+        {{- $kd := "" -}}
+        {{- if eq (string $tag) "LessWrong" }}{{ $kd = " lw" }}{{ else if in (slice "tool" "games" "web app") (string $tag) }}{{ $kd = " app" }}{{ end }}
+        <li><a href="{{ $url }}"><span class="m">{{ printf "%02d" (add $i 1) }}</span><span class="t">{{ $text }}</span><span class="kd{{ $kd }}">{{ $tag }}</span>{{ $ar }}</a></li>
+    {{- end -}}
+    {{- end -}}
+{{- end }}

@@ -1,0 +1,28 @@
+{{- /* Recent items for /new-home/: the same Verbose=0 items as the current homepage stream, minus newsletter issues.
+     Takes (dict "Site" .Site "Limit" n "Long" bool "Kind" bool); Long adds the year and a kind label, Kind just the label. */ -}}
+{{- $items := slice -}}
+{{- range .Site.RegularPages -}}
+    {{- $v := 0 -}}
+    {{- if hasPrefix .File.Dir "p/" }}{{ $v = 1 }}{{ end -}}
+    {{- if ne .Params.Featured nil }}{{ $v = -1 }}{{ end -}}
+    {{- if ne .Params.Verbose nil }}{{ $v = .Params.Verbose }}{{ end -}}
+    {{- if eq $v 0 -}}
+        {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" .RelPermalink "kind" (cond (hasPrefix .File.Dir "p/") "page" "post")) -}}
+    {{- end -}}
+{{- end -}}
+{{- range .Site.Data.data -}}
+    {{- $v := .Verbose | default 0 -}}
+    {{- with .Id }}{{ with index $.Site.Data.voverrides . }}{{ $v = int . }}{{ end }}{{ end -}}
+    {{- if and (eq $v 0) (ne .Type "buttondown") .Title -}}
+        {{- $url := .Uri | default (printf "/stream/interesting/#stream-item-%s" .Id) -}}
+        {{- $kind := lower (.NoteType | default "note") -}}
+        {{- if strings.Contains $url "lesswrong.com" }}{{ $kind = "LessWrong" }}{{ end -}}
+        {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" (replace $url "https://iter.ca/" "/") "kind" $kind) -}}
+    {{- end -}}
+{{- end -}}
+{{- range first .Limit (sort $items "t" "desc") -}}
+    {{- $ext := hasPrefix .url "http" -}}
+    <li><a href="{{ .url }}"><time class="m" datetime="{{ dateFormat "2006-01-02" .t }}">{{ if $.Long }}{{ dateFormat "2006·01·02" .t }}{{ else }}{{ dateFormat "Jan 2" .t }}{{ end }}</time><span class="t">{{ .title }}</span>
+        {{- if or $.Long $.Kind }}<span class="kd{{ if eq .kind "LessWrong" }} lw{{ else if in .kind "app" }} app{{ end }}">{{ .kind }}</span>{{ end -}}
+        <span class="ar{{ if $ext }} ext{{ end }}">{{ if $ext }}↗{{ else }}→{{ end }}</span></a></li>
+{{ end -}}

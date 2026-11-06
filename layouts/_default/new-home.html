@@ -1,0 +1,134 @@
+{{- /* Prototype homepage, served at /new-home/ while the current homepage stays at /. Assets: static/new-home/. */ -}}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iter.ca — Smitty van Bodegom</title>
+<meta name="description" content="Smitty van Bodegom (iter). AI safety research in London: interpretability, security, file formats.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#121214">
+<link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="/index.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/new-home/style.css">
+<script>
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+</script>
+</head>
+<body id="top">
+<canvas id="glow" class="fx" aria-hidden="true"></canvas>
+<canvas id="oct" class="fx" aria-hidden="true"></canvas>
+<canvas id="sparks" aria-hidden="true"></canvas>
+<div id="hc" aria-hidden="true"><div class="in"></div></div>
+<div id="oct-hit" aria-hidden="true"></div>
+<div class="bar" aria-hidden="true"><div id="slot-corner"></div></div>
+<div class="where-hover">
+  <div class="corner-meta tr">smitty van bodegom<br><a href="/where/" id="here-mini" aria-describedby="where-pop"><span class="live-dot"></span>london, uk</a></div>
+  <div class="where-pop" id="where-pop">
+    <div class="here">
+      <p class="eyebrow"><span class="live-dot"></span><span id="here-eyebrow">right now I'm in</span></p>
+      <p class="place"><span class="flag" id="here-flag">🇬🇧</span> <span id="here-place">London</span></p>
+      <p class="hmeta" id="here-meta">United Kingdom</p>
+      <ul class="hchips" id="here-chips"></ul>
+    </div>
+    <div class="mapbox">
+      <canvas id="trailmap" aria-label="Map of places I've stayed, with arcs between consecutive stays"></canvas>
+      <div class="mapcap" aria-hidden="true"><span>trail · not to scale</span><span id="map-hover">hover a place</span></div>
+    </div>
+    <ol class="trail" id="trail" aria-label="Previous stays, most recent first"></ol>
+  </div>
+</div>
+
+<h1 class="wm" id="wm"><a href="#top" aria-label="iter.ca — back to top"><span class="ch">i</span><span class="ch">t</span><span class="ch">e</span><span class="ch">r</span><span class="dot">.<i class="bl"></i></span><span class="ch">c</span><span class="ch">a</span></a></h1>
+
+<main>
+  <section class="hero" aria-label="intro">
+    <div id="wm-home"></div>
+    <div class="intro">
+      <div class="intro-text">
+        {{ .Content }}
+      </div>
+      {{ with .Resources.GetMatch "links.md" }}<div class="intro-else">
+        <p class="hl-h">{{ .Title }}</p>
+        <ul class="links">{{ partial "new-home/list.html" (dict "Page" . "Style" "links" "Skip" (string $.Content)) }}
+        </ul>
+      </div>{{ end }}
+      <div class="intro-col intro-recent">
+        <p class="hl-h">recent <a href="/stream/interesting/">everything →</a></p>
+        <ol class="list hl-list">
+        {{ partial "new-home/recent.html" (dict "Site" .Site "Limit" 30 "Kind" true) }}
+        </ol>
+      </div>
+      <div class="intro-col intro-done">
+        <p class="hl-h">{{ (.Resources.GetMatch "done.md").Title }}</p>
+        <ol class="list hl-list num">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "done.md") "Style" "done") }}
+        </ol>
+      </div>
+    </div>
+    <div class="corner-meta bl scrollhint">scroll <span>↓</span></div>
+    <div class="corner-meta br"><a href="mailto:me@iter.ca">me@iter.ca</a></div>
+  </section>
+
+  <div class="layers" id="layers">
+  <div class="stream" id="stream" aria-hidden="true"><div class="flow" id="flow"></div><div class="packet" id="packet"></div><div class="stream-hit" id="stream-hit" title="send a token down the residual stream"></div></div>
+
+
+
+  <section class="sec" id="done" aria-labelledby="done-h">
+    <div class="wrap">
+      <header class="lh">
+        <span class="node" aria-hidden="true">⊕</span>
+        <div class="lab"><b><span class="ln">L</span> · mlp</b><em>resid_post += mlp(x)</em></div>
+        <h2 id="done-h">{{ (.Resources.GetMatch "done.md").Title }}</h2>
+        <canvas class="strip" data-seed="3" data-key="done" aria-hidden="true"></canvas>
+        <div class="stripmeta" aria-hidden="true"><span class="sm-l">resid · embed/36</span><span class="sm-r"></span></div>
+      </header>
+      <ol class="list num">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "done.md") "Style" "done") }}
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="recent" aria-labelledby="recent-h">
+    <div class="wrap">
+      <header class="lh">
+        <span class="node" aria-hidden="true">⊕</span>
+        <div class="lab"><b><span class="ln">L</span> · attn</b><em>resid_post += attn(x)</em><a class="more" href="/stream/interesting/">everything →</a></div>
+        <h2 id="recent-h">recent</h2>
+        <canvas class="strip" data-seed="4" data-key="recent" aria-hidden="true"></canvas>
+        <div class="stripmeta" aria-hidden="true"><span class="sm-l">resid · embed/36</span><span class="sm-r"></span></div>
+      </header>
+      <ol class="list">
+        {{ partial "new-home/recent.html" (dict "Site" .Site "Limit" 13 "Long" true) }}
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="links" aria-labelledby="links-h">
+    <div class="wrap">
+      <header class="lh">
+        <span class="node" aria-hidden="true">⊕</span>
+        <div class="lab"><b><span class="ln">L</span> · unembed</b><em>logits = resid @ W_U</em></div>
+        <h2 id="links-h">{{ (.Resources.GetMatch "links.md").Title }}</h2>
+        <canvas class="strip" data-seed="5" data-key="links" aria-hidden="true"></canvas>
+        <div class="stripmeta" aria-hidden="true"><span class="sm-l">resid · embed/36</span><span class="sm-r"></span></div>
+      </header>
+      <ul class="links">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "links.md") "Style" "links") }}
+      </ul>
+    </div>
+  </section>
+  </div>
+</main>
+
+<footer>
+  <div id="slot-foot" aria-hidden="true"></div>
+  <p class="say">say hi</p>
+  <a class="mail" href="mailto:me@iter.ca">me@iter.ca</a>
+  <p class="fine">Smitty van Bodegom · iter.ca · <a href="https://github.com/syvb/iter.ca">source ↗</a> · <a href="/index.xml">rss</a> · <a href="/p/about/">about</a></p>
+</footer>
+
+<script src="/new-home/app.js"></script>
+</body>
+</html>

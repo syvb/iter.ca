@@ -482,17 +482,6 @@
   ].map(x => `<li>${x}</li>`).join('');
   $('#here-mini').textContent = `${cur.place.toLowerCase()}${live ? ' · since ' + fmt(cur.from) : ''}`;
 
-  // ---- trail chips, newest first ----
-  const past = merged.filter(m => m !== cur || !live).slice().reverse();
-  const SHOW = 5;
-  $('#trail').innerHTML = past.slice(0, SHOW).map(m => {
-    const f = m.from, t = m.to, Y = t.getUTCFullYear(), sameY = f.getUTCFullYear() === Y, sameM = sameY && f.getUTCMonth() === t.getUTCMonth();
-    const span = +f === +t ? fmt(f) + ' ' + Y
-      : sameM ? MON[f.getUTCMonth()] + ' ' + f.getUTCDate() + '–' + t.getUTCDate() + ' ' + Y
-      : MON[f.getUTCMonth()] + (sameY ? '' : ' ' + f.getUTCFullYear()) + '–' + MON[t.getUTCMonth()] + ' ' + Y;
-    return `<li data-place="${m.place}"><b>${m.place}</b>${FLAG[m.country] || ''} ${span} · ${human(daysIncl(m.from, m.to))}</li>`;
-  }).join('') + `<li class="more-trail"><a href="/where/">+${Math.max(0, past.length - SHOW)} more · full trail →</a></li>`;
-
   // ---- trail map ----
   const cv = $('#trailmap'), ctx = cv.getContext('2d');
   const places = {}; merged.forEach(m => { const p = places[m.place] ||= { name: m.place, days: 0, visits: 0, c: COORD[m.place] }; p.days += daysIncl(m.from, m.to); p.visits++; });
@@ -552,14 +541,13 @@
     pings = pings.filter(g => t - g.t < 1.2);
     for (const g of pings) { const k = (t - g.t) / 1.2; ctx.strokeStyle = palc(g.h + k * .3, (1 - k) * Math.min(1, k * 10)); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(g.x, g.y, 4 + k * 46, 0, 7); ctx.stroke(); }
   }
-  // interactions: hover a place (or its chip) to light up its arcs; tap/click to ping it
+  // interactions: hover a place to light up its arcs; tap/click to ping it
   P.forEach(p => p.h = 0); let anyH = 0;
   function easeHl(dt) { const k = RM ? 1 : 1 - Math.exp(-dt * 10);
     for (const p of P) p.h += ((p === hl ? 1 : 0) - p.h) * k; anyH += ((hl ? 1 : 0) - anyH) * k; }
   const nearest = (x, y) => { let best = null, bd = 28; for (const p of P) { const d = Math.hypot(p.xy[0] - x, p.xy[1] - y); if (d < bd) { bd = d; best = p; } } return best; };
-  const chips = [...document.querySelectorAll('#trail li[data-place]')];
   function setHl(p) {
-    hl = p; chips.forEach(c => c.classList.toggle('hl', !!p && c.dataset.place === p.name));
+    hl = p;
     $('#map-hover').textContent = p ? `${p.name} · ${p.visits} stay${p.visits > 1 ? 's' : ''} · ${human(p.days)} total` + (p.name === 'Toronto' ? ' · 🏠 home' : ` · ${hav(p.c, HOME).toLocaleString('en-CA')} km from home`) : 'hover a place';
     if (RM) { easeHl(1); draw(0); }
   }
@@ -572,8 +560,6 @@
     if (p) { pings.push({ x: p.xy[0], y: p.xy[1], t, h: Math.random() }); window.FX && FX.burst(b.left + p.xy[0], b.top + p.xy[1], 26, 12); }
     else { pings.push({ x, y, t, h: Math.random() }); }
   }, { passive: true });
-  chips.forEach(c => { c.addEventListener('pointerenter', () => setHl(places[c.dataset.place])); c.addEventListener('pointerleave', () => setHl(null));
-    c.addEventListener('pointerdown', () => setHl(places[c.dataset.place]), { passive: true }); });
   size(); addEventListener('resize', () => { size(); if (RM) draw(0); }, { passive: true });
   if (document.fonts) document.fonts.ready.then(() => RM && draw(0));
   // the card opens while the corner location (or the card itself) is hovered or focused; a short grace period lets the pointer cross the gap
@@ -644,7 +630,7 @@
       const b = s.c.getBoundingClientRect(); window.FX && FX.burst(e.clientX, b.top + b.height / 2, 18, 30); }, { passive: true });
   });
   // hovering (or tapping) a list row fires "its" feature in the section's strip
-  $$('#layers .list, #layers .links, #layers .trail').forEach(list => {
+  $$('#layers .list, #layers .links').forEach(list => {
     const items = [...list.children], s = stripFor(list);
     items.forEach((li, i) => {
       const fire = () => { if (s) { inject(s, (i + .5) / items.length, 1.2, 1.8); s.lastFire = now(); } };

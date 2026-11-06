@@ -196,11 +196,6 @@
   .where-pop .hchips { gap: 6px; }
   .where-pop .hchips li { font-size: 11px; padding: 5px 9px 4px; }
   .where-pop .mapbox { margin-top: 14px; }
-  .where-pop .trail { margin: 12px 0 0; gap: 6px; }
-  .where-pop .trail li { font-size: 10.5px; padding: 6px 9px 5px; gap: 6px; }
-  .where-pop .trail li b { font-size: 12.5px; }
-  .where-pop .trail li.more-trail a { padding: 6px 9px 5px; }
-  .where-pop .trail li.more-trail a:hover { color: var(--fg); }
   .here .eyebrow { margin: 0 0 6px; font: 400 12px/1.4 var(--mono); color: var(--dim); letter-spacing: .06em; text-transform: lowercase; }
   .here .place { margin: 0; font: 800 clamp(44px, 6.4vw, 84px)/1 var(--sans); letter-spacing: -.05em; }
   .here .flag { font-size: .7em; vertical-align: .08em; }
@@ -214,13 +209,6 @@
   #trailmap { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; background: #141317; border: 1px solid rgba(255,255,255,.09); touch-action: pan-y; cursor: crosshair; }
   .mapcap { display: flex; justify-content: space-between; font: 400 10.5px/1 var(--mono); color: var(--faint); margin-top: 7px; letter-spacing: .03em; }
   #map-hover { color: var(--dim); }
-  .trail { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-  .trail li { display: inline-flex; align-items: baseline; gap: 8px; padding: 8px 12px 7px; border: 1px solid rgba(255,255,255,.09); border-radius: 8px;
-              font: 400 12px/1.2 var(--mono); color: var(--dim); background: rgba(18,18,20,.6); cursor: default; transition: border-color .2s, background .2s, color .2s; }
-  .trail li b { font: 500 14px/1 var(--sans); color: var(--fg); letter-spacing: -.01em; }
-  .trail li:hover, .trail li.hl { border-color: #41e6ff; background: rgba(65,230,255,.07); color: #cfcbdb; }
-  .trail li.more-trail { padding: 0; border-style: dashed; }
-  .trail li.more-trail a { padding: 8px 12px 7px; text-decoration: none; color: var(--dim); }
 
 
   /* ---------- link hovercards ---------- */
@@ -317,8 +305,6 @@
     .lh .more { display: none; }
     .where-hover { display: none; }
     #trailmap { aspect-ratio: 4 / 3; }
-    .trail li { font-size: 11px; padding: 7px 10px 6px; }
-    .trail li b { font-size: 13px; }
     .node { width: 28px; height: 28px; font-size: 15px; left: calc(var(--gx) - var(--lpad) - 13px); }
   }
   @media (prefers-reduced-motion: reduce) {

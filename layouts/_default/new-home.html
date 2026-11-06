@@ -65,6 +65,7 @@
           <li><button class="acc-more" type="button" aria-expanded="false" aria-controls="acc-all" aria-label="show all accounts"><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
         </ul>
         <ul class="links acc-all" id="acc-all" aria-label="all accounts" hidden>{{ partial "new-home/accounts.html" (dict "Site" $.Site "Skip" (slice "GitHub" "LessWrong" "Bluesky")) }}
+          <li><a href="/index.xml">RSS</a></li>
         </ul>
       </div>{{ end }}
       <div class="intro-col intro-done">

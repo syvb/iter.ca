@@ -9,4 +9,3 @@ title: "elsewhere"
 - [where I am →](/where/)
 - [more accounts →](/p/accounts/)
 - [posts →](/post/)
-- [RSS](/index.xml)

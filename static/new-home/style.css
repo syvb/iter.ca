@@ -76,7 +76,7 @@
   /* first screen below the wordmark: intro + "elsewhere" on top, then things-I've-done and recent; the wordmark is sized so at
      least 5.5 rows show on the first screen (layout() measures with .fit), and the rest of the lists continue down the page */
   .intro { --rh: 34px; flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-           grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "text else" "list list";
+           grid-template-rows: auto auto auto; grid-template-areas: "text else" "done done" "recent recent";
            gap: clamp(14px, 2.4vh, 26px) clamp(24px, 4vw, 64px); margin-top: clamp(34px, 5vh, 56px); max-width: 1240px; width: 100%; }
   .intro-text { grid-area: text; }
   .intro-text p { margin: 0 0 10px; color: #c9c6d3; font-size: clamp(15px, 1.2vw, 16.5px); line-height: 1.55; max-width: 36em; }
@@ -90,7 +90,10 @@
   .hl-h a:hover { color: var(--fg); }
   .hl-h a.hl-self { margin-left: 0; color: inherit; letter-spacing: inherit; border-bottom: 1px solid var(--line); }   /* the heading itself links to everything */
   .hl-h a.hl-self:hover, .hl-h a.hl-self:focus-visible { color: var(--fg); border-color: var(--mag); }
-  .intro-list { grid-area: list; }
+  .intro-done { grid-area: done; } .intro-recent { grid-area: recent; margin-top: clamp(18px, 3vh, 34px); }
+  .fit .intro-recent { display: none; }   /* the wordmark is sized so things I've done (5.5+ rows) fits on the first screen */
+  /* things I've done: bold, flush left (no date column), on the same right edge as recent */
+  .hero .hl-list li.top a { grid-template-columns: minmax(0, 1fr) auto 14px; }
   /* things I've done lead the merged list, in bold, then recent items by date */
   .hero .hl-list li.top .t { font-weight: 700; color: var(--fg); }
   .fit .intro-col .hl-list { height: calc(5.5 * var(--rh) + 2px); overflow: hidden; }
@@ -136,9 +139,11 @@
   /* phones: one continuous page, the desktop first screen stacked: bio and links, elsewhere, then the merged list */
   @media (max-width: 699.98px) {
     .intro-col .hl-list { height: auto; overflow: visible; }
-    .intro-list .hl-list li.x { display: none; }   /* the same 20 recent items as the current homepage; "recent" links to the rest */
+    .intro-recent .hl-list li.x { display: none; }   /* the same 20 recent items as the current homepage; "recent" links to the rest */
     .hero .intro-col .hl-list a { grid-template-columns: 44px minmax(0, 1fr) 14px; grid-template-areas: none; padding: 0 10px; margin: 0; }
     .hero .intro-col .hl-list a > * { grid-area: auto; }
+    .hero .intro-col .hl-list li.top a { grid-template-columns: minmax(0, 1fr) 14px; }
+    .intro-recent { margin-top: 0; }   /* the stacked grid's row gap already separates them */
     .hero .intro-col .hl-list a { height: auto; min-height: var(--rh); padding-top: 7px; padding-bottom: 7px; align-items: baseline; }
     .hero .intro-col .hl-list .t { white-space: normal; }   /* no scroll box here, so titles wrap instead of truncating */
     .hero .hl-list .kd { display: none; }
@@ -320,7 +325,7 @@
     .list .ar { grid-area: ar; align-self: center; }
     .corner-meta.tr { display: none; }
     .hero { justify-content: flex-start; padding-top: 88px; }
-    .intro { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "text" "else" "list"; flex: 0 0 auto; row-gap: 34px; }
+    .intro { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "text" "else" "done" "recent"; flex: 0 0 auto; row-gap: 34px; }
     .corner-meta.bl, .corner-meta.br { display: none; }
     .sh .more { display: none; }
     .layers { --gx: 17px; --lpad: 46px; padding-right: 18px; }

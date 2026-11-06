@@ -16,7 +16,7 @@
     {{- else }}
         {{- $kd := "" -}}
         {{- if eq (string $tag) "LessWrong" }}{{ $kd = " lw" }}{{ else if in (slice "tool" "games" "web app") (string $tag) }}{{ $kd = " app" }}{{ end }}
-        <li{{ if eq $style "top" }} class="top"{{ end }}><a href="{{ $url }}"><span class="m">{{ if ne $style "top" }}{{ printf "%02d" (add $i 1) }}{{ end }}</span><span class="t">{{ $text }}</span><span class="kd{{ $kd }}">{{ $tag }}</span>{{ $ar }}</a></li>
+        <li{{ if eq $style "top" }} class="top"{{ end }}><a href="{{ $url }}">{{ if ne $style "top" }}<span class="m">{{ printf "%02d" (add $i 1) }}</span>{{ end }}<span class="t">{{ $text }}</span><span class="kd{{ $kd }}">{{ $tag }}</span>{{ $ar }}</a></li>
     {{- end -}}
     {{- end -}}
 {{- end }}

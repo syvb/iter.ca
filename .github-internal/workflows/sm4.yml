@@ -17,15 +17,16 @@ jobs:
   deploy:
     runs-on: ubuntu-24.04
     name: Deploy to Neocities
+    timeout-minutes: 10
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Clone repo
         uses: actions/checkout@master
-      - name: Install Node
-        run: |
-          sudo apt-get update
-          sudo apt-get install nodejs
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Build
         run: |
           cd sm4

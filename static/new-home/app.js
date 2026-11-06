@@ -12,10 +12,16 @@
   const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
   const lerp = (a, b, t) => a + (b - a) * t;
-  const lerpS = (A, B, t) => ({ x: lerp(A.x, B.x, t), y: lerp(A.y, B.y, t), s: lerp(A.s, B.s, t) });
+  const lerpS = (A, B, t, o) => { o.x = lerp(A.x, B.x, t); o.y = lerp(A.y, B.y, t); o.s = lerp(A.s, B.s, t); return o; };
+  // the wordmark's current transform and its letters' layout boxes, shared with the letter physics below so neither
+  // has to read layout (getBoundingClientRect) every frame; letters dodge/jump with their own transforms (FXwm.L)
+  // t: the latest animation frame's timestamp, so a loop that slept resumes with the same first step it would have taken running
+  const FXwm = window.FXwm = { x: 0, y: 0, s: 1, ch: [], L: null, wake: null, t: undefined };
 
   // ---------- WebGL setup ----------
-  const opts = { alpha: true, premultipliedAlpha: true, antialias: true };
+  // no multisampling on the full-window canvas: only the gem needs it, so it is drawn multisampled into a small buffer around
+  // itself and resolved into place (see the frame), instead of clearing and resolving a window-sized 4x buffer every frame
+  const opts = { alpha: true, premultipliedAlpha: true, antialias: false };
   const go = cOct.getContext('webgl2', opts);
   const gg = cGlow.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
   if (!go || !gg) { root.classList.add('no-gl'); }
@@ -104,11 +110,11 @@
     }`;
     const HFS = `#version 300 es
     precision highp float;
-    uniform vec2 uC; uniform float uS; uniform float uH; uniform float uPh; uniform float uDpr;
+    uniform vec2 uC; uniform float uS; uniform float uH; uniform float uPh; uniform float uDpr; uniform vec2 uOff;
     out vec4 o;
     ${PAL_GLSL}
     void main(){
-      vec2 p = gl_FragCoord.xy / uDpr; // css px, y up
+      vec2 p = (gl_FragCoord.xy + uOff) / uDpr; // css px, y up (uOff: where the gem's buffer sits in the canvas)
       vec2 d = (p - uC) / (uS * 2.4);
       float r = length(d);
       float g = exp(-r * r * 3.2) * uH;
@@ -128,7 +134,11 @@
     const hl = go.getAttribLocation(ph.p, 'aP'); go.enableVertexAttribArray(hl); go.vertexAttribPointer(hl, 2, go.FLOAT, false, 0, 0);
     go.bindVertexArray(null);
     go.enable(go.BLEND); go.blendFunc(go.ONE, go.ONE_MINUS_SRC_ALPHA);
-    O = { pr, ph, vao, hvao };
+    // the gem's multisampled buffer (4 samples, like the antialiased canvas it replaces), just big enough for the gem; grown
+    // on demand. A multisampled blit can't move pixels (and some GPUs resolve the whole buffer), so it resolves into a
+    // same-sized plain buffer, which is then copied into place
+    const fbo = go.createFramebuffer(), rb = go.createRenderbuffer(), fbo1 = go.createFramebuffer(), rb1 = go.createRenderbuffer();
+    O = { pr, ph, vao, hvao, fbo, rb, fbo1, rb1, samples: Math.min(4, go.getParameter(go.MAX_SAMPLES)), capW: 0, capH: 0 };
 
     // ----- glow ribbon -----
     const GFS = `#version 300 es
@@ -137,7 +147,6 @@
     uniform vec3 uM; uniform vec4 uRp[4]; uniform float uFoc;
     out vec4 o;
     ${PAL_GLSL}
-    const float B[16] = float[16](0.,8.,2.,10.,12.,4.,14.,6.,3.,11.,1.,9.,15.,7.,13.,5.);
     float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
     float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
       return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y); }
@@ -152,27 +161,30 @@
       float rip = 0.;
       for (int k = 0; k < 4; k++) {   // ripples add up; each eases in, so a new click never replaces an old one
         vec4 R = uRp[k];
+        if (R.w == 0.) continue;      // unused slot: adds exactly 0
         float rr = length(vec2((uv.x - R.x / uRes.x) * asp, uv.y - R.y / uRes.y));
         float env = smoothstep(0., .35, R.z) * exp(-R.z * 1.4);
         rip += R.w * env * sin(rr * 34. - R.z * 10.) * exp(-rr * 2.2) * .06;
       }
-      float pull = exp(-pow((x - mx) * 2.6, 2.)) * uM.z;
-      for (int i = 0; i < 5; i++) {
-        float fi = float(i);
-        float yc = .1 + .028 * fi
-          + .055 * sin(x * (1.1 + fi * .23) + uT * (.32 + .07 * fi) + fi * 1.9 + uPh * 2.)
-          + .022 * sin(x * (3.7 - fi * .3) - uT * (.5 + .05 * fi) + fi);
-        yc += (clamp(m.y, 0., .6) - yc) * pull * (.55 - .07 * fi) + rip * (1. + .3 * fi);
-        float th = .010 + .016 * (.5 + .5 * sin(x * 1.7 + uT * .4 + fi * 2.3));
-        float d = (uv.y - yc) / th;
-        float g = exp(-d * d) + .22 * exp(-abs(d) * .28);
-        col += pal(uv.x * .6 + fi * .08 + uPh + uT * .015) * g * (.62 - .08 * fi);
+      if (uWave > 0.) {   // ribbons only near the footer (scaled by uWave, so skipping them at 0 changes nothing); the cursor glow below stays everywhere
+        float pull = exp(-pow((x - mx) * 2.6, 2.)) * uM.z;
+        for (int i = 0; i < 5; i++) {
+          float fi = float(i);
+          float yc = .1 + .028 * fi
+            + .055 * sin(x * (1.1 + fi * .23) + uT * (.32 + .07 * fi) + fi * 1.9 + uPh * 2.)
+            + .022 * sin(x * (3.7 - fi * .3) - uT * (.5 + .05 * fi) + fi);
+          yc += (clamp(m.y, 0., .6) - yc) * pull * (.55 - .07 * fi) + rip * (1. + .3 * fi);
+          float th = .010 + .016 * (.5 + .5 * sin(x * 1.7 + uT * .4 + fi * 2.3));
+          float d = (uv.y - yc) / th;
+          float g = exp(-d * d) + .22 * exp(-abs(d) * .28);
+          col += pal(uv.x * .6 + fi * .08 + uPh + uT * .015) * g * (.62 - .08 * fi);
+        }
+        col += pal(uv.x * .5 + uPh + .3) * .16 * smoothstep(.32, 0., uv.y);
+        col *= uWave;
       }
-      col += pal(uv.x * .5 + uPh + .3) * .16 * smoothstep(.32, 0., uv.y);
-      col *= uWave;   // ribbons only near the footer; the cursor glow below stays everywhere
       vec2 dm = vec2((uv.x - m.x) * asp, uv.y - m.y);
       float foc = 1. + 3. * uFoc;                           // pressing narrows the cursor glow in on the click point
-      col += pal(m.x + uPh + uT * .05) * (.5 + .25 * uFoc) * exp(-dot(dm, dm) * 60. * foc) * uM.z;
+      if (uM.z > 0.) col += pal(m.x + uPh + uT * .05) * (.5 + .25 * uFoc) * exp(-dot(dm, dm) * 60. * foc) * uM.z;   // no pointer (touch): adds exactly 0
       col *= uAmt;
       if (uHero > .003) {   // whole page: a drifting "loss landscape" — domain-warped terrain drawn as marching contour lines
         vec2 fp = vec2(x, uv.y) * 1.9;
@@ -185,7 +197,7 @@
         }
         vec2 w = vec2(fbm(fp + vec2(0., uT * .05)), fbm(fp + vec2(5.2, 1.3) - uT * .04));
         float f = fbm(fp + 2.1 * w + vec2(uT * .02, 0.));
-        f += (.3 + .1 * uFoc) * exp(-dot(dm, dm) * 12. * foc) * uM.z;   // the cursor raises a peak; its contours ring around it (tighter while pressed)
+        if (uM.z > 0.) f += (.3 + .1 * uFoc) * exp(-dot(dm, dm) * 12. * foc) * uM.z;   // the cursor raises a peak; its contours ring around it (tighter while pressed)
         float fill = smoothstep(.55, .85, f) * .06;
         f += rip * 1.6 + wk * .14;                            // clicks (and moving letters) send rings through the terrain
         float lv = f * 11. - uT * .25;                        // contour levels march slowly downhill
@@ -198,7 +210,9 @@
         vec3 hc = pal(f * .9 + w.x * .6 + uPh + uT * .02);
         col += hc * (line * major * .5 + fill) * edge * uHero;
       }
-      float b = B[int(mod(p.x, 4.)) + int(mod(p.y, 4.)) * 4] / 16.;
+      // 4x4 Bayer matrix (0 8 2 10 / 12 4 14 6 / 3 11 1 9 / 15 7 13 5) from bits, without an indexed const array
+      ivec2 q4 = ivec2(p) & 3, q1 = q4 & 1, q2 = q4 >> 1;
+      float b = float(4 * (((q1.x ^ q1.y) << 1) | q1.y) + (((q2.x ^ q2.y) << 1) | q2.y)) / 16.;
       vec3 q = clamp(floor(col * 4. + b) / 4., 0., 1.);
       float a = max(q.r, max(q.g, q.b));
       o = vec4(q, a);
@@ -213,7 +227,9 @@
   // per-letter motion energy (how fast each wordmark letter is moving), for the wake ripples
   const chs = [...wm.querySelectorAll('.ch')], wake = chs.map(() => ({ x: 0, y: 0, e: 0, init: false }));
   function stepWake(dt) {
-    chs.forEach((el, i) => { const b = el.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2, W = wake[i];
+    // letter centers from the cached layout (FXwm.ch) and the current transforms, instead of reading layout each frame
+    chs.forEach((el, i) => { const c = FXwm.ch[i], l = FXwm.L && FXwm.L[i], W = wake[i];
+      const cx = motion ? FXwm.x + FXwm.s * (c.x + (l ? l.tx : 0)) : c.x - scrollX, cy = motion ? FXwm.y + FXwm.s * (c.y + (l ? l.ty : 0)) : c.y - scrollY;
       const v = W.init ? Math.hypot(cx - W.x, cy - W.y) / Math.max(dt, 1e-3) : 0; W.x = cx; W.y = cy; W.init = true;
       // two chained easings (an S-curve): a letter launched by a click ramps its ripples in instead of popping them on
       const T = Math.min(1, v / 900); W.t = (W.t || 0) + (T - (W.t || 0)) * (1 - Math.exp(-dt * (T > (W.t || 0) ? 6 : 1.6)));
@@ -267,17 +283,39 @@
     for (const [c, s] of [[cOct, dpr], [cGlow, .5]]) {
       c.width = Math.round(vw * s); c.height = Math.round(vh * s);
     }
+    if (motion) { FXwm.x = 0; FXwm.y = 0; FXwm.s = 1; wmSet = false; measureLetters(); FXwm.wake && FXwm.wake(); }   // transform is 'none' until the next frame
+    measureSlots();
     dirty = true;
   }
 
-  const center = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, s: r.width }; };
+  // layout reads, cached: the frame loop below only does arithmetic on these (the corner slot is fixed; the footer slot is
+  // kept in page coordinates); re-measured by layout() and whenever the page's size changes (ResizeObserver below)
+  const cornerV = { x: 0, y: 0, s: 0 }, footDoc = { x: 0, y: 0, s: 0 };
+  let heroPad = 0;
+  function measureSlots() {
+    const c = slotCorner.getBoundingClientRect(), f = slotFoot.getBoundingClientRect();
+    cornerV.x = c.left + c.width / 2; cornerV.y = c.top + c.height / 2; cornerV.s = c.width;
+    footDoc.x = f.left + f.width / 2; footDoc.y = f.top + f.height / 2 + scrollY; footDoc.s = f.width;
+    heroPad = parseFloat(getComputedStyle(home.parentElement).paddingLeft);
+    if (!motion) measureLetters();
+  }
+  // letter boxes: with motion, in the floating wordmark's own (untransformed) coordinates, without the letters' own dodge/jump
+  // transforms; without motion (the wordmark stays in its slot), in page coordinates
+  function measureLetters() {
+    const r = motion ? wm.getBoundingClientRect() : { left: -scrollX, top: -scrollY };
+    const saved = chs.map(el => el.style.transform);
+    if (motion) chs.forEach(el => { el.style.transform = 'none'; });
+    FXwm.ch = chs.map(el => { const b = el.getBoundingClientRect(); return { x: b.left + b.width / 2 - r.left, y: b.top + b.height / 2 - r.top, w: b.width, h: b.height }; });
+    if (motion) chs.forEach((el, i) => { el.style.transform = saved[i]; });
+  }
 
   // ---------- pointer interaction ----------
   const hit = $('#oct-hit');
   let mx = -1e4, my = -1e4, mOn = 0, mOnT = 0;       // pointer + presence (for ribbon bend)
   let ux = 0, uy = 0, vx = 0, vy = 0;                 // user-applied spin + inertia
   let tiltX = 0, tiltY = 0, hov = 0, pop = 0, popV = 0, flash = 0;
-  let rips = [], sx = -1e4, sy = -1e4, boost = 0, flashK = 0, hovT = 0, curSt = { x: 0, y: 0, s: 0 }, drag = null, pokes = 0;
+  const rips = [];
+  let sx = -1e4, sy = -1e4, boost = 0, flashK = 0, hovT = 0, curSt = { x: 0, y: 0, s: 0 }, drag = null, pokes = 0;
   // the glow that follows the pointer is for mice (and pens) only: on touch screens nothing should trail the finger
   addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; mx = e.clientX; my = e.clientY; mOnT = 1; }, { passive: true });
   let pressed = false, pressT0 = -1, foc = 0;         // press focus: the cursor glow narrows while held (and briefly after a tap)
@@ -319,25 +357,31 @@
 
   // ---------- frame ----------
   let dirty = true, last = performance.now(), t0 = last, smoothY = scrollY, vel = 0, spin = 0, glowCleared = false;
+  // per-frame scratch, allocated once
+  const dotS = { x: 0, y: 0, s: 0 }, footV = { x: 0, y: 0, s: 0 }, gutV = { x: 0, y: 0, s: 40 }, tmpS = { x: 0, y: 0, s: 0 }, stS = { x: 0, y: 0, s: 0 };
+  const WK = new Float32Array(21), RP = new Float32Array(16);
+  const Ry = new Float64Array(9), Rx = new Float64Array(9), Rz = new Float64Array(9), RxRy = new Float64Array(9), R = new Float32Array(9);
+  // last values written to the DOM, so unchanged frames write nothing (every style write costs a style recalc)
+  let wmSet = false, lastDot = '', lastBar = '', hitX = NaN, hitY = NaN, hitS = NaN;
 
+  const mul = (A, B, r) => { for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { let s = 0; for (let k = 0; k < 3; k++) s += A[k*3+j] * B[i*3+k]; r[i*3+j] = s; } return r; };
   function rotMat(a, b, c) {
     const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b), cc = Math.cos(c), sc = Math.sin(c);
     // Rz(c) * Rx(b) * Ry(a), column-major
-    const Ry = [ca,0,-sa, 0,1,0, sa,0,ca];
-    const Rx = [1,0,0, 0,cb,sb, 0,-sb,cb];
-    const Rz = [cc,sc,0, -sc,cc,0, 0,0,1];
-    const mul = (A, B) => { const r = new Array(9); for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { let s = 0; for (let k = 0; k < 3; k++) s += A[k*3+j] * B[i*3+k]; r[i*3+j] = s; } return r; };
-    return mul(Rz, mul(Rx, Ry));
+    Ry[0] = ca; Ry[1] = 0; Ry[2] = -sa; Ry[3] = 0; Ry[4] = 1; Ry[5] = 0; Ry[6] = sa; Ry[7] = 0; Ry[8] = ca;
+    Rx[0] = 1; Rx[1] = 0; Rx[2] = 0; Rx[3] = 0; Rx[4] = cb; Rx[5] = sb; Rx[6] = 0; Rx[7] = -sb; Rx[8] = cb;
+    Rz[0] = cc; Rz[1] = sc; Rz[2] = 0; Rz[3] = -sc; Rz[4] = cc; Rz[5] = 0; Rz[6] = 0; Rz[7] = 0; Rz[8] = 1;
+    return mul(Rz, mul(Rx, Ry, RxRy), R);
   }
 
   function frame(now) {
-    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    const dt = Math.min(.05, (now - last) / 1000); last = now; FXwm.t = now;
     const time = motion ? (now - t0) / 1000 : 0;
     const y = scrollY;
     // scroll velocity (smoothed) adds extra spin
     const dy = y - smoothY; smoothY = y; vel = lerp(vel, dy / Math.max(dt, .001), .12);
 
-    // --- reads ---
+    // --- reads (cached layout only; no layout reads in the frame) ---
     let st, wmX = 0, wmY = 0, sc = 1, tw = 0;
     if (motion) {
       tw = clamp(y / (vh * .75));
@@ -346,21 +390,26 @@
       sc = lerp(1, small / fs, e);
       wmX = lerp(homeLeft, Math.min(homeLeft, 22), e);
       wmY = lerp(homeTop - y, 16, e);
-      const dotS = { x: wmX + dotX * sc, y: wmY + (dotY - fs * .19) * sc, s: fs * .4 * sc };
-      const corner = center(slotCorner), foot = center(slotFoot);
+      dotS.x = wmX + dotX * sc; dotS.y = wmY + (dotY - fs * .19) * sc; dotS.s = fs * .4 * sc;
+      const corner = cornerV, foot = footV;
+      foot.x = footDoc.x; foot.y = footDoc.y - y; foot.s = footDoc.s;
       if (noMid && vw >= 700) {   // top + bottom only (desktop; phones' long single page parks it in the corner): one unbroken trip from the dot to the footer, small and in the right margin past the content
-        const gut = { x: vw - Math.max(22, parseFloat(getComputedStyle(home.parentElement).paddingLeft) / 2), y: vh * .5, s: 40 };
+        gutV.x = vw - Math.max(22, heroPad / 2); gutV.y = vh * .5;
         const f0 = Math.max(maxScroll * .3, maxScroll - vh * .85);   // drop into the footer only once it's coming into view
-        st = lerpS(lerpS(dotS, gut, ease(clamp(y / Math.min(maxScroll * .4, vh * .5)))), foot, ease(clamp((y - f0) / (maxScroll - f0))));
-      } else if (y <= kCorner) st = lerpS(dotS, corner, ease(clamp(y / kCorner)));
+        st = lerpS(lerpS(dotS, gutV, ease(clamp(y / Math.min(maxScroll * .4, vh * .5))), tmpS), foot, ease(clamp((y - f0) / (maxScroll - f0))), stS);
+      } else if (y <= kCorner) st = lerpS(dotS, corner, ease(clamp(y / kCorner)), stS);
       else if (y <= kFootStart) st = corner;
-      else st = lerpS(corner, foot, ease((y - kFootStart) / (maxScroll - kFootStart)));
-      // --- writes ---
-      wm.style.transform = `translate3d(${wmX}px, ${wmY}px, 0) scale(${sc})`;
-      wm.style.setProperty('--dot', sstep(.08, .45, tw).toFixed(3));
-      bar.style.opacity = sstep(.5, 1, tw).toFixed(3);
+      else st = lerpS(corner, foot, ease((y - kFootStart) / (maxScroll - kFootStart)), stS);
+      // --- writes (only what changed) ---
+      if (!wmSet || wmX !== FXwm.x || wmY !== FXwm.y || sc !== FXwm.s) {
+        FXwm.x = wmX; FXwm.y = wmY; FXwm.s = sc; wmSet = true;
+        wm.style.transform = `translate3d(${wmX}px, ${wmY}px, 0) scale(${sc})`;
+      }
+      const dotV = sstep(.08, .45, tw).toFixed(3), barV = sstep(.5, 1, tw).toFixed(3);
+      if (dotV !== lastDot) { lastDot = dotV; wm.style.setProperty('--dot', dotV); }
+      if (barV !== lastBar) { lastBar = barV; bar.style.opacity = barV; }
     } else {
-      st = center(slotCorner);
+      st = cornerV;
     }
 
     if (O) {
@@ -384,33 +433,68 @@
       // mostly upright: the spin is around the vertical axis, with only a little lean toward the viewer and roll
       const b = .24 + Math.sin(y * .0011 + time * .15) * .12 + uy + tiltY;
       const c = -.08 + Math.sin(y * .0007) * .06;
-      const R = rotMat(a, b, c);
+      const Rm = rotMat(a, b, c);
       const g = go;
       g.viewport(0, 0, cOct.width, cOct.height);
       g.clearColor(0, 0, 0, 0); g.clear(g.COLOR_BUFFER_BIT);
-      curSt = st;
-      const hs = st.s * .8;
-      hit.style.transform = `translate3d(${st.x - hs / 2}px, ${st.y - hs / 2}px, 0)`; hit.style.width = hit.style.height = hs + 'px';
+      curSt.x = st.x; curSt.y = st.y; curSt.s = st.s;
+      // only write when it moved (a size write invalidates layout; parked, it no longer does every frame)
+      const hs = st.s * .8, hx = st.x - hs / 2, hy = st.y - hs / 2;
+      if (hx !== hitX || hy !== hitY) { hitX = hx; hitY = hy; hit.style.transform = `translate3d(${hx}px, ${hy}px, 0)`; }
+      if (hs !== hitS) { hitS = hs; hit.style.width = hit.style.height = hs + 'px'; }
       const S = st.s / 2 / 1.3 * (1 + pop * .5 + hov * .06);
       const ph = a * .08;
       // halo behind the gem (stronger when it's large, mid-page)
       const haloAmt = motion ? lerp(.55, 1, sstep(.2, .9, clamp(y / kCorner))) : 1;
       g.useProgram(O.ph.p); g.bindVertexArray(O.hvao);
       g.uniform2f(O.ph.u.uC, st.x, vh - st.y); g.uniform1f(O.ph.u.uS, S); g.uniform1f(O.ph.u.uH, haloAmt * (1 + hov * .5 + flash * 2.2));
-      g.uniform1f(O.ph.u.uPh, ph); g.uniform1f(O.ph.u.uDpr, dpr);
+      g.uniform1f(O.ph.u.uPh, ph); g.uniform1f(O.ph.u.uDpr, dpr); g.uniform2f(O.ph.u.uOff, 0, 0);
+      // only shade the halo's own square: past 2 * 2.4 * S css px from the center it is below 1e-5 even at full flash
+      // (uH <= 5), which rounds to exactly 0 in the 8-bit canvas, so the pixels outside stay the cleared 0 either way
+      { const r = 2 * 2.4 * S + 2, x0 = Math.max(0, Math.floor((st.x - r) * dpr)), y0 = Math.max(0, Math.floor((vh - st.y - r) * dpr));
+        g.enable(g.SCISSOR_TEST); g.scissor(x0, y0, Math.max(0, Math.ceil((st.x + r) * dpr) - x0), Math.max(0, Math.ceil((vh - st.y + r) * dpr) - y0)); }
       g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
-      g.useProgram(O.pr.p); g.bindVertexArray(O.vao);
-      g.uniformMatrix3fv(O.pr.u.uR, false, R);
-      g.uniform2f(O.pr.u.uC, st.x, st.y); g.uniform1f(O.pr.u.uS, S); g.uniform2f(O.pr.u.uRes, vw, vh);
-      g.uniform1f(O.pr.u.uEdge, Math.max(.04, 1.1 / (S * 1.15)));   // edges scale with the gem (a fixed share of each face), never thinner than ~1px
-      g.uniform1i(O.pr.u.uPass, 0); g.drawArrays(g.TRIANGLES, 0, 24);
-      g.uniform1i(O.pr.u.uPass, 1); g.drawArrays(g.TRIANGLES, 0, 24);
+      g.disable(g.SCISSOR_TEST);
+      // the gem, multisampled: its projected vertices stay within CAM / (CAM - 1) * S < 1.42 * S css px of its center, so that
+      // square (+2px) is drawn into the small multisampled buffer (halo first, so the gem blends over it as it did on the
+      // canvas) and resolved over the same pixels of the canvas
+      const cw = cOct.width, ch = cOct.height, gr = 1.42 * S * dpr + 2, gx = st.x * dpr, gy = (vh - st.y) * dpr;
+      const bx0 = Math.max(0, Math.floor(gx - gr)), by0 = Math.max(0, Math.floor(gy - gr)), bx1 = Math.min(cw, Math.ceil(gx + gr)), by1 = Math.min(ch, Math.ceil(gy + gr));
+      if (bx1 > bx0 && by1 > by0) {
+        const bw = bx1 - bx0, bh = by1 - by0;
+        g.bindFramebuffer(g.FRAMEBUFFER, O.fbo);
+        if (bw > O.capW || bh > O.capH) {   // grow with headroom, so scrolling to the big footer gem reallocates only a few times
+          O.capW = Math.min(cw, Math.max(O.capW, Math.ceil(bw * 1.25))); O.capH = Math.min(ch, Math.max(O.capH, Math.ceil(bh * 1.25)));
+          g.bindRenderbuffer(g.RENDERBUFFER, O.rb); g.renderbufferStorageMultisample(g.RENDERBUFFER, O.samples, g.RGBA8, O.capW, O.capH);
+          g.framebufferRenderbuffer(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0, g.RENDERBUFFER, O.rb);
+          g.bindFramebuffer(g.FRAMEBUFFER, O.fbo1);
+          g.bindRenderbuffer(g.RENDERBUFFER, O.rb1); g.renderbufferStorage(g.RENDERBUFFER, g.RGBA8, O.capW, O.capH);
+          g.framebufferRenderbuffer(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0, g.RENDERBUFFER, O.rb1);
+          g.bindFramebuffer(g.FRAMEBUFFER, O.fbo);
+        }
+        g.viewport(-bx0, -by0, cw, ch);   // the canvas's coordinates, shifted so the box lands at the buffer's origin
+        g.clear(g.COLOR_BUFFER_BIT);
+        g.uniform2f(O.ph.u.uOff, bx0, by0);
+        g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
+        g.useProgram(O.pr.p); g.bindVertexArray(O.vao);
+        g.uniformMatrix3fv(O.pr.u.uR, false, Rm);
+        g.uniform2f(O.pr.u.uC, st.x, st.y); g.uniform1f(O.pr.u.uS, S); g.uniform2f(O.pr.u.uRes, vw, vh);
+        g.uniform1f(O.pr.u.uEdge, Math.max(.04, 1.1 / (S * 1.15)));   // edges scale with the gem (a fixed share of each face), never thinner than ~1px
+        g.uniform1i(O.pr.u.uPass, 0); g.drawArrays(g.TRIANGLES, 0, 24);
+        g.uniform1i(O.pr.u.uPass, 1); g.drawArrays(g.TRIANGLES, 0, 24);
+        g.bindFramebuffer(g.DRAW_FRAMEBUFFER, O.fbo1);
+        g.blitFramebuffer(0, 0, O.capW, O.capH, 0, 0, O.capW, O.capH, g.COLOR_BUFFER_BIT, g.NEAREST);   // resolve
+        g.bindFramebuffer(g.READ_FRAMEBUFFER, O.fbo1); g.bindFramebuffer(g.DRAW_FRAMEBUFFER, null);
+        g.blitFramebuffer(0, 0, bw, bh, bx0, by0, bx1, by1, g.COLOR_BUFFER_BIT, g.NEAREST);   // into place
+        g.bindFramebuffer(g.FRAMEBUFFER, null);
+      }
 
       // glow ribbon: faint at the hero, blooms at the bottom of the page
       const foot = sstep(maxScroll - vh * 1.1, maxScroll, y);
       const nowS = now / 1000;
-      rips = rips.filter(q => nowS - q.t0 < 4);
-      const boostT = rips.reduce((m, q) => Math.max(m, Math.exp(-(nowS - q.t0) * 2)), 0);
+      let boostT = 0, nr = 0;
+      for (const q of rips) if (nowS - q.t0 < 4) { rips[nr++] = q; boostT = Math.max(boostT, Math.exp(-(nowS - q.t0) * 2)); }
+      rips.length = nr;
       boost = lerp(boost, boostT, 1 - Math.exp(-dt * 6));
       const hero = 1 - sstep(0, vh * .7, y);
       const field = Math.max(hero, foot, .2);   // full strength at the top and bottom, toned down in between
@@ -422,11 +506,12 @@
         h.useProgram(G.pg.p); h.bindVertexArray(G.gvao);
         h.uniform2f(G.pg.u.uRes, cGlow.width, cGlow.height); h.uniform1f(G.pg.u.uT, time + y * .002);
         h.uniform1f(G.pg.u.uAmt, amt); h.uniform1f(G.pg.u.uPh, ph); h.uniform1f(G.pg.u.uWave, amt > 0 ? clamp(foot * (motion ? 1 + .5 * boost : 1) / amt) : 0); h.uniform1f(G.pg.u.uHero, field * (1 + .4 * boost)); h.uniform1f(G.pg.u.uMask, hero);
-        { const WK = new Float32Array(21); wake.forEach((W, i) => WK.set([W.x / vw, 1 - W.y / vh, W.e], i * 3)); h.uniform3fv(G.pg.u['uWk[0]'], WK); }
+        for (let i = 0; i < wake.length; i++) { const W = wake[i]; WK[i * 3] = W.x / vw; WK[i * 3 + 1] = 1 - W.y / vh; WK[i * 3 + 2] = W.e; }
+        h.uniform3fv(G.pg.u['uWk[0]'], WK);
         const gs = cGlow.width / vw;
         h.uniform3f(G.pg.u.uM, sx * gs, (vh - sy) * gs, motion ? mOn : 0); h.uniform1f(G.pg.u.uFoc, foc);
-        const RP = new Float32Array(16);
-        if (motion) rips.forEach((q, i) => RP.set([q.x * gs, (vh - q.y) * gs, nowS - q.t0, 1], i * 4));
+        RP.fill(0);
+        if (motion) for (let i = 0; i < rips.length; i++) { const q = rips[i]; RP[i * 4] = q.x * gs; RP[i * 4 + 1] = (vh - q.y) * gs; RP[i * 4 + 2] = nowS - q.t0; RP[i * 4 + 3] = 1; }
         h.uniform4fv(G.pg.u['uRp[0]'], RP);
         h.drawArrays(h.TRIANGLE_STRIP, 0, 4); glowCleared = false;
       } else if (!glowCleared) { h.clearColor(0, 0, 0, 0); h.clear(h.COLOR_BUFFER_BIT); glowCleared = true; }
@@ -439,6 +524,8 @@
   addEventListener('scroll', request, { passive: true });
   addEventListener('resize', () => { layout(); if (!motion) requestAnimationFrame(frame); }, { passive: true });
   layout();
+  // content above the footer changing height (e.g. the accounts list opening on phones) moves the footer slot
+  new ResizeObserver(measureSlots).observe(document.body);
   requestAnimationFrame(frame);
   // relayout once the web fonts are in (the first layout may have used the fallback font)
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (!motion) requestAnimationFrame(frame); });
@@ -499,20 +586,28 @@
   const LON = [-128, 18], LAT = [33, 58];
   const proj = (c) => { const px = W * .07, py = H * .12;
     return [px + (c[1] - LON[0]) / (LON[1] - LON[0]) * (W - 2 * px), H - py - (c[0] - LAT[0]) / (LAT[1] - LAT[0]) * (H - 2 * py)]; };
-  function size() { dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; P.forEach(p => p.xy = proj(p.c)); }
+  function size() { dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; P.forEach(p => p.xy = proj(p.c)); bgOk = false; }
   const ctrl = (a, b) => { const [x1, y1] = a.xy, [x2, y2] = b.xy, d = Math.hypot(x2 - x1, y2 - y1); return [(x1 + x2) / 2, (y1 + y2) / 2 - d * .32 - 6]; };
   const qpt = (a, c, b, t) => [(1 - t) ** 2 * a[0] + 2 * (1 - t) * t * c[0] + t * t * b[0], (1 - t) ** 2 * a[1] + 2 * (1 - t) * t * c[1] + t * t * b[1]];
-  function draw(t) {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+  // the static layer (dot grid, graticule, region names) is drawn once into its own canvas and copied in each frame
+  const bg = document.createElement('canvas'), bgx = bg.getContext('2d');
+  let bgOk = false;
+  function drawBg(c) {
+    c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
     // dot grid + graticule
-    ctx.fillStyle = 'rgba(255,255,255,.07)';
-    for (let x = 6; x < W; x += 12) for (let y = 6; y < H; y += 12) ctx.fillRect(x, y, 1, 1);
-    ctx.strokeStyle = 'rgba(255,255,255,.045)'; ctx.lineWidth = 1; ctx.beginPath();
-    for (let lo = -120; lo <= 10; lo += 10) { const [x] = proj([0, lo]); ctx.moveTo(x, 0); ctx.lineTo(x, H); }
-    for (let la = 35; la <= 55; la += 10) { const [, y] = proj([la, 0]); ctx.moveTo(0, y); ctx.lineTo(W, y); }
-    ctx.stroke();
-    ctx.font = `400 ${W < 420 ? 9 : 10}px "DM Mono", ui-monospace, monospace`; ctx.fillStyle = 'rgba(255,255,255,.18)';
-    ctx.fillText('N. AMERICA', proj([55, -112])[0], proj([55, -112])[1]); ctx.fillText('ATLANTIC', proj([39, -48])[0], proj([39, -48])[1]); ctx.fillText('EUROPE', proj([57, 3])[0], proj([57, 3])[1]);
+    c.fillStyle = 'rgba(255,255,255,.07)';
+    for (let x = 6; x < W; x += 12) for (let y = 6; y < H; y += 12) c.fillRect(x, y, 1, 1);
+    c.strokeStyle = 'rgba(255,255,255,.045)'; c.lineWidth = 1; c.beginPath();
+    for (let lo = -120; lo <= 10; lo += 10) { const [x] = proj([0, lo]); c.moveTo(x, 0); c.lineTo(x, H); }
+    for (let la = 35; la <= 55; la += 10) { const [, y] = proj([la, 0]); c.moveTo(0, y); c.lineTo(W, y); }
+    c.stroke();
+    c.font = `400 ${W < 420 ? 9 : 10}px "DM Mono", ui-monospace, monospace`; c.fillStyle = 'rgba(255,255,255,.18)';
+    c.fillText('N. AMERICA', proj([55, -112])[0], proj([55, -112])[1]); c.fillText('ATLANTIC', proj([39, -48])[0], proj([39, -48])[1]); c.fillText('EUROPE', proj([57, 3])[0], proj([57, 3])[1]);
+  }
+  function draw(t) {
+    if (!bgOk) { bg.width = cv.width; bg.height = cv.height; drawBg(bgx); bgOk = true; }
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.drawImage(bg, 0, 0);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // arcs, drawn in order up to scroll progress
     const shown = prog * legs.length;
     legs.forEach(([a, b], i) => {
@@ -565,11 +660,11 @@
     else { pings.push({ x, y, t, h: Math.random() }); }
   }, { passive: true });
   size(); addEventListener('resize', () => { size(); if (RM) draw(0); }, { passive: true });
-  if (document.fonts) document.fonts.ready.then(() => RM && draw(0));
+  if (document.fonts) document.fonts.ready.then(() => { bgOk = false; RM && draw(0); });
   // the card opens while the corner location (or the card itself) is hovered or focused; a short grace period lets the pointer cross the gap
   const box = $('.where-hover'); let closeT = 0, openedAt = -1;
   const setOpen = (on) => { clearTimeout(closeT);
-    if (on) { if (!box.classList.contains('open')) { box.classList.add('open'); size(); if (!RM && openedAt < 0) prog = 0; openedAt = performance.now(); vis = true; if (RM) draw(0); } }
+    if (on) { if (!box.classList.contains('open')) { box.classList.add('open'); size(); if (!RM && openedAt < 0) prog = 0; openedAt = performance.now(); vis = true; if (RM) draw(0); else startLoop(); } }
     else closeT = setTimeout(() => { box.classList.remove('open'); setHl(null); }, 220); };
   box.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') setOpen(true); });
   box.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setOpen(false); });
@@ -578,14 +673,17 @@
   addEventListener('keydown', (e) => { if (e.key === 'Escape') { clearTimeout(closeT); box.classList.remove('open'); } });
   if (RM) { draw(0); return; }
   box.addEventListener('transitionend', (e) => { if (e.target.id === 'where-pop' && e.propertyName === 'opacity' && !box.classList.contains('open')) { vis = false; openedAt = -1; } });
-  (function loop(ms) {
+  // the map only animates while its card is showing: the loop stops once it has faded out and restarts when it opens
+  let looping = false;
+  function loop(ms) {
     const lastMs = loop.last; loop.last = ms;
     if (vis) {
       prog += (1 - prog) * .045;   // arcs draw in each time the card opens
       easeHl(Math.min(.05, (ms - (lastMs ?? ms)) / 1000)); draw(ms / 1000);
-    }
-    requestAnimationFrame(loop);
-  })(0);
+      requestAnimationFrame(loop);
+    } else looping = false;
+  }
+  function startLoop() { if (!looping) { looping = true; loop.last = window.FXwm.t; requestAnimationFrame(loop); } }
 })();
 
 /* residual-stream sidebar + activation strips (ported from prototype B) */
@@ -597,9 +695,10 @@
   const secs = $$('#layers > .sec');
   const BAYER = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v => (v + .5) / 16);
   const STOPS = [[255,79,216],[143,99,255],[65,230,255]];
+  let gr = 0, gg = 0, gb = 0;   // grad() writes here instead of allocating an array per pixel
   const grad = (u) => { u = ((u % 1) + 1) % 1; u = u < .5 ? u * 2 : (1 - u) * 2;
     const s = u * 2, i = Math.min(1, s | 0), f = s - i, a = STOPS[i], b = STOPS[i + 1];
-    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]; };
+    gr = a[0] + (b[0] - a[0]) * f; gg = a[1] + (b[1] - a[1]) * f; gb = a[2] + (b[2] - a[2]) * f; };
   const LE = new Uint8Array(new Uint32Array([1]).buffer)[0] === 1;
   const pack = (r, g, b, a) => LE ? ((a << 24) | (b << 16) | (g << 8) | r) >>> 0 : ((r << 24) | (g << 16) | (b << 8) | a) >>> 0;
   const BG = pack(20, 19, 23, 255);
@@ -622,9 +721,9 @@
   function inject(s, u, amt = 1, w = 2.5) {   // u in 0..1
     const cx = u * s.W;
     for (let x = Math.max(0, cx - w * 3 | 0); x < Math.min(s.W, cx + w * 3); x++) s.injT[x] = Math.min(1.6, s.injT[x] + amt * Math.exp(-((x - cx) ** 2) / (2 * w * w)));
-    s.vis = true;
+    s.vis = true; wakeLoop();
   }
-  const wave = (s, u) => { s.waves.push({ x: u * s.W, t: now() }); if (s.waves.length > 6) s.waves.shift(); };
+  const wave = (s, u) => { s.waves.push({ x: u * s.W, t: now() }); if (s.waves.length > 6) s.waves.shift(); wakeLoop(); };
   const uOf = (s, e) => { const b = s.c.getBoundingClientRect(); return clamp((e.clientX - b.left) / b.width); };
   strips.forEach(s => {
     s.c.addEventListener('pointermove', (e) => { const u = uOf(s, e); inject(s, u, .35, 2.2);
@@ -648,7 +747,7 @@
   function launch(y0) {
     if (RM) return;
     const el = document.createElement('div'); el.className = 'tok'; streamEl.appendChild(el);
-    toks.push({ el, y: y0, v: 260, hit: new Set() });
+    toks.push({ el, y: y0, v: 260, hit: new Set() }); wakeLoop();
   }
   document.getElementById('stream-hit').addEventListener('click', (e) => {
     launch(e.clientY - streamEl.getBoundingClientRect().top);
@@ -661,13 +760,16 @@
   }));
   function stepToks(dt) {
     if (!toks.length) return;
+    // read every node's position once, before any token is moved (reading between the writes forced a style recalc each time);
+    // a node's center doesn't change when it scales on a zap, and token transforms don't move the nodes
     const sr = streamEl.getBoundingClientRect();
+    nodes.forEach(n => { n.on = !!n.el.offsetParent; if (n.on) n.r = n.el.getBoundingClientRect(); });
     for (let i = toks.length - 1; i >= 0; i--) {
       const k = toks[i]; k.v = Math.min(2400, k.v + 1700 * dt); k.y += k.v * dt;
       k.el.style.transform = `translateY(${k.y}px)`;
       nodes.forEach((n, j) => {
-        if (!n.el.offsetParent) return;  // section hidden at this size
-        const nr = n.el.getBoundingClientRect(), ny = nr.top + nr.height / 2 - sr.top;
+        if (!n.on) return;  // section hidden at this size
+        const nr = n.r, ny = nr.top + nr.height / 2 - sr.top;
         if (!k.hit.has(j) && k.y >= ny - 4) {
           k.hit.add(j);
           if (k.y - ny < 60) {  // only nodes it actually flows through
@@ -688,54 +790,68 @@
     return col * (.45 + .55 * row) + (n > .94 ? (n > .97 ? 1 : -1) * .6 * (.5 + .5 * Math.sin(t * 3 + n * 40)) : 0);  // -1..1
   }
   function drawStrip(s, t) {
-    const { W, H, buf } = s, t0w = now();
-    s.waves = s.waves.filter(w => t0w - w.t < 2.5);
+    const { W, H, buf } = s, t0w = now(), waves = s.waves;
+    let nw = 0; for (const w of waves) if (t0w - w.t < 2.5) waves[nw++] = w; waves.length = nw;
     for (let y = 0; y < H; y++) { const row = .5 + .5 * Math.sin(y * 1.3 + t * 1.1 + s.seed);
     for (let x = 0; x < W; x++) {
       const z = act(s, x, y, t), d = y * W + x;
       let v = Math.max(0, Math.abs(z) - .2) / .8;
       v *= clamp(s.lit * 1.25 * W - x * .9, 0, W * .25) / (W * .25);          // scroll-driven left→right sweep
       v += s.inj[x] * (.65 + .35 * row);
-      for (const w of s.waves) { const age = t0w - w.t, dd = Math.abs(x - w.x) - age * W * .9; v += 1.3 * Math.exp(-dd * dd / 6) * Math.exp(-age * 1.8) * Math.min(1, age * 8); }
+      for (let i = 0; i < nw; i++) { const w = waves[i], age = t0w - w.t, dd = Math.abs(x - w.x) - age * W * .9; v += 1.3 * Math.exp(-dd * dd / 6) * Math.exp(-age * 1.8) * Math.min(1, age * 8); }
       if (d === s.hov) { s.hovZ = z; v = Math.max(v, .55) + .25 * (.5 + .5 * Math.sin(t * 8)); }
       const lv = Math.min(4, Math.floor(v * 4.4 + BAYER[((y & 3) << 2) | (x & 3)] - .3));
       if (lv <= 0) { buf[d] = BG; continue; }
-      const [r, g, b] = grad(z >= 0 ? .02 + v * .22 : .5 - v * .14), k = .25 + lv * .1875;  // + magenta→violet, − cyan
-      buf[d] = pack((20 + (r - 20) * k) | 0, (19 + (g - 19) * k) | 0, (23 + (b - 23) * k) | 0, 255);
+      grad(z >= 0 ? .02 + v * .22 : .5 - v * .14); const k = .25 + lv * .1875;  // + magenta→violet, − cyan
+      buf[d] = pack((20 + (gr - 20) * k) | 0, (19 + (gg - 19) * k) | 0, (23 + (gb - 23) * k) | 0, 255);
     } }
     s.ctx.putImageData(s.img, 0, 0);
     const Li = Math.round(s.L);
     if (Li !== s.shownL || s.hov >= 0) { s.shownL = Li;
-      s.ml.textContent = `resid · ${Li ? 'L' + Li : 'embed'}/36`;
-      s.mr.textContent = s.hov < 0 ? '' : `dim ${s.hov} · ${s.hovZ >= 0 ? '+' : '−'}${(Math.abs(s.hovZ) * 4).toFixed(1)}σ`; }
+      const ml = `resid · ${Li ? 'L' + Li : 'embed'}/36`, mr = s.hov < 0 ? '' : `dim ${s.hov} · ${s.hovZ >= 0 ? '+' : '−'}${(Math.abs(s.hovZ) * 4).toFixed(1)}σ`;
+      if (ml !== s.mlT) s.ml.textContent = s.mlT = ml;   // rewriting the same text still relayouts it
+      if (mr !== s.mrT) s.mr.textContent = s.mrT = mr; }
   }
-  function onScroll() {
+  // scroll position → stream fill, lit sections, strip sweep/layer: layout is read in measure() (from the scroll event, before any
+  // animation frame has written styles) and written in apply() (in the frame), so reads never follow writes
+  let sp = 0, rH = 0;
+  function measure() {
     const vh = innerHeight, r = layersEl.getBoundingClientRect();
-    const sp = RM ? 1 : clamp((vh * .55 - r.top) / r.height);
-    flow.style.transform = `scaleY(${sp})`;
-    packet.style.transform = `translateY(${sp * r.height}px)`;
-    secs.forEach(sec => sec.classList.toggle('lit', RM || sec.getBoundingClientRect().top < vh * .55));
+    sp = RM ? 1 : clamp((vh * .55 - r.top) / r.height); rH = r.height;
+    secs.forEach(sec => { sec.litT = RM || sec.getBoundingClientRect().top < vh * .55; });
     strips.forEach(s => { const b = s.c.getBoundingClientRect(); s.vis = b.bottom > 0 && b.top < vh; s.lit = RM ? 1 : clamp((vh - b.top) / (vh * .55));
       s.Lt = (NL - 1) * clamp((vh * .92 - b.top) / (vh * .72)); if (RM) s.L = s.Lt; });  // L0 entering at the bottom → L36 near the top
   }
+  function apply() {
+    flow.style.transform = `scaleY(${sp})`;
+    packet.style.transform = `translateY(${sp * rH}px)`;
+    secs.forEach(sec => sec.classList.toggle('lit', sec.litT));
+  }
+  const onScroll = () => { measure(); apply(); };
   let dirty = true;
-  addEventListener('scroll', () => { dirty = true; if (RM) { onScroll(); strips.forEach(s => drawStrip(s, 1)); } }, { passive: true });
-  addEventListener('resize', () => { size(); dirty = true; if (RM) { onScroll(); strips.forEach(s => drawStrip(s, 1)); } }, { passive: true });
+  addEventListener('scroll', () => { if (RM) { onScroll(); strips.forEach(s => drawStrip(s, 1)); } else { measure(); dirty = true; wakeLoop(); } }, { passive: true });
+  addEventListener('resize', () => { size(); if (RM) { onScroll(); strips.forEach(s => drawStrip(s, 1)); } else { measure(); dirty = true; wakeLoop(); } }, { passive: true });
   size(); onScroll();
+  function wakeLoop() { if (!RM && !looping) { looping = true; frame.last = window.FXwm.t === undefined ? undefined : (window.FXwm.t - t0) / 1000; requestAnimationFrame(frame); } }
   if (RM) { strips.forEach(s => drawStrip(s, 1)); return; }
   const t0 = performance.now();
-  (function frame(now) {
-    if (dirty) { onScroll(); dirty = false; }
+  let looping = true;
+  function frame(now) {
+    if (dirty) { apply(); dirty = false; }
     const t = (now - t0) / 1000;
     const dt = Math.min(.05, t - (frame.last ?? t)); frame.last = t;
     stepToks(dt);
+    let busy = toks.length > 0;
     if (!document.hidden) strips.forEach(s => {
       s.L += (s.Lt - s.L) * (1 - Math.exp(-dt * 5));  // eased, never jumps
       if (s.vis) drawStrip(s, t);
-      const f = Math.exp(-dt * 2.6), k = 1 - Math.exp(-dt * 12); for (let x = 0; x < s.inj.length; x++) { s.injT[x] *= f; s.inj[x] += (s.injT[x] - s.inj[x]) * k; }
+      const f = Math.exp(-dt * 2.6), k = 1 - Math.exp(-dt * 12); for (let x = 0; x < s.inj.length; x++) { s.injT[x] *= f; s.inj[x] += (s.injT[x] - s.inj[x]) * k; if (s.inj[x] > 1e-6 || s.injT[x] > 1e-6) busy = true; }
+      if (s.vis || Math.abs(s.Lt - s.L) > 1e-6) busy = true;
     });
-    requestAnimationFrame(frame);
-  })(t0);
+    // sleep while no strip is on screen and nothing is easing; scrolling, pokes and tokens wake it (wakeLoop)
+    if (busy || document.hidden) requestAnimationFrame(frame); else looping = false;
+  }
+  frame(t0);
 })();
 
 /* sparks, background pokes, and wordmark letters that dodge */
@@ -778,13 +894,14 @@
     ctx.clearRect(0, 0, W, H);
     for (let i = ps.length - 1; i >= 0; i--) {
       const p = ps[i];
-      p.life -= dt; if (p.life <= 0) { ps.splice(i, 1); continue; }
+      p.life -= dt; if (p.life <= 0) continue;   // removed below, in one pass (splicing each one is quadratic with hundreds of sparks)
       const drag = Math.exp(-dt * 3.2); p.vx *= drag; p.vy = p.vy * drag + p.g * dt;
       p.x += p.vx * dt; p.y += p.vy * dt;
       const k = p.life / p.max, xi = p.x | 0, yi = p.y | 0;
       if (k * 16 < BAYER[(yi & 3) * 4 + (xi & 3)] * .9) continue;   // ordered-dither fade-out
       ctx.fillStyle = p.col; ctx.fillRect(xi, yi, p.sz, p.sz);
     }
+    let n = 0; for (let i = 0; i < ps.length; i++) if (ps[i].life > 0) ps[n++] = ps[i]; ps.length = n;
     if (ps.length) requestAnimationFrame(tick); else { running = false; ctx.clearRect(0, 0, W, H); }
   }
   // click / tap on empty space: burst + ribbon ripple
@@ -798,10 +915,15 @@
   }, { passive: true });
 
   // hero letters: dodge the cursor, jump when clicked/tapped
-  const wm = document.getElementById('wm');
-  const L = [...wm.querySelectorAll('.ch')].map(el => ({ el, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 }));
+  const wm = document.getElementById('wm'), FXwm = window.FXwm;
+  // tx/ty/tr: the transform last written (rounded like the CSS string), which is what the page above reads back
+  const L = FXwm.L = [...wm.querySelectorAll('.ch')].map(el => ({ el, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0, tx: 0, ty: 0, tr: 0, ts: '' }));
   let mx = -1e4, my = -1e4, lettersOn = false;
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; wake(); }, { passive: true });
+  // the loop sleeps once the letters are still; these are the only other things that change the forces on them
+  addEventListener('scroll', () => wake(), { passive: true });
+  addEventListener('resize', () => wake(), { passive: true });
+  FXwm.wake = () => wake();
   wm.addEventListener('click', (e) => { if (scrollY < innerHeight * .3) e.preventDefault(); });
   L.forEach(l => l.el.addEventListener('pointerdown', (e) => {
     if (scrollY > innerHeight * .3) return;
@@ -809,25 +931,33 @@
     const b = l.el.getBoundingClientRect(); FX.burst(b.left + b.width / 2, b.bottom - b.height * .1, 20, b.width * .5);
     wake();
   }));
-  function wake() { if (!lettersOn) { lettersOn = true; lt = performance.now(); requestAnimationFrame(letters); } }
-  let lt = 0;
+  // after settling (where it used to keep running) it resumes from the last frame, as if it had never stopped
+  function wake() { if (!lettersOn) { lettersOn = true; lt = settled && FXwm.t !== undefined ? FXwm.t : performance.now(); settled = false; requestAnimationFrame(letters); } }
+  let lt = 0, settled = false;
   function letters(now) {
     const dt = Math.min(.04, (now - lt) / 1000); lt = now;
     const hero = scrollY < innerHeight * .6;
-    let energy = 0;
-    for (const l of L) {
+    let energy = 0, still = true;
+    for (let i = 0; i < L.length; i++) {
+      const l = L[i];
       let fx = 0, fy = 0;
       if (hero) {
-        const b = l.el.getBoundingClientRect(), cx = b.left + b.width / 2 - l.x, cy = b.top + b.height / 2 - l.y;
-        const dx = cx + l.x - mx, dy = cy + l.y - my, d = Math.hypot(dx, dy), R = Math.max(120, b.height * .9);
+        // the letter's on-screen center and bounding-box height, as getBoundingClientRect would report them, from the cached
+        // layout box (FXwm.ch), the wordmark's transform, and this letter's last written transform (no layout read per frame)
+        const c = FXwm.ch[i], s = FXwm.s, th = l.tr * Math.PI / 180;
+        const bh = s * (c.h * Math.abs(Math.cos(th)) + c.w * Math.abs(Math.sin(th)));
+        const dx = FXwm.x + s * (c.x + l.tx) - mx, dy = FXwm.y + s * (c.y + l.ty) - my, d = Math.hypot(dx, dy), R = Math.max(120, bh * .9);
         if (d < R) { const f = (1 - d / R) ** 2 * 5200; fx = dx / (d + 1) * f; fy = dy / (d + 1) * f; }
       }
       l.vx += (fx - l.x * 90 - l.vx * 11) * dt; l.vy += (fy - l.y * 90 - l.vy * 11) * dt; l.vr += (-l.r * 90 - l.vr * 9) * dt;
       l.x += l.vx * dt; l.y += l.vy * dt; l.r += l.vr * dt;
-      l.el.style.transform = `translate(${l.x.toFixed(1)}px, ${l.y.toFixed(1)}px) rotate(${l.r.toFixed(2)}deg)`;
+      const sx = l.x.toFixed(1), sy = l.y.toFixed(1), sr = l.r.toFixed(2), ts = `translate(${sx}px, ${sy}px) rotate(${sr}deg)`;
+      if (ts !== l.ts) { l.ts = ts; l.el.style.transform = ts; l.tx = +sx; l.ty = +sy; l.tr = +sr; still = false; }
+      if (Math.abs(l.vx) + Math.abs(l.vy) + Math.abs(l.vr) > .01) still = false;
       energy += Math.abs(l.x) + Math.abs(l.y) + Math.abs(l.r) + Math.abs(l.vx) + Math.abs(l.vy) + (hero && mx > -1e3 ? 1 : 0);
     }
-    if (energy > .05) requestAnimationFrame(letters); else lettersOn = false;
+    // keep going while anything moves; a cursor resting over the hero no longer keeps it spinning once the letters have settled
+    if (energy > .05 && !still) requestAnimationFrame(letters); else { lettersOn = false; settled = energy > .05; }
   }
 })();
 
@@ -872,12 +1002,17 @@
       `</div><canvas></canvas><div class="url">${esc(href.startsWith('/') ? 'iter.ca' + href : href.replace(/^mailto:/, '').replace(/^https:\/\//, ''))}${ext ? ' ↗' : ''}</div>`;
     inner.querySelectorAll('img').forEach(im => { const ok = () => im.classList.add('ok'); im.complete ? ok() : im.addEventListener('load', ok); });
     strip(inner.querySelector('canvas'), href);
+    measureHc();
     return true;
   }
   // state: everything eases (position, opacity, scale) so switching links glides instead of jumping
   let el = null, px = 0, shown = 0, show = 0, x = 0, y = 0, tx = 0, ty = 0, placed = false, timer = 0, raf = 0;
+  // the card's size only changes when its content does: measured then (and by a ResizeObserver), not every frame
+  let hcW = 0, hcH = 0;
+  const measureHc = () => { hcW = hc.offsetWidth; hcH = hc.offsetHeight; };
+  new ResizeObserver(measureHc).observe(hc);
   function target() {
-    const r = el.getBoundingClientRect(), w = hc.offsetWidth, h = hc.offsetHeight, vw = innerWidth, vh = innerHeight;
+    const r = el.getBoundingClientRect(), w = hcW, h = hcH, vw = innerWidth, vh = innerHeight;
     if (r.bottom < 0 || r.top > vh) { setEl(null); return; }
     const ax = r.width > 260 ? px : r.left + Math.min(r.width / 2, 40);
     tx = Math.max(12, Math.min(vw - w - 12, ax - 30));

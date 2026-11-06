@@ -475,7 +475,7 @@
     cur.place === 'Toronto' ? '🏠 home base' : `<b>${fromHome.toLocaleString('en-CA')} km</b> from home 🏠`,
     `<b>${countries}</b> countries`, `<b>≈${Math.round(travelled / 1000)}k km</b> covered`, `<b>${merged.length}</b> stays since 2024`,
   ].map(x => `<li>${x}</li>`).join('');
-  $('#here-mini').innerHTML = `<span class="live-dot"></span>${cur.place.toLowerCase()}${live ? ' · since ' + fmt(cur.from) : ''}`;
+  $('#here-mini').textContent = `${cur.place.toLowerCase()}${live ? ' · since ' + fmt(cur.from) : ''}`;
 
   // ---- trail chips, newest first ----
   const past = merged.filter(m => m !== cur || !live).slice().reverse();

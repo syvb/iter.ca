@@ -68,15 +68,10 @@
           <li><a href="/index.xml">RSS</a></li>
         </ul>
       </div>{{ end }}
-      <div class="intro-col intro-done">
-        <p class="hl-h">{{ (.Resources.GetMatch "done.md").Title }}</p>
-        <ol class="list hl-list num">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "done.md") "Style" "done") }}
-        </ol>
-      </div>
-      <div class="intro-col intro-recent">
-        <p class="hl-h"><a class="hl-self" href="/stream/interesting/">recent</a></p>
-        <ol class="list hl-list">
-        {{ partial "new-home/recent.html" (dict "Site" .Site "Limit" 30 "Kind" true) }}
+      <div class="intro-col intro-list">
+        <p class="hl-h">{{ (.Resources.GetMatch "done.md").Title }}&nbsp;+&nbsp;<a class="hl-self" href="/stream/interesting/">recent</a></p>
+        <ol class="list hl-list">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "done.md") "Style" "top") }}
+        {{ partial "new-home/recent.html" (dict "Site" .Site "Limit" 30 "Kind" true "Extra" 20) }}
         </ol>
       </div>
     </div>

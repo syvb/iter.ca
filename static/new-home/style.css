@@ -76,7 +76,7 @@
   /* first screen below the wordmark: intro + "elsewhere" on top, then things-I've-done and recent; the wordmark is sized so at
      least 5.5 rows show on the first screen (layout() measures with .fit), and the rest of the lists continue down the page */
   .intro { --rh: 34px; flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-           grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "text else" "done recent";
+           grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "text else" "list list";
            gap: clamp(14px, 2.4vh, 26px) clamp(24px, 4vw, 64px); margin-top: clamp(34px, 5vh, 56px); max-width: 1240px; width: 100%; }
   .intro-text { grid-area: text; }
   .intro-text p { margin: 0 0 10px; color: #c9c6d3; font-size: clamp(15px, 1.2vw, 16.5px); line-height: 1.55; max-width: 36em; }
@@ -90,8 +90,9 @@
   .hl-h a:hover { color: var(--fg); }
   .hl-h a.hl-self { margin-left: 0; color: inherit; letter-spacing: inherit; border-bottom: 1px solid var(--line); }   /* the heading itself links to everything */
   .hl-h a.hl-self:hover, .hl-h a.hl-self:focus-visible { color: var(--fg); border-color: var(--mag); }
-  .intro-recent { grid-area: recent; } .intro-done { grid-area: done; }
-  .intro-done { align-self: start; }
+  .intro-list { grid-area: list; }
+  /* things I've done lead the merged list, in bold, then recent items by date */
+  .hero .hl-list li.top .t { font-weight: 700; color: var(--fg); }
   .fit .intro-col .hl-list { height: calc(5.5 * var(--rh) + 2px); overflow: hidden; }
   .intro-col { display: flex; flex-direction: column; min-height: 0; }
   .intro-col .hl-list { flex: 0 0 auto; margin: 0 -10px; padding-right: 4px;
@@ -132,10 +133,10 @@
     .hero .hl-list .t { font-size: 14px; }
   }
   @media (min-width: 700px) and (max-height: 640px) { .intro { --rh: 27px; } }
-  /* phones: one continuous page, the desktop first screen stacked: bio and links, things I've done, elsewhere, then recent */
+  /* phones: one continuous page, the desktop first screen stacked: bio and links, elsewhere, then the merged list */
   @media (max-width: 699.98px) {
     .intro-col .hl-list { height: auto; overflow: visible; }
-    .intro-recent .hl-list li:nth-child(n+21) { display: none; }   /* the same 20 as the current homepage; "everything →" has the rest */
+    .intro-list .hl-list li.x { display: none; }   /* the same 20 recent items as the current homepage; "recent" links to the rest */
     .hero .intro-col .hl-list a { grid-template-columns: 44px minmax(0, 1fr) 14px; grid-template-areas: none; padding: 0 10px; margin: 0; }
     .hero .intro-col .hl-list a > * { grid-area: auto; }
     .hero .intro-col .hl-list a { height: auto; min-height: var(--rh); padding-top: 7px; padding-bottom: 7px; align-items: baseline; }
@@ -319,7 +320,7 @@
     .list .ar { grid-area: ar; align-self: center; }
     .corner-meta.tr { display: none; }
     .hero { justify-content: flex-start; padding-top: 88px; }
-    .intro { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "text" "done" "else" "recent"; flex: 0 0 auto; row-gap: 34px; }
+    .intro { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "text" "else" "list"; flex: 0 0 auto; row-gap: 34px; }
     .corner-meta.bl, .corner-meta.br { display: none; }
     .sh .more { display: none; }
     .layers { --gx: 17px; --lpad: 46px; padding-right: 18px; }

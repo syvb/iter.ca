@@ -276,9 +276,10 @@
   let ux = 0, uy = 0, vx = 0, vy = 0;                 // user-applied spin + inertia
   let tiltX = 0, tiltY = 0, hov = 0, pop = 0, popV = 0, flash = 0;
   let rips = [], sx = -1e4, sy = -1e4, boost = 0, flashK = 0, hovT = 0, curSt = { x: 0, y: 0, s: 0 }, drag = null, pokes = 0;
-  addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; mOnT = 1; }, { passive: true });
+  // the glow that follows the pointer is for mice (and pens) only: on touch screens nothing should trail the finger
+  addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; mx = e.clientX; my = e.clientY; mOnT = 1; }, { passive: true });
   let pressed = false, pressT0 = -1, foc = 0;         // press focus: the cursor glow narrows while held (and briefly after a tap)
-  addEventListener('pointerdown', (e) => { mx = e.clientX; my = e.clientY; mOnT = 1; pressed = true; pressT0 = performance.now(); }, { passive: true });
+  addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') return; mx = e.clientX; my = e.clientY; mOnT = 1; pressed = true; pressT0 = performance.now(); }, { passive: true });
   addEventListener('pointercancel', () => { pressed = false; }, { passive: true });
   document.addEventListener('pointerleave', () => { mOnT = 0; });
   addEventListener('pointerup', (e) => { pressed = false; if (e.pointerType !== 'mouse') mOnT = 0; }, { passive: true });

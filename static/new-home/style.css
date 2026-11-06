@@ -40,6 +40,10 @@
   .motion #wm-home { height: 1px; }
 
   main { position: relative; z-index: 1; }
+  /* until the first layout with the web fonts: background only, then fade the content in */
+  main, footer, .wm, .where-hover { transition: opacity .35s ease; }
+  .boot main, .boot footer, .boot .wm, .boot .where-hover { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { main, footer, .wm, .where-hover { transition: none; } }
 
   /* ---------- hero ---------- */
   .hero { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-bottom: 24px !important;

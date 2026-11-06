@@ -426,7 +426,11 @@
   addEventListener('resize', () => { layout(); if (!motion) requestAnimationFrame(frame); }, { passive: true });
   layout();
   requestAnimationFrame(frame);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (!motion) requestAnimationFrame(frame); });
+  // reveal once laid out with the web fonts, or 350ms after this first layout with whatever font is there (the fonts.ready relayout still follows)
+  const reveal = () => { if (!root.classList.contains('boot')) return; layout(); if (!motion) requestAnimationFrame(frame); requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('boot'))); };
+  setTimeout(reveal, 350);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (!motion) requestAnimationFrame(frame); reveal(); });
+  else reveal();
 })();
 
 /* where — location data from the /where/ spreadsheet export (snapshot; Plane rows dropped), shown in the corner and its hover card */

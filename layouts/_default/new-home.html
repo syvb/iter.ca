@@ -14,8 +14,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/new-home/style.css">
+<link rel="preload" href="/new-home/app.js" as="script">
 <script>
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+  // hide the content until app.js has laid it out (it removes .boot), so nothing jumps; never longer than 1.5s
+  document.documentElement.classList.add('boot');
+  setTimeout(() => document.documentElement.classList.remove('boot'), 1500);
 </script>
 </head>
 <body id="top">

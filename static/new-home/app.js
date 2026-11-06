@@ -215,7 +215,9 @@
   function stepWake(dt) {
     chs.forEach((el, i) => { const b = el.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2, W = wake[i];
       const v = W.init ? Math.hypot(cx - W.x, cy - W.y) / Math.max(dt, 1e-3) : 0; W.x = cx; W.y = cy; W.init = true;
-      W.e += (Math.min(1, v / 900) - W.e) * (1 - Math.exp(-dt * (v / 900 > W.e ? 10 : 1.6))); });
+      // two chained easings (an S-curve): a letter launched by a click ramps its ripples in instead of popping them on
+      const T = Math.min(1, v / 900); W.t = (W.t || 0) + (T - (W.t || 0)) * (1 - Math.exp(-dt * (T > (W.t || 0) ? 6 : 1.6)));
+      W.e += (W.t - W.e) * (1 - Math.exp(-dt * 4)); });
   }
 
   // ---------- layout ----------
@@ -377,7 +379,7 @@
       tiltX = lerp(tiltX, clamp((mx - curSt.x) / Math.max(80, curSt.s)) * tw2 * .6, .08);
       tiltY = lerp(tiltY, clamp((my - curSt.y) / Math.max(80, curSt.s)) * tw2 * .6, .08);
       mOn = lerp(mOn, mOnT, .06);
-      { const focT = pressed || now - pressT0 < 250 ? 1 : 0; foc += (focT - foc) * (1 - Math.exp(-dt * (focT > foc ? 12 : 3))); }   // eased both ways, never a jump
+      { const focT = pressed || now - pressT0 < 250 ? 1 : 0; foc += (focT - foc) * (1 - Math.exp(-dt * (focT > foc ? 6 : 3))); }   // eased both ways, never a jump
       const a = .55 + y * .0042 + time * .22 + spin + ux + tiltX;
       // mostly upright: the spin is around the vertical axis, with only a little lean toward the viewer and roll
       const b = .24 + Math.sin(y * .0011 + time * .15) * .12 + uy + tiltY;

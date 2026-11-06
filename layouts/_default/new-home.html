@@ -10,16 +10,13 @@
 <meta name="theme-color" content="#121214">
 <link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="/index.xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="preload" href="/new-home/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/new-home/fonts/dm-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/new-home/fonts/dm-mono-500-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/new-home/style.css">
 <link rel="preload" href="/new-home/app.js" as="script">
 <script>
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
-  // hide the content until app.js has laid it out (it removes .boot), so nothing jumps; never longer than 1.5s
-  document.documentElement.classList.add('boot');
-  setTimeout(() => document.documentElement.classList.remove('boot'), 1500);
 </script>
 </head>
 <body id="top">
@@ -46,11 +43,9 @@
   </div>
 </div>
 
-<h1 class="wm" id="wm"><a href="#top" aria-label="iter.ca — back to top"><span class="ch">i</span><span class="ch">t</span><span class="ch">e</span><span class="ch">r</span><span class="dot">.<i class="bl"></i></span><span class="ch">c</span><span class="ch">a</span></a></h1>
-
 <main>
   <section class="hero" aria-label="intro">
-    <div id="wm-home"></div>
+    <div id="wm-home"><h1 class="wm" id="wm"><a href="#top" aria-label="iter.ca — back to top"><span class="ch">i</span><span class="ch">t</span><span class="ch">e</span><span class="ch">r</span><span class="dot">.<i class="bl"></i></span><span class="ch">c</span><span class="ch">a</span></a></h1></div>
     <div class="intro">
       <div class="intro-text">
         {{ .Content }}

@@ -5,6 +5,8 @@
   const wm = $('#wm'), home = $('#wm-home'), dot = $('#wm .dot'), bl = $('#wm .bl'), bar = $('.bar');
   const slotCorner = $('#slot-corner'), slotFoot = $('#slot-foot');
   const cOct = $('#oct'), cGlow = $('#glow');
+  // the wordmark is painted in its slot until now; from here it floats over the page (placed by layout() before the next paint)
+  if (motion) document.body.insertBefore(wm, $('main'));
 
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -426,11 +428,8 @@
   addEventListener('resize', () => { layout(); if (!motion) requestAnimationFrame(frame); }, { passive: true });
   layout();
   requestAnimationFrame(frame);
-  // reveal once laid out with the web fonts, or 350ms after this first layout with whatever font is there (the fonts.ready relayout still follows)
-  const reveal = () => { if (!root.classList.contains('boot')) return; layout(); if (!motion) requestAnimationFrame(frame); requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('boot'))); };
-  setTimeout(reveal, 350);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (!motion) requestAnimationFrame(frame); reveal(); });
-  else reveal();
+  // relayout once the web fonts are in (the first layout may have used the fallback font)
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (!motion) requestAnimationFrame(frame); });
 })();
 
 /* where — location data from the /where/ spreadsheet export (snapshot; Plane rows dropped), shown in the corner and its hover card */

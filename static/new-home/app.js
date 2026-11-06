@@ -399,7 +399,7 @@
       g.useProgram(O.pr.p); g.bindVertexArray(O.vao);
       g.uniformMatrix3fv(O.pr.u.uR, false, R);
       g.uniform2f(O.pr.u.uC, st.x, st.y); g.uniform1f(O.pr.u.uS, S); g.uniform2f(O.pr.u.uRes, vw, vh);
-      g.uniform1f(O.pr.u.uEdge, clamp(3.2 / (S * 1.15), .045, .16));
+      g.uniform1f(O.pr.u.uEdge, Math.max(.04, 1.1 / (S * 1.15)));   // edges scale with the gem (a fixed share of each face), never thinner than ~1px
       g.uniform1i(O.pr.u.uPass, 0); g.drawArrays(g.TRIANGLES, 0, 24);
       g.uniform1i(O.pr.u.uPass, 1); g.drawArrays(g.TRIANGLES, 0, 24);
 

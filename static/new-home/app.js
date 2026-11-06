@@ -232,7 +232,7 @@
       const cx = motion ? FXwm.x + FXwm.s * (c.x + (l ? l.tx : 0)) : c.x - scrollX, cy = motion ? FXwm.y + FXwm.s * (c.y + (l ? l.ty : 0)) : c.y - scrollY;
       const v = W.init ? Math.hypot(cx - W.x, cy - W.y) / Math.max(dt, 1e-3) : 0; W.x = cx; W.y = cy; W.init = true;
       // two chained easings (an S-curve): a letter launched by a click ramps its ripples in instead of popping them on
-      const T = Math.min(1, v / 900); W.t = (W.t || 0) + (T - (W.t || 0)) * (1 - Math.exp(-dt * (T > (W.t || 0) ? 6 : 1.6)));
+      const T = l && l.jumpUntil > performance.now() ? 0 : Math.min(1, v / 900); W.t = (W.t || 0) + (T - (W.t || 0)) * (1 - Math.exp(-dt * (T > (W.t || 0) ? 6 : 1.6)));
       W.e += (W.t - W.e) * (1 - Math.exp(-dt * 4)); });
   }
 
@@ -928,7 +928,9 @@
   L.forEach(l => l.el.addEventListener('pointerdown', (e) => {
     if (scrollY > innerHeight * .3) return;
     l.vy -= 900 + Math.random() * 500; l.vr += (Math.random() - .5) * 900;
+    l.jumpUntil = performance.now() + 1400;   // the jump itself doesn't stir the landscape; the click ripples it like any other click
     const b = l.el.getBoundingClientRect(); FX.burst(b.left + b.width / 2, b.bottom - b.height * .1, 20, b.width * .5);
+    window.FXglow && FXglow.ripple(e.clientX, e.clientY);
     wake();
   }));
   // after settling (where it used to keep running) it resumes from the last frame, as if it had never stopped

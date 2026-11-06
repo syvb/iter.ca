@@ -373,8 +373,9 @@
       tiltY = lerp(tiltY, clamp((my - curSt.y) / Math.max(80, curSt.s)) * tw2 * .6, .08);
       mOn = lerp(mOn, mOnT, .06);
       const a = .55 + y * .0042 + time * .22 + spin + ux + tiltX;
-      const b = .5 + Math.sin(y * .0011 + time * .15) * .35 + uy + tiltY;
-      const c = -.35 + Math.sin(y * .0007) * .25;
+      // mostly upright: the spin is around the vertical axis, with only a little lean toward the viewer and roll
+      const b = .24 + Math.sin(y * .0011 + time * .15) * .12 + uy + tiltY;
+      const c = -.08 + Math.sin(y * .0007) * .06;
       const R = rotMat(a, b, c);
       const g = go;
       g.viewport(0, 0, cOct.width, cOct.height);

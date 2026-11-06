@@ -20,7 +20,10 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>Observable: <a href="https://observablehq.com/@smitop">@smitop</a></li>
 <li>Kaggle: <a href="https://www.kaggle.com/smitop">@smitop</a></li>
 <li>Hugging Face: <a href="https://huggingface.co/syvb">@syvb</a></li>
+<li class="inactive">GitLab: <a href="https://gitlab.com/syvb">@syvb</a></li>
+<li class="inactive">KDE Invent: <a href="https://invent.kde.org/smitop">@smitop</a></li>
 <li class="inactive">sr.ht: <a href="https://sr.ht/~smitop/">~smitop</a></li>
+<li class="inactive">DEV: <a href="https://dev.to/smitop">@smitop</a></li>
 </ul>
 
 ### Social media
@@ -32,7 +35,9 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>Youtube: <a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">iter</a></li>
 <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Special:Contributions/Smitop">User:Smitop</a></li>
 <li>Flickr: <a href="https://www.flickr.com/photos/204436251@N02/">lotsofloops</a></li>
+<li>Manifold: <a href="https://manifold.markets/loops">@loops</a></li>
 <li class="inactive">X/Twitter: <a href="https://x.com/_smitop">@_smitop</a></li>
+<li class="inactive">wasteof.money: <a href="https://wasteof.money/users/smitop">@smitop</a></li>
 </ul>
 
 ### Chat

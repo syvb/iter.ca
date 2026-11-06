@@ -788,7 +788,9 @@
   // click / tap on empty space: burst + ribbon ripple
   const interactive = 'a, button, input, #oct-hit, .strip, .node, .stream-hit, .wm';
   addEventListener('pointerdown', (e) => {
-    if (e.target.closest(interactive)) return;
+    // the big wordmark's gaps (e.g. above the octahedron between "iter" and "ca") count as empty space; its letters have their own jump
+    const inWm = e.target.closest('.wm'), bigWm = inWm && scrollY < innerHeight * .3 && !e.target.closest('.ch');
+    if (e.target.closest(interactive) && !bigWm) return;
     FX.burst(e.clientX, e.clientY, 26, 14);
     window.FXglow && FXglow.ripple(e.clientX, e.clientY);
   }, { passive: true });

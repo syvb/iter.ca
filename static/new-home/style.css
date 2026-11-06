@@ -88,6 +88,8 @@
   .intro .hl-h { display: flex; margin: 2px 0 6px; font: 400 12px/1 var(--mono); color: var(--faint); letter-spacing: .08em; }
   .hl-h a { margin-left: auto; color: var(--dim); text-decoration: none; letter-spacing: .02em; }
   .hl-h a:hover { color: var(--fg); }
+  .hl-h a.hl-self { margin-left: 0; color: inherit; letter-spacing: inherit; border-bottom: 1px solid var(--line); }   /* the heading itself links to everything */
+  .hl-h a.hl-self:hover, .hl-h a.hl-self:focus-visible { color: var(--fg); border-color: var(--mag); }
   .intro-recent { grid-area: recent; } .intro-done { grid-area: done; }
   .intro-col { display: flex; flex-direction: column; min-height: 0; }
   .intro-col .hl-list { flex: 1 0 auto; height: calc(5.5 * var(--rh) + 2px); overflow-y: auto; margin: 0 -10px; padding-right: 4px;

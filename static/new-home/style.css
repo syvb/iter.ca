@@ -73,10 +73,10 @@
   .hero .intro p, .hero .hl-list a, .corner-meta { text-shadow: 0 0 3px var(--bg), 0 0 10px var(--bg), 0 0 18px rgba(18,18,20,.9); }
   .hero .intro .hl-h, .hero .hl-list .m, .hero .hl-list .ar, .hero .intro-text > ul a { color: #9a96a8; }
   .hero .intro-text p { color: #d4d1dd; }
-  /* first screen below the wordmark: intro + "elsewhere" on top, then recent and things-I've-done as scroll boxes that
+  /* first screen below the wordmark: intro + "elsewhere" on top, then things-I've-done and recent as scroll boxes that
      always show at least 5.5 rows and grow into whatever height is left */
   .intro { --rh: 34px; flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-           grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "text else" "recent done";
+           grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "text else" "done recent";
            gap: clamp(14px, 2.4vh, 26px) clamp(24px, 4vw, 64px); margin-top: clamp(34px, 5vh, 56px); max-width: 1240px; width: 100%; }
   .intro-text { grid-area: text; }
   .intro-text p { margin: 0 0 10px; color: #c9c6d3; font-size: clamp(15px, 1.2vw, 16.5px); line-height: 1.55; max-width: 36em; }

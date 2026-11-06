@@ -55,15 +55,15 @@
         <ul class="links">{{ partial "new-home/list.html" (dict "Page" . "Style" "links" "Skip" (string $.Content)) }}
         </ul>
       </div>{{ end }}
+      <div class="intro-col intro-done">
+        <p class="hl-h">{{ (.Resources.GetMatch "done.md").Title }}</p>
+        <ol class="list hl-list num">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "done.md") "Style" "done") }}
+        </ol>
+      </div>
       <div class="intro-col intro-recent">
         <p class="hl-h">recent <a href="/stream/interesting/">everything →</a></p>
         <ol class="list hl-list">
         {{ partial "new-home/recent.html" (dict "Site" .Site "Limit" 30 "Kind" true) }}
-        </ol>
-      </div>
-      <div class="intro-col intro-done">
-        <p class="hl-h">{{ (.Resources.GetMatch "done.md").Title }}</p>
-        <ol class="list hl-list num">{{ partial "new-home/list.html" (dict "Page" (.Resources.GetMatch "done.md") "Style" "done") }}
         </ol>
       </div>
     </div>

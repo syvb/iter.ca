@@ -1096,3 +1096,25 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !all.hidden) { set(false); btn.focus(); } });
   document.addEventListener('click', (e) => { if (!all.hidden && innerWidth >= 700 && !btn.contains(e.target) && !all.contains(e.target)) set(false); });
 })();
+
+/* double/triple-clicking empty space (e.g. playing with the clicks around the footer email) shouldn't select the nearest text:
+   a multi-click only starts a selection when it lands on text itself; single clicks, drags and multi-clicks on words still select */
+(() => {
+  const caret = (x, y) => {
+    if (document.caretPositionFromPoint) { const p = document.caretPositionFromPoint(x, y); return p && [p.offsetNode, p.offset]; }
+    const r = document.caretRangeFromPoint && document.caretRangeFromPoint(x, y); return r && [r.startContainer, r.startOffset];
+  };
+  const onText = (x, y) => {
+    const c = caret(x, y); if (!c || c[0].nodeType !== 3) return false;
+    const [n, o] = c, r = document.createRange();
+    for (let i = Math.max(0, o - 1); i <= Math.min(o, n.length - 1); i++) {   // the characters on either side of the caret
+      r.setStart(n, i); r.setEnd(n, i + 1);
+      for (const b of r.getClientRects()) if (x >= b.left - 1 && x <= b.right + 1 && y >= b.top && y <= b.bottom) return true;
+    }
+    return false;
+  };
+  addEventListener('mousedown', (e) => {
+    if (e.detail < 2 || e.button !== 0 || e.target.closest('input, textarea, [contenteditable]')) return;
+    if (!onText(e.clientX, e.clientY)) e.preventDefault();
+  });
+})();

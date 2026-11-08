@@ -102,7 +102,7 @@
                 {{- else if (eq .Item.Type "gh-pr") -}}
                     {{- .Item.Text | safeHTML | markdownify | plainify | htmlUnescape | truncate 150 -}}
                 {{- else -}}
-                    {{- .Item.Text | truncate 150 | markdownify | plainify | htmlUnescape | safeHTML -}}
+                    {{- .Item.Text | markdownify | plainify | htmlUnescape | truncate 150 -}}
                 {{- end -}}
             </div>
         {{- end -}}

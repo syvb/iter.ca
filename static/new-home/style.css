@@ -193,7 +193,7 @@
 
   /* ---------- interactions ---------- */
   #sparks { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5; pointer-events: none; image-rendering: pixelated; }
-  #oct-hit { position: fixed; left: 0; top: 0; z-index: 7; border-radius: 50%; cursor: grab; touch-action: none; -webkit-tap-highlight-color: transparent; display: none; }
+  #oct-hit { position: fixed; left: 0; top: 0; z-index: 7; border-radius: 50%; cursor: grab; touch-action: none; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; display: none; }
   .motion #oct-hit { display: block; }
   #oct-hit.drag { cursor: grabbing; }
   .no-gl #oct-hit { display: none; }

@@ -325,13 +325,20 @@
   document.addEventListener('pointerleave', () => { mOnT = 0; });
   addEventListener('pointerup', (e) => { pressed = false; if (e.pointerType !== 'mouse') mOnT = 0; }, { passive: true });
   window.FXglow = { ripple(x, y) { rips.push({ x, y, t0: performance.now() / 1000 }); if (rips.length > 4) rips.shift(); } };
+  // holding the gem still charges it (after a short grace, so plain clicks stay plain): full after ~1.6s. While it charges it
+  // winds up in the direction it'll be flung, squashes, glows and pulls sparks in; released, it spins faster and for longer
+  let spinF = 1.6, chV = 0, chPh = 0, full = false, suckAcc = 0;   // vx friction (lowered by a charged release), eased charge visuals
+  const charge = (now) => drag && !drag.far ? clamp(((now - drag.t0) / 1000 - .12) / 1.5) : 0;
   hit.addEventListener('pointerdown', (e) => {
     e.preventDefault(); hit.setPointerCapture(e.pointerId); hit.classList.add('drag');
-    drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: performance.now() };
-    vx = vy = 0;
+    const t = performance.now();
+    drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t, t0: t, dir: Math.random() < .5 ? -1 : 1, far: false };
+    vx = vy = 0; spinF = 1.6; full = false;
   });
+  hit.addEventListener('contextmenu', (e) => e.preventDefault());   // a long press on touch shouldn't open a menu
   hit.addEventListener('pointermove', (e) => {
     if (!drag) return;
+    if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) >= 6) drag.far = true;   // a drag, not a charge
     const now = performance.now(), dt = Math.max(8, now - drag.t) / 1000;
     const dx = (e.clientX - drag.x) * .012, dy = (e.clientY - drag.y) * .012;
     ux += dx; uy += dy; vx = lerp(vx, dx / dt, .5); vy = lerp(vy, dy / dt, .5);
@@ -342,12 +349,14 @@
     hit.classList.remove('drag');
     const moved = Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0);
     if (performance.now() - drag.t > 90) { vx *= .2; vy *= .2; }   // held still before release: little fling
-    if (moved < 6) {   // a click/tap: pop!
+    if (moved < 6) {   // a click/tap: pop! (k = how charged it was; 0 for a plain click)
+      const k = charge(performance.now());
       pokes++;
-      popV += 9 + Math.min(pokes, 12) * .6; flashK = Math.min(1.6, flashK + 1);
-      vx += (Math.random() < .5 ? -1 : 1) * (10 + Math.random() * 8); vy += (Math.random() - .5) * 8;
-      window.FX && FX.burst(curSt.x, curSt.y, 46 + Math.min(pokes * 4, 60), curSt.s * .9);
-      if (pokes % 7 === 0 && window.FX) FX.confetti(curSt.x, curSt.y);
+      popV += (9 + Math.min(pokes, 12) * .6) * (1 + .7 * k); flashK = Math.min(1.6 + .6 * k, flashK + 1 + .6 * k);
+      vx += drag.dir * (10 + Math.random() * 8) * (1 + .8 * k); vy += (Math.random() - .5) * 8 * (1 - .8 * k);   // charged spins stay upright
+      spinF = lerp(1.6, .35, k);   // full charge: ~9s of spin instead of ~2s
+      window.FX && FX.burst(curSt.x, curSt.y, 46 + Math.min(pokes * 4, 60) + (k * 90 | 0), curSt.s * .9 * (1 + .4 * k));
+      if ((pokes % 7 === 0 || k >= 1) && window.FX) FX.confetti(curSt.x, curSt.y);
     }
     drag = null;
   };
@@ -416,8 +425,13 @@
     if (O) {
       spin += vel * dt * .0035;
       // inertia + springs for the pointer-driven parts
-      if (!drag) { ux += vx * dt; uy += vy * dt; const f = Math.exp(-dt * 1.6); vx *= f; vy *= f; uy *= Math.exp(-dt * .9); }
-      popV += (-pop * 210 - popV * 13) * dt; pop += popV * dt; pop = Math.max(-.35, pop);
+      const chg = charge(now);
+      if (!drag) { ux += vx * dt; uy += vy * dt; vx *= Math.exp(-dt * spinF); vy *= Math.exp(-dt * 1.6); uy *= Math.exp(-dt * .9); }
+      else ux += drag.dir * 14 * chg * chg * dt;   // charging: winds up, spinning faster the longer it's held
+      // the charge's look follows it up closely and fades out after release (while the release flash takes over)
+      chV += (chg - chV) * (1 - Math.exp(-dt * (chg > chV ? 30 : 5))); chPh += dt * (4 + 14 * chV);
+      if (chg >= 1 && !full) { full = true; flashK = Math.min(2.2, flashK + .7); popV += 6; }   // fully charged: a throb
+      popV += (-(pop + .2 * chV) * 210 - popV * 13) * dt; pop += popV * dt; pop = Math.max(-.35, pop);   // squashes while charged
       // click/hover effects ease toward targets instead of snapping
       flashK *= Math.exp(-dt * 3.5); flash = lerp(flash, flashK, 1 - Math.exp(-dt * 14));
       hov = lerp(hov, hovT, 1 - Math.exp(-dt * 10));
@@ -448,10 +462,15 @@
       // halo behind the gem (stronger when it's large, mid-page)
       const haloAmt = motion ? lerp(.55, 1, sstep(.2, .9, clamp(y / kCorner))) : 1;
       g.useProgram(O.ph.p); g.bindVertexArray(O.hvao);
-      g.uniform2f(O.ph.u.uC, st.x, vh - st.y); g.uniform1f(O.ph.u.uS, S); g.uniform1f(O.ph.u.uH, haloAmt * (1 + hov * .5 + flash * 2.2));
+      if (chg > 0 && window.FX) {   // charging: sparks drawn in, more the fuller it gets
+        suckAcc += dt * (18 + 80 * chg); const n = suckAcc | 0;
+        if (n) { suckAcc -= n; FX.suck(st.x, st.y, st.s / 2 / 1.3, n); }
+      }
+      g.uniform2f(O.ph.u.uC, st.x, vh - st.y); g.uniform1f(O.ph.u.uS, S);
+      g.uniform1f(O.ph.u.uH, haloAmt * (1 + hov * .5 + flash * 2.2 + chV * (1.3 + .5 * Math.sin(chPh))));   // charge: brighter, pulsing faster
       g.uniform1f(O.ph.u.uPh, ph); g.uniform1f(O.ph.u.uDpr, dpr); g.uniform2f(O.ph.u.uOff, 0, 0);
-      // only shade the halo's own square: past 2 * 2.4 * S css px from the center it is below 1e-5 even at full flash
-      // (uH <= 5), which rounds to exactly 0 in the 8-bit canvas, so the pixels outside stay the cleared 0 either way
+      // only shade the halo's own square: past 2 * 2.4 * S css px from the center it is below 2e-5 even fully flashed and
+      // charged (uH < 9), which rounds to exactly 0 in the 8-bit canvas, so the pixels outside stay the cleared 0 either way
       { const r = 2 * 2.4 * S + 2, x0 = Math.max(0, Math.floor((st.x - r) * dpr)), y0 = Math.max(0, Math.floor((vh - st.y - r) * dpr));
         g.enable(g.SCISSOR_TEST); g.scissor(x0, y0, Math.max(0, Math.ceil((st.x + r) * dpr) - x0), Math.max(0, Math.ceil((vh - st.y + r) * dpr) - y0)); }
       g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
@@ -881,7 +900,15 @@
             .5 + Math.random() * .8, PAL[(h0 + i * .37 | 0) % PAL.length], Math.random() < .25 ? 2 : 1);
       }
     },
-    confetti(x, y) {   // every 7th poke of the octahedron
+    suck(x, y, r, n) {   // charging the octahedron: sparks from around it slide in (under it) and fade as they arrive
+      if (touch) return;
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2, d = r * (1.6 + Math.random() * 1.1), sp = (d - r * .3) * 3.2;   // drag 3.2: travels sp / 3.2
+        add(x + Math.cos(a) * d, y + Math.sin(a) * d, -Math.cos(a) * sp, -Math.sin(a) * sp, .4 + Math.random() * .3,
+            PAL[Math.random() * PAL.length | 0], Math.random() < .2 ? 2 : 1, 0);
+      }
+    },
+    confetti(x, y) {   // every 7th poke of the octahedron, and a fully charged one
       if (touch) return;
       for (let i = 0; i < 160; i++) {
         const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, sp = 300 + Math.random() * 700;

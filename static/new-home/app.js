@@ -325,20 +325,19 @@
   document.addEventListener('pointerleave', () => { mOnT = 0; });
   addEventListener('pointerup', (e) => { pressed = false; if (e.pointerType !== 'mouse') mOnT = 0; }, { passive: true });
   window.FXglow = { ripple(x, y) { rips.push({ x, y, t0: performance.now() / 1000 }); if (rips.length > 4) rips.shift(); } };
-  // holding the gem still charges it (after a short grace, so plain clicks stay plain): full after ~1.6s. While it charges it
-  // winds up in the direction it'll be flung, squashes, glows and pulls sparks in; released, it spins faster and for longer
+  // holding the gem charges it, moving or not (after a short grace, so plain clicks stay plain): full after ~1.6s. While it
+  // charges it winds up in the direction it'll be flung, squashes, glows and pulls sparks in; released, it spins faster and longer
   let spinF = 1.6, chV = 0, chPh = 0, full = false, suckAcc = 0;   // vx friction (lowered by a charged release), eased charge visuals
-  const charge = (now) => drag && !drag.far ? clamp(((now - drag.t0) / 1000 - .12) / 1.5) : 0;
+  const charge = (now) => drag ? clamp(((now - drag.t0) / 1000 - .12) / 1.5) : 0;
   hit.addEventListener('pointerdown', (e) => {
     e.preventDefault(); hit.setPointerCapture(e.pointerId); hit.classList.add('drag');
     const t = performance.now();
-    drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t, t0: t, dir: Math.random() < .5 ? -1 : 1, far: false };
+    drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t, t0: t, dir: Math.random() < .5 ? -1 : 1 };
     vx = vy = 0; spinF = 1.6; full = false;
   });
   hit.addEventListener('contextmenu', (e) => e.preventDefault());   // a long press on touch shouldn't open a menu
   hit.addEventListener('pointermove', (e) => {
     if (!drag) return;
-    if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) >= 6) drag.far = true;   // a drag, not a charge
     const now = performance.now(), dt = Math.max(8, now - drag.t) / 1000;
     const dx = (e.clientX - drag.x) * .012, dy = (e.clientY - drag.y) * .012;
     ux += dx; uy += dy; vx = lerp(vx, dx / dt, .5); vy = lerp(vy, dy / dt, .5);
@@ -349,8 +348,8 @@
     hit.classList.remove('drag');
     const moved = Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0);
     if (performance.now() - drag.t > 90) { vx *= .2; vy *= .2; }   // held still before release: little fling
-    if (moved < 6) {   // a click/tap: pop! (k = how charged it was; 0 for a plain click)
-      const k = charge(performance.now());
+    const k = charge(performance.now());   // how charged it was: 0 for a plain click or a quick flick
+    if (moved < 6 || k > 0) {   // a click/tap, or letting go of a charge (even after moving): pop!
       pokes++;
       popV += (9 + Math.min(pokes, 12) * .6) * (1 + .7 * k); flashK = Math.min(1.6 + .6 * k, flashK + 1 + .6 * k);
       vx += drag.dir * (10 + Math.random() * 8) * (1 + .8 * k); vy += (Math.random() - .5) * 8 * (1 - .8 * k);   // charged spins stay upright

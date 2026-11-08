@@ -325,10 +325,10 @@
   document.addEventListener('pointerleave', () => { mOnT = 0; });
   addEventListener('pointerup', (e) => { pressed = false; if (e.pointerType !== 'mouse') mOnT = 0; }, { passive: true });
   window.FXglow = { ripple(x, y) { rips.push({ x, y, t0: performance.now() / 1000 }); if (rips.length > 4) rips.shift(); } };
-  // holding the gem charges it, moving or not (after a short grace, so plain clicks stay plain): full after ~1.6s. While it
+  // holding the gem charges it, moving or not (after a short grace, so plain clicks stay plain): full after ~3s. While it
   // charges it winds up in the direction it'll be flung, squashes, glows and pulls sparks in; released, it spins faster and longer
   let spinF = 1.6, chV = 0, chPh = 0, full = false, suckAcc = 0;   // vx friction (lowered by a charged release), eased charge visuals
-  const charge = (now) => drag ? clamp(((now - drag.t0) / 1000 - .12) / 1.5) : 0;
+  const charge = (now) => drag ? clamp(((now - drag.t0) / 1000 - .12) / 3) : 0;
   hit.addEventListener('pointerdown', (e) => {
     e.preventDefault(); hit.setPointerCapture(e.pointerId); hit.classList.add('drag');
     const t = performance.now();
@@ -352,8 +352,9 @@
     if (moved < 6 || k > 0) {   // a click/tap, or letting go of a charge (even after moving): pop!
       pokes++;
       popV += (9 + Math.min(pokes, 12) * .6) * (1 + .7 * k); flashK = Math.min(1.6 + .6 * k, flashK + 1 + .6 * k);
-      vx += drag.dir * (10 + Math.random() * 8) * (1 + .8 * k); vy += (Math.random() - .5) * 8 * (1 - .8 * k);   // charged spins stay upright
-      spinF = lerp(1.6, .35, k);   // full charge: ~9s of spin instead of ~2s
+      vx += drag.dir * (10 + Math.random() * 8) * (1 + 2.6 * k); vy += (Math.random() - .5) * 8 * (1 - .8 * k);   // charged spins stay upright
+      // flung up to 3.6x as fast (~50 rad/s full); the friction bottoms out by half charge, so ~1.5s held already spins ~8s and a full one ~11s
+      spinF = lerp(1.6, .35, Math.min(1, 2 * k));
       window.FX && FX.burst(curSt.x, curSt.y, 46 + Math.min(pokes * 4, 60) + (k * 90 | 0), curSt.s * .9 * (1 + .4 * k));
       if ((pokes % 7 === 0 || k >= 1) && window.FX) FX.confetti(curSt.x, curSt.y);
     }
@@ -426,7 +427,7 @@
       // inertia + springs for the pointer-driven parts
       const chg = charge(now);
       if (!drag) { ux += vx * dt; uy += vy * dt; vx *= Math.exp(-dt * spinF); vy *= Math.exp(-dt * 1.6); uy *= Math.exp(-dt * .9); }
-      else ux += drag.dir * 14 * chg * chg * dt;   // charging: winds up, spinning faster the longer it's held
+      else ux += drag.dir * 28 * chg * chg * dt;   // charging: winds up, spinning faster the longer it's held
       // the charge's look follows it up closely and fades out after release (while the release flash takes over)
       chV += (chg - chV) * (1 - Math.exp(-dt * (chg > chV ? 30 : 5))); chPh += dt * (4 + 14 * chV);
       if (chg >= 1 && !full) { full = true; flashK = Math.min(2.2, flashK + .7); popV += 6; }   // fully charged: a throb

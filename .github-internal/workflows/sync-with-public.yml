@@ -23,6 +23,12 @@ jobs:
   sync:
     runs-on: ubuntu-24.04
     name: Sync with public repo
+    # one sync at a time: a run that starts while another is mid-sync clones the public repo before the other pushes,
+    # so its own push gets rejected. A pending run replaced by a newer push is fine to drop, since each sync copies
+    # the whole tree
+    concurrency:
+      group: iter-ca-public-sync
+      cancel-in-progress: false
     continue-on-error: true # for when there are no public changes
     steps:
     - name: Clone public repo

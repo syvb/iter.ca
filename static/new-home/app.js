@@ -143,11 +143,21 @@
     // ----- glow ribbon -----
     const GFS = `#version 300 es
     precision highp float;
+    precision highp int;
     uniform vec2 uRes; uniform float uT; uniform float uAmt; uniform float uPh; uniform float uHero; uniform float uWave; uniform float uMask; uniform vec3 uWk[7];
     uniform vec3 uM; uniform vec4 uRp[4]; uniform float uFoc;
     out vec4 o;
     ${PAL_GLSL}
-    float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    // Hash integer lattice corners: float/fract hashes can disagree at shared corners after GPU rounding/optimization,
+    // tearing the interpolated terrain along cell boundaries. Keep the hash in 32-bit integers (lowbias32).
+    float h21(vec2 p){
+      uvec2 q = uvec2(ivec2(p));
+      uint h = q.x ^ (q.y * 0x9e3779b9u);
+      h = (h ^ (h >> 16u)) * 0x7feb352du;
+      h = (h ^ (h >> 15u)) * 0x846ca68bu;
+      h ^= h >> 16u;
+      return float(h >> 8u) / 16777216.; // exactly representable, in [0, 1)
+    }
     float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
       return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y); }
     float fbm(vec2 p){ float a = .5, s = 0.; for (int i = 0; i < 4; i++) { s += a * vn(p); p = mat2(1.6, 1.2, -1.2, 1.6) * p; a *= .5; } return s; }

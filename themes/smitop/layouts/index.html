@@ -24,6 +24,10 @@
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}">
     <link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
     <link rel="canonical" href="{{ .Permalink }}" />
+    <script>
+        if (window.WebGL2RenderingContext && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('oct');
+    </script>
+    <script src="/avatar/oct.js?rel={{ substr (sha256 (readFile "static/avatar/oct.js")) 0 8 }}" defer onerror="document.documentElement.classList.remove('oct')"></script>
 </head>
 
 <body>
@@ -32,7 +36,12 @@
         <div id="metop">
             <div id="metop-left">
                 <div class="h-card">
-                    <a href="avatar/"><img src="/avatar/a256.png" alt="avatar" id="avatar" class="u-photo" width="160" height="160"></a>
+                    <div id="oct-box">
+                        <a href="avatar/"><img src="/avatar/a256.png" alt="avatar" id="avatar" class="u-photo" width="160" height="160"></a>
+                        <canvas id="oct" aria-hidden="true"></canvas>
+                        <div id="oct-hit" aria-hidden="true"></div>
+                        <canvas id="sparks" aria-hidden="true"></canvas>
+                    </div>
                     <div id="hi-message">
                         <!-- <a href="/" class="smitop p-nickname u-url" rel="me">{{.Site.Params.author}}</a> -->
                     </div>

@@ -368,6 +368,97 @@ blockquote > p:last-child {
     display: inline;
 }
 
+/* on the homepage, the spinning octahedron (/avatar/oct.js) replaces the avatar when the "oct" class is set. The hidden
+   avatar keeps its place in the layout, so nothing around it moves; the gem is --oct big (oct.js reads it), centered on
+   the avatar's spot, and overflows it */
+#oct-box {
+    --oct: 224px;
+    display: inline-block;
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+#oct-box #avatar {
+    display: block;
+    margin-top: 0;
+}
+
+#oct, #oct-hit, #sparks {
+    display: none;
+}
+
+.oct #oct-box > a {
+    visibility: hidden;
+}
+
+/* nudged (which moves nothing else) so the gem clears the top bar and the window's left edge */
+.oct #oct-box {
+    left: 16px;
+    top: 16px;
+}
+
+/* a soft haze in the gem's colors behind it, under the page's text */
+.oct #oct-box::before {
+    content: "";
+    position: absolute;
+    left: calc(50% - var(--oct) / 2);
+    top: calc(50% - var(--oct) / 2);
+    width: var(--oct);
+    height: var(--oct);
+    border-radius: 50%;
+    background: conic-gradient(#e700ce, #a400e8, #4500e7, #00e7e7, #2fe700, #e7cf00, #e700ce);
+    filter: blur(30px);
+    opacity: 0.38;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* the canvas is bigger than the gem, so a popped or charged gem has room to grow */
+.oct #oct {
+    display: block;
+    position: absolute;
+    left: calc(50% - var(--oct) * 0.75);
+    top: calc(50% - var(--oct) * 0.75);
+    width: calc(var(--oct) * 1.5);
+    height: calc(var(--oct) * 1.5);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.oct #oct-hit {
+    display: block;
+    position: absolute;
+    left: calc(50% - var(--oct) * 0.4);
+    top: calc(50% - var(--oct) * 0.4);
+    width: calc(var(--oct) * 0.8);
+    height: calc(var(--oct) * 0.8);
+    border-radius: 50%;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    z-index: 2;
+}
+
+#oct-hit.drag {
+    cursor: grabbing;
+}
+
+/* the gem's sparks fly over the page, under the gem */
+.oct #sparks {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    image-rendering: pixelated;
+    z-index: 0;
+}
+
 #me-links {
     line-height: 1.8;
 }

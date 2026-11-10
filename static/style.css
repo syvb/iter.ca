@@ -456,6 +456,7 @@ dl {
 
 .comment-meta {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.4em;
 }
@@ -494,6 +495,62 @@ dl {
 .comment-text {
     margin-top: 0.2em;
     white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.comment-html {
+    margin-top: 0.2em;
+    overflow-wrap: break-word;
+}
+
+.comment-html > :last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.comment-html ol {
+    margin: 0;
+    padding-bottom: 1rem;
+}
+
+/* LessWrong footnotes: keep the note on the same line as its ^ back-link. */
+.comment-html li > div,
+.comment-html li > div > p:first-child {
+    display: inline;
+}
+
+.comment-html li > div {
+    margin-left: 0.3em;
+}
+
+.comment-html img {
+    max-width: 100%;
+    height: auto;
+}
+
+.comment-html :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 1em;
+}
+
+.comment-html summary > * {
+    display: inline;
+}
+
+/* Wide tables scroll inside the comment instead of widening the page. */
+.comment-html table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.comment-html :is(td, th) {
+    border: 1px solid #ccc;
+    padding: 0.2em 0.4em;
+}
+
+.comment-html :is(td, th) > p {
+    padding-bottom: 0;
 }
 
 .list-date {

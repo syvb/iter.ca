@@ -70,6 +70,7 @@
       {{ end }}
       {{ $commentQuery := slice }}
       {{ with .Params.bsky }}{{ $commentQuery = $commentQuery | append (querify "bsky" .) }}{{ end }}
+      {{ with .Params.lw }}{{ $commentQuery = $commentQuery | append (querify "lw" .) }}{{ end }}
       {{ if gt (len $commentQuery) 0 }}
         <hr>
         <section id="comments">
@@ -78,7 +79,8 @@
           <script>
             (function () {
               var body = document.getElementById("comments-body");
-              var sourceNames = { bsky: "Bluesky" };
+              var sourceNames = { bsky: "Bluesky", lw: "LessWrong" };
+              function sourceName(type) { return sourceNames[type] || type; }
               function link(href, text, cls) {
                 var a = document.createElement("a");
                 if (/^https:\/\//.test(href)) a.href = href;
@@ -86,8 +88,50 @@
                 if (cls) a.className = cls;
                 return a;
               }
+              function resolve(url, base) {
+                try { return new URL(url, base); } catch (e) { return null; }
+              }
+              // LessWrong comments come with HTML, which is untrusted. It is parsed into an
+              // inert document (nothing in it runs or loads) and rebuilt here from scratch:
+              // only these tags, only the attributes set below, and text as text nodes.
+              var keepTags = /^(a|b|blockquote|br|code|del|details|div|em|figcaption|figure|h[1-6]|hr|i|img|li|ol|p|pre|s|span|strong|sub|summary|sup|table|tbody|td|th|thead|tr|u|ul)$/;
+              var dropTags = /^(script|style|template|noscript|iframe|object|embed|svg|math|textarea|title|form)$/;
+              function appendSafe(from, to, base) {
+                Array.prototype.forEach.call(from.childNodes, function (n) {
+                  if (n.nodeType === Node.TEXT_NODE) return to.appendChild(document.createTextNode(n.data));
+                  if (n.nodeType !== Node.ELEMENT_NODE) return;
+                  var tag = n.localName;
+                  // MathJax output needs its own CSS and fonts, so show the TeX source instead.
+                  if (tag === "mjx-container") return to.appendChild(document.createTextNode("$" + (n.getAttribute("aria-label") || "") + "$"));
+                  if (dropTags.test(tag)) return;
+                  if (!keepTags.test(tag)) return appendSafe(n, to, base);
+                  var el = document.createElement(tag);
+                  // Prefixed so footnote anchors work without clashing with the page's own ids.
+                  var id = n.getAttribute("id");
+                  if (id) el.id = "lwc-" + id;
+                  if (tag === "a" && n.hasAttribute("href")) {
+                    var href = n.getAttribute("href");
+                    var url = resolve(href, base);
+                    if (href[0] === "#") el.href = "#lwc-" + href.slice(1);
+                    else if (url && /^(https?|mailto):$/.test(url.protocol)) {
+                      el.href = url.href;
+                      el.rel = "nofollow ugc";
+                    }
+                  }
+                  if (tag === "img") {
+                    var src = n.hasAttribute("src") && resolve(n.getAttribute("src"), base);
+                    if (!src || src.protocol !== "https:") return;
+                    el.src = src.href;
+                    el.alt = n.getAttribute("alt") || "";
+                    el.loading = "lazy";
+                  }
+                  appendSafe(n, el, base);
+                  to.appendChild(el);
+                });
+              }
               function render(data) {
                 body.textContent = "";
+                var sources = data.sources || [];
                 data.comments.forEach(function (c) {
                   var div = document.createElement("div");
                   div.className = "comment";
@@ -111,11 +155,19 @@
                   }
                   meta.appendChild(document.createTextNode(" · "));
                   var when = new Date(c.createdAt);
-                  meta.appendChild(link(c.url, isNaN(when) ? "permalink" : when.toLocaleDateString("en-CA", { dateStyle: "medium" }), "comment-date"));
+                  var dateText = isNaN(when) ? "permalink" : when.toLocaleDateString("en-CA", { dateStyle: "medium" });
+                  // Comments from several sources are mixed together, so say where each one is.
+                  if (sources.length > 1) dateText += " on " + sourceName(c.source);
+                  meta.appendChild(link(c.url, dateText, "comment-date"));
                   div.appendChild(meta);
                   var text = document.createElement("div");
-                  text.className = "comment-text";
-                  text.textContent = c.text;
+                  if (c.html) {
+                    text.className = "comment-html";
+                    appendSafe(new DOMParser().parseFromString(c.html, "text/html").body, text, c.url);
+                  } else {
+                    text.className = "comment-text";
+                    text.textContent = c.text;
+                  }
                   div.appendChild(text);
                   body.appendChild(div);
                 });
@@ -124,15 +176,18 @@
                   none.textContent = "No comments yet.";
                   body.appendChild(none);
                 }
-                (data.sources || []).forEach(function (s) {
-                  if (!s.replyUrl) return;
+                var replyable = sources.filter(function (s) { return s.replyUrl; });
+                if (replyable.length) {
                   var p = document.createElement("p");
                   p.className = "comment-reply-cta";
-                  p.appendChild(document.createTextNode("Comment by replying "));
-                  p.appendChild(link(s.replyUrl, "on " + (sourceNames[s.type] || s.type)));
+                  p.appendChild(document.createTextNode("Comment by replying on "));
+                  replyable.forEach(function (s, i) {
+                    if (i) p.appendChild(document.createTextNode(" or "));
+                    p.appendChild(link(s.replyUrl, sourceName(s.type)));
+                  });
                   p.appendChild(document.createTextNode("."));
                   body.appendChild(p);
-                });
+                }
               }
               fetch("https://i--435e5bde84d411f196151607ee4eb77e.web.val.run/?{{ delimit $commentQuery "&" | safeJS }}")
                 .then(function (r) { return r.json(); })

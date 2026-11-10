@@ -67,13 +67,16 @@ When turning a note or draft into a post, NEVER edit the prose yourself: no rewo
 
 ## Comments
 
-A post gets a comment section from a single front matter param pointing at the Bluesky thread for it:
+A post gets a comment section from front matter params pointing at where it was shared: the Bluesky thread for it, its LessWrong crosspost, or both:
 
 ```toml
 bsky = "https://bsky.app/profile/iter.ca/post/<rkey>"
+lw = "https://www.lesswrong.com/posts/<postId>/<slug>"
 ```
 
-That param is the whole change; nothing else needs editing. `themes/smitop/layouts/post/single.html` renders `#comments` only when `.Params.bsky` is set, and its inline script fetches `https://i--435e5bde84d411f196151607ee4eb77e.web.val.run/?bsky=<url>`, which resolves the thread and returns `{comments, sources}`.
+Those params are the whole change; nothing else needs editing. `themes/smitop/layouts/post/single.html` renders `#comments` only when `.Params.bsky` or `.Params.lw` is set, and its inline script fetches `https://i--435e5bde84d411f196151607ee4eb77e.web.val.run/?bsky=<url>&lw=<url>` (val `i/bsky-comments`), which fetches each source and returns `{comments, sources}` with both sources' threads mixed into one list by date. LW comments also carry LW's rendered `html`, which the val passes through untrusted; the template's `appendSafe` rebuilds it from an allowlist of tags before display, and every other comment is shown as plain text.
+
+For `lw`, use the canonical LW URL of the crosspost (look up the post as in "Adding LessWrong posts").
 
 Given a Bluesky URL, confirm which post it belongs to from the link embed instead of guessing from the text:
 
@@ -91,4 +94,4 @@ To find the most recent post:
 grep -H '^date = ' content/post/*.md | sort -t'"' -k2 -r | head -5
 ```
 
-Verify by curling the comments endpoint with the new URL; a URL it can't resolve comes back with no `sources` entry. `"comments": []` just means no replies yet, which is normal for a fresh post.
+Verify by curling the comments endpoint with the new URL; a URL it can't resolve comes back with an `error` on its `sources` entry. `"comments": []` just means no replies yet, which is normal for a fresh post.

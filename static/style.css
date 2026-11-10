@@ -77,6 +77,11 @@ figure > img {
     margin-bottom: 0.2em;
 }
 
+/* Image-first Bayesian network embeds from /bn */
+[data-bn-embed] {
+    margin-bottom: 1rem;
+}
+
 figcaption {
     font-size: 95%;
     font-style: italic;

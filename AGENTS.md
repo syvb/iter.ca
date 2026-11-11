@@ -46,7 +46,7 @@ Skip `shortform: true` results (the shortform container, not a post), and skip p
 
 You may run Hugo when a build or preview is useful, but skip it when it is not needed (for example, for documentation-only changes).
 
-Only **Hugo 0.98.0 extended**, the exact version used in `.github/workflows/neocities.yml`, works for this site. Do not substitute another version or the non-extended build. In Amp orbs, `.agents/setup` already installs it as `hugo` on `PATH` and fetches the full Git history, so build with `rm -rf public && hugo -v -t smitop`. Elsewhere on Linux x86-64, install and build from the repository root using the Action's commands, which unpack Hugo into the gitignored `hugo-bin/` because the tarball also holds a `LICENSE` and `README.md` that would overwrite the repository's own:
+Only **Hugo 0.98.0 extended**, the exact version used in `.github/workflows/neocities.yml`, works for this site. Do not substitute another version or the non-extended build. In Amp orbs, `.agents/setup` already installs it as `hugo` on `PATH` and `.agents/resume` fetches the full Git history, so build with `rm -rf public && hugo -v -t smitop`. Elsewhere on Linux x86-64, install and build from the repository root using the Action's commands, which unpack Hugo into the gitignored `hugo-bin/` because the tarball also holds a `LICENSE` and `README.md` that would overwrite the repository's own:
 
 ```sh
 mkdir -p hugo-bin

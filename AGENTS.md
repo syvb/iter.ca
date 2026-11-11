@@ -74,7 +74,11 @@ bsky = "https://bsky.app/profile/iter.ca/post/<rkey>"
 lw = "https://www.lesswrong.com/posts/<postId>/<slug>"
 ```
 
-Those params are the whole change; nothing else needs editing. `themes/smitop/layouts/post/single.html` renders `#comments` only when `.Params.bsky` or `.Params.lw` is set, and its inline script fetches `https://i--435e5bde84d411f196151607ee4eb77e.web.val.run/?bsky=<url>&lw=<url>` (val `i/bsky-comments`), which fetches each source and returns `{comments, sources}` with both sources' threads mixed into one list by date. LW comments also carry LW's rendered `html`, which the val passes through untrusted; the template's `appendSafe` rebuilds it from an allowlist of tags before display, and every other comment is shown as plain text.
+Those params are the whole change; nothing else needs editing. Comments are baked in at build time: the deploy workflow runs `.github/bake-comments.py` before every Hugo build, fast or full. It reads `bsky` and `lw` from the front matter of the posts in `content/post/`, fetches each source, and writes `data/comments.json`, which maps a post's path under `content/` to `{comments, sources}` with both sources' threads mixed into one list by date. That file is gitignored; never commit it. `themes/smitop/layouts/post/single.html` renders `#comments` for a post with an entry there and embeds the entry in the page, so a page fetches nothing and its comments are as old as the last deploy (at most a day, from the daily build). LW comments also carry LW's rendered `html`, which the script passes through untrusted; the template's `appendSafe` rebuilds it from an allowlist of tags before display, and every other comment is shown as plain text.
+
+The deploy also publishes the file as `https://iter.ca/comments.json`. When the script can't fetch a source, it prints a `::warning::` and keeps that source's comments from there, so an outage at build time doesn't empty a comment section. With nothing to keep, the source gets an `error` and the build goes on.
+
+A local Hugo build has comment sections only if the script ran first (`python3 .github/bake-comments.py`); otherwise Hugo warns and leaves them out.
 
 For `lw`, use the canonical LW URL of the crosspost (look up the post as in "Adding LessWrong posts").
 
@@ -94,4 +98,4 @@ To find the most recent post:
 grep -H '^date = ' content/post/*.md | sort -t'"' -k2 -r | head -5
 ```
 
-Verify by curling the comments endpoint with the new URL; a URL it can't resolve comes back with an `error` on its `sources` entry. `"comments": []` just means no replies yet, which is normal for a fresh post.
+Verify by running `python3 .github/bake-comments.py`, which prints each post's comment count; a URL it can't resolve gets a `::warning::` line and an `error` on its `sources` entry in `data/comments.json`. 0 comments just means no replies yet, which is normal for a fresh post.

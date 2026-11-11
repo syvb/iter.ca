@@ -95,6 +95,9 @@ jobs:
       - name: Create subrepos
         if: ${{ steps.generation.outputs.full == 'true' }}
         run: ./subrepos.sh
+      # Posts embed the comments fetched here, so this runs on fast builds too.
+      - name: Bake comments
+        run: python3 -B .github/bake-comments.py
       - name: Build
         run: |
           rm -rf public
@@ -104,6 +107,8 @@ jobs:
           # uncomment for free plan:
           # find ./public -type f | grep -vE '(asc|atom|bin|css|csv|dae|eot|epub|geojson|gif|gltf|htm|html|ico|jpeg|jpg|js|json|key|kml|knowl|less|manifest|markdown|md|mf|mid|midi|mtl|obj|opml|otf|pdf|pgp|png|rdf|rss|sass|scss|svg|text|tsv|ttf|txt|webapp|webmanifest|webp|woff|woff2|xcf|xml)' | xargs rm
           cp public/404.html public/not_found.html
+          # the next build keeps these comments for any source it can't fetch
+          cp data/comments.json public/comments.json
       - name: Test Neocities audit
         if: ${{ steps.generation.outputs.full == 'true' }}
         run: python3 -B -m unittest discover -s .github/tests -p 'test_neocities*.py' -v

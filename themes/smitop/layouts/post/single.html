@@ -68,14 +68,19 @@
           Part of this text was drafted with <a href="https://www.anthropic.com/news/claude-3-5-sonnet">Claude 3.5 Sonnet</a>.
         </div>
       {{ end }}
-      {{ $commentQuery := slice }}
-      {{ with .Params.bsky }}{{ $commentQuery = $commentQuery | append (querify "bsky" .) }}{{ end }}
-      {{ with .Params.lw }}{{ $commentQuery = $commentQuery | append (querify "lw" .) }}{{ end }}
-      {{ if gt (len $commentQuery) 0 }}
+      {{ $comments := false }}
+      {{ if or .Params.bsky .Params.lw }}
+        {{/* .github/bake-comments.py fetches these before the build. */}}
+        {{ $comments = index (.Site.Data.comments | default dict) .File.Path }}
+        {{ if not $comments }}
+          {{ warnf "%s gets no comment section: run .github/bake-comments.py before building" .File.Path }}
+        {{ end }}
+      {{ end }}
+      {{ if $comments }}
         <hr>
         <section id="comments">
           <h2>Comments</h2>
-          <div id="comments-body">Loading comments&hellip;</div>
+          <div id="comments-body"></div>
           <script>
             (function () {
               var body = document.getElementById("comments-body");
@@ -173,7 +178,8 @@
                 });
                 if (!data.comments.length) {
                   var none = document.createElement("p");
-                  none.textContent = "No comments yet.";
+                  // A source that couldn't be fetched at build time has an error instead of comments.
+                  none.textContent = sources.some(function (s) { return s.error; }) ? "Couldn't load comments." : "No comments yet.";
                   body.appendChild(none);
                 }
                 var replyable = sources.filter(function (s) { return s.replyUrl; });
@@ -189,10 +195,7 @@
                   body.appendChild(p);
                 }
               }
-              fetch("https://i--435e5bde84d411f196151607ee4eb77e.web.val.run/?{{ delimit $commentQuery "&" | safeJS }}")
-                .then(function (r) { return r.json(); })
-                .then(render)
-                .catch(function () { body.textContent = "Couldn't load comments."; });
+              render({{ $comments }});
             })();
           </script>
         </section>

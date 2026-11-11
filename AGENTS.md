@@ -46,16 +46,17 @@ Skip `shortform: true` results (the shortform container, not a post), and skip p
 
 You may run Hugo when a build or preview is useful, but skip it when it is not needed (for example, for documentation-only changes).
 
-Only **Hugo 0.98.0 extended**, the exact version used in `.github/workflows/neocities.yml`, works for this site. Do not substitute another version or the non-extended build. On Linux x86-64, install and build from the repository root using the Action's commands:
+Only **Hugo 0.98.0 extended**, the exact version used in `.github/workflows/neocities.yml`, works for this site. Do not substitute another version or the non-extended build. In Amp orbs, `.agents/setup` already installs it as `hugo` on `PATH` and fetches the full Git history, so build with `rm -rf public && hugo -v -t smitop`. Elsewhere on Linux x86-64, install and build from the repository root using the Action's commands, which unpack Hugo into the gitignored `hugo-bin/` because the tarball also holds a `LICENSE` and `README.md` that would overwrite the repository's own:
 
 ```sh
-curl -L https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz > hugo.tar.gz
-tar xvzf hugo.tar.gz
+mkdir -p hugo-bin
+curl -L https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz > hugo-bin/hugo.tar.gz
+tar xvzf hugo-bin/hugo.tar.gz -C hugo-bin
 rm -rf public
-./hugo -v -t smitop
+hugo-bin/hugo -v -t smitop
 ```
 
-The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 22, stable Rust, wasm-pack, ImageMagick, zopfli, and Chrome for the social card).
+The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 22, stable Rust, wasm-pack, ImageMagick, zopfli, and Chrome for the social card). Orbs already have these tools, with a newer Node.js that also works.
 
 ## Images and static files
 

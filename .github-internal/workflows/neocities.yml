@@ -52,8 +52,9 @@ jobs:
           fetch-depth: '0'
       - name: Install Hugo
         run: |
-          curl -L https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz > hugo.tar.gz
-          tar xvzf hugo.tar.gz
+          mkdir -p hugo-bin
+          curl -L https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz > hugo-bin/hugo.tar.gz
+          tar xvzf hugo-bin/hugo.tar.gz -C hugo-bin
       # Blog/notes updates stay fast and never delete files. Daily/manual runs
       # (or changes to generation itself) build the complete tree before cleanup.
       - name: Choose full or fast generation
@@ -101,7 +102,7 @@ jobs:
       - name: Build
         run: |
           rm -rf public
-          ./hugo -v -t smitop
+          hugo-bin/hugo -v -t smitop
       - name: Prep for Neocities
         run: |
           # uncomment for free plan:

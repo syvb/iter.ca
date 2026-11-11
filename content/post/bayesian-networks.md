@@ -17,8 +17,8 @@ A node X with no arrows pointing into it has just a prior probability, P(X). A n
 
 Here's an example BN for diagnosing a houseplant:
 
-<div data-bn-embed="https://iter.ca/bn/?view&amp;src=https%3A%2F%2Fiter.ca%2Fbn-houseplant.svg&amp;image-first&amp;page-scroll&amp;cpts" style="position: relative; height: 520px; background: light-dark(#f6f7f9, #16191f); color-scheme: light dark; border: 1px solid light-dark(#d9dde3, #353b47); border-radius: 8px; max-height: 100svh; overflow: hidden;">
-  <a href="https://iter.ca/bn/?view&amp;src=https%3A%2F%2Fiter.ca%2Fbn-houseplant.svg&amp;image-first&amp;page-scroll&amp;cpts" target="_blank" rel="noopener" style="display: block; height: 100%;"><img src="https://iter.ca/bn-houseplant.svg" alt="Dying houseplant" style="display: block; width: 100%; height: 100%; object-fit: contain;"></a>
+<div data-bn-embed="https://iter.ca/bn/?view&amp;src=https%3A%2F%2Fiter.ca%2Fbn-houseplant.svg&amp;image-first&amp;page-scroll&amp;cpts" style="position: relative; box-sizing: border-box; width: max(100%, min(80rem, 100vw - 2rem)); margin-left: calc(50% - max(100%, min(80rem, 100vw - 2rem)) / 2); height: max(520px, min(80rem, 100vw - 2rem) * 0.57 + 110px); background: light-dark(#f6f7f9, #16191f); color-scheme: light dark; border: 1px solid light-dark(#d9dde3, #353b47); border-radius: 8px; max-height: 100svh; overflow: hidden;">
+  <a href="https://iter.ca/bn/?view&amp;src=https%3A%2F%2Fiter.ca%2Fbn-houseplant.svg&amp;image-first&amp;page-scroll&amp;cpts" target="_blank" rel="noopener" style="display: block; height: 100%;"><img src="https://iter.ca/bn-houseplant.svg" alt="Dying houseplant" style="display: block; width: 100%; max-width: none; height: 100%; object-fit: contain;"></a>
   <script src="https://iter.ca/bn/js/embed.js" async></script>
 </div>
 

@@ -3,6 +3,7 @@ date = "2026-11-09T00:00:00Z"
 description = "I made a Bayesian network thing"
 tags = ["math"]
 title = "Modeling with Bayesian networks"
+bsky = "https://bsky.app/profile/did:plc:n3csajkwabhchilmzmrsnvlc/post/3n226mo2io223"
 +++
 
 Recently I've been thinking about modeling things, and I've found [Bayesian networks](https://en.wikipedia.org/wiki/Bayesian_network) (BNs) to be a useful way of helping me work out probability estimates for things. Unfortunately I couldn't find any good software for creating them, so I created a [BN modeling tool](https://iter.ca/bn/) myself (really, Claude did). I've written this mostly to explain how BNs work and why I find them interesting.

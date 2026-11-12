@@ -1,0 +1,5 @@
+Date=Nov 11 2026
+Title=FDT and the sacrificial volunteer's dilemma
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/CatAYdBDuGim6m3cd/fdt-and-the-sacrificial-volunteer-s-dilemma

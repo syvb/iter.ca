@@ -37,7 +37,8 @@
             <div id="metop-left">
                 <div class="h-card">
                     <div id="oct-box">
-                        <a href="avatar/"><img src="/avatar/a256.png" alt="avatar" id="avatar" class="u-photo" width="160" height="160"></a>
+                        <a href="avatar/"><img src="/avatar/a256.png" alt="avatar" id="avatar" class="u-photo" width="160" height="160" loading="lazy"></a>
+                        <img src="/avatar/oct-still.webp?rel={{ substr (sha256 (readFile "static/avatar/oct-still.webp")) 0 8 }}" alt="" id="oct-still">
                         <canvas id="oct" aria-hidden="true"></canvas>
                         <div id="oct-hit" aria-hidden="true"></div>
                         <canvas id="sparks" aria-hidden="true"></canvas>

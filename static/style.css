@@ -369,8 +369,9 @@ blockquote > p:last-child {
 }
 
 /* on the homepage, the spinning octahedron (/avatar/oct.js) replaces the avatar when the "oct" class is set. The hidden
-   avatar keeps its place in the layout, so nothing around it moves; the gem is --oct big (oct.js reads it), centered on
-   the avatar's spot, and overflows it */
+   avatar's link keeps its place in the layout, so nothing around it moves, and the picture isn't rendered, so (being
+   loading="lazy") it isn't downloaded unless the gem goes away; the gem is --oct big (oct.js reads it), centered on the
+   avatar's spot, and overflows it */
 #oct-box {
     --oct: 224px;
     display: inline-block;
@@ -383,12 +384,19 @@ blockquote > p:last-child {
     margin-top: 0;
 }
 
-#oct, #oct-hit, #sparks {
+#oct, #oct-still, #oct-hit, #sparks {
     display: none;
 }
 
 .oct #oct-box > a {
+    display: block;
+    width: 160px;
+    height: 160px;
     visibility: hidden;
+}
+
+.oct #oct-box #avatar {
+    display: none;
 }
 
 /* nudged (which moves nothing else) so the gem clears the top bar and the window's left edge */
@@ -413,8 +421,9 @@ blockquote > p:last-child {
     z-index: -1;
 }
 
-/* the canvas is bigger than the gem, so a popped or charged gem has room to grow */
-.oct #oct {
+/* the canvas is bigger than the gem, so a popped or charged gem has room to grow. Until the gem is first hovered or
+   touched, a picture of the canvas's first frame (oct-still.webp, see oct.js) sits in its place */
+.oct #oct, .oct #oct-still {
     display: block;
     position: absolute;
     left: calc(50% - var(--oct) * 0.75);

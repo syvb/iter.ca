@@ -2,24 +2,33 @@
    hold-to-charge handling, and the sparks those make, but without the halo or scroll path. Unlike on new-home, the sparks
    also show for touch. It stands in for the avatar picture of the same octahedron: index.html sets the "oct" class when
    WebGL2 and motion are available (and removes it if this script fails to load); otherwise the picture stays.
-   It sits still in the avatar's pose, drawn once, until it's first clicked or tapped; only then does it start to move.
+   It sits still in the avatar's pose until it's first clicked or tapped; only then does it start to move.
    About 10s after it was last touched it settles back into that pose and stops, until it's clicked again.
-   Setup waits until just after the page's first paint: compiling the shaders takes a while (most on phones), and the
-   rest of the page shouldn't wait for it. */
-requestAnimationFrame(() => setTimeout(() => {
+   Nothing else is set up until the pointer first enters it (a touch enters it too): until then oct-still.webp, its
+   first frame captured by gen-still.js, stands in for the canvas. Most visits never touch it, so they skip creating
+   the WebGL context and compiling the shaders (which takes a while, most on phones) and the GPU memory the context
+   holds. Rerun gen-still.js after changing how the gem looks at rest. */
+(async () => {
   const root = document.documentElement, rm = matchMedia('(prefers-reduced-motion: reduce)');
   if (!root.classList.contains('oct')) return;
   // index.html checked reduced motion before the page painted; it may have been switched on since
   if (rm.matches) { root.classList.remove('oct'); return; }
   const cv = document.getElementById('oct'), hit = document.getElementById('oct-hit');
-  const g = cv.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: true });
   let raf = 0, vis = true, on = true;
   // the picture comes back whenever the gem can't run: no context, a failed setup, a lost context (the browser can drop
   // it, e.g. after a GPU reset), or reduced motion switched on mid-visit
   function off() { on = false; root.classList.remove('oct'); cancelAnimationFrame(raf); raf = 0; }
+  rm.addEventListener('change', (e) => { if (e.matches) off(); });
+  // a press without an enter first (the pointer was already over it when the page loaded) sets it up too
+  const first = await new Promise((resolve) => {
+    hit.addEventListener('pointerenter', resolve, { once: true });
+    hit.addEventListener('pointerdown', resolve, { once: true });
+  });
+  if (!on) return;
+  // no depth buffer: the gem's two passes are drawn in order without depth testing, so one would only take up GPU memory
+  const g = cv.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: true, depth: false });
   if (!g) { off(); return; }
   cv.addEventListener('webglcontextlost', off);
-  rm.addEventListener('change', (e) => { if (e.matches) off(); });
   let SLOT = 0;   // the gem's size (--oct in style.css); it fills that the way it fills its slots on new-home
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -173,14 +182,15 @@ requestAnimationFrame(() => setTimeout(() => {
   const charge = (now) => drag && !drag.dragged ? clamp(((now - drag.t0) / 1000 - .12) / 3) : 0;
   // the pointer (finger) that started a drag owns it until it lets go; other fingers are ignored meanwhile
   const mine = (e) => drag && e.pointerId === drag.id;
-  hit.addEventListener('pointerdown', (e) => {
+  const press = (e) => {
     if (drag) return;
     wake();
     e.preventDefault(); hit.setPointerCapture(e.pointerId); hit.classList.add('drag');
     const t = performance.now();
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t, t0: t, dir: Math.random() < .5 ? -1 : 1 };
     vx = vy = 0; spinF = 1.6; full = false;
-  });
+  };
+  hit.addEventListener('pointerdown', press);
   hit.addEventListener('contextmenu', (e) => e.preventDefault());   // a long press on touch shouldn't open a menu
   hit.addEventListener('pointermove', (e) => {
     if (settle) wake(); else act = performance.now();   // hovering keeps it awake, and catches it while it settles (but doesn't wake it once still)
@@ -307,5 +317,10 @@ requestAnimationFrame(() => setTimeout(() => {
     start();
   }
   new IntersectionObserver(([e]) => { vis = e.isIntersecting; start(); }).observe(cv);
-  render();
-}));
+  // the canvas takes over from the still picture of this same frame in one paint
+  render(); document.getElementById('oct-still').remove();
+  // this runs inside the event that set it up, so the listeners above missed it: the pointer that set it up is
+  // over it, and a press counts
+  hovT = 1;
+  if (first.type === 'pointerdown') press(first);
+})();

@@ -4,12 +4,12 @@
     <xsl:template match="/">
         <html lang="en" dir="ltr">
             <head>
-                <title>Smitop's blog posts</title>
+                <title><xsl:value-of select="/rss/channel/description"/></title>
                 <link rel="stylesheet" href="/style.css" />
             </head>
             <body>
                 <header>
-                    <h1>Smitop's blog posts</h1>
+                    <h1><xsl:value-of select="/rss/channel/description"/></h1>
                     <a>
                         <xsl:attribute name="href">
                             <xsl:value-of select="/rss/channel/link"/>

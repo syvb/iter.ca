@@ -1,29 +1,55 @@
 <!-- based on https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/_default/rss.xml -->
 <!-- using XML declarationg doesn't work with hugo, transforms leading < -->
 <!-- <?xml version="1.0" encoding="utf-8" standalone="yes"?> -->
+{{- $items := slice -}}
+{{- range sort (.Site.RegularPages | append .Site.Data.data) ".Date.Unix" "desc" | uniq -}}
+    {{- /* Blog posts, and the stream items the homepage shows: its stream (in index.html) has VerboseMin and VerboseMax 0 */ -}}
+    {{- $verbose := partial "streamverbose.html" (dict "Item" . "Overrides" $.Site.Data.voverrides) -}}
+    {{- if or (and (eq .Section "post") (eq .Params.reply nil)) (and (ge $verbose 0) (le $verbose 0)) -}}
+        {{- /* Wrapped in a dict: append turns pages and slices into nested page lists */ -}}
+        {{- $items = $items | append (dict "Item" .) -}}
+    {{- end -}}
+{{- end -}}
+{{- $items = first 20 $items }}
 {{ safeHTML "<?xml-stylesheet href=\"/rss.xml\" type=\"text/xsl\"?>" }}
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule" version="2.0">
     <channel>
         <title>iter.ca</title>
         <link>{{ .Permalink }}</link>
-        <description>Recent blog posts on iter.ca</description>
+        <description>Recent stuff on iter.ca</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>{{ .Site.LanguageCode }}</language>
-        <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+        <lastBuildDate>{{ (time.AsTime (int (index $items 0).Item.Date.Unix)).Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
         <copyright>Copyright 2019-{{ .Date.Year }}. This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.</copyright>
-        <atom:link href="https://smitop.com/index.xml" rel="self" type="application/rss+xml"/>
-        {{ range (first 10 (where .Site.Pages "File.Section" "post")) }}
-            {{ if (eq (.Params.reply) nil) }}
+        <atom:link href="{{ with .OutputFormats.Get "RSS" }}{{ .Permalink }}{{ end }}" rel="self" type="application/rss+xml"/>
+        {{ range $items }}{{ with .Item }}
+            {{ if (eq .Params nil) }}
+                <item>
+                    <title>{{ .Title }}</title>
+                    {{ with .Uri }}<link>{{ . }}</link>{{ end }}
+                    <pubDate>{{ (time.AsTime (int .Date.Unix)).Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+                    <guid isPermaLink="false">{{ .Id }}</guid>
+                    {{- /* Notes are HTML; other text gets the summary stream pages show */ -}}
+                    {{- $description := .Text }}
+                    {{- if (ne .Type "note") }}
+                        {{- $description = .Text | markdownify | plainify | htmlUnescape | truncate 150 }}
+                    {{- end }}
+                    {{- with trim $description " \n" }}
+                    <description>{{ . }}</description>
+                    {{- end }}
+                </item>
+            {{ else }}
                 <item>
                     <title>{{ .Title }}</title>
                     <link>{{ .Permalink }}</link>
                     <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
                     {{ with .Site.Author.email }}<author>{{.}}{{ with $.Site.Author.name }} ({{.}}){{end}}</author>{{end}}
-                    <guid>https://smitop.com{{.RelPermalink}}</guid>
+                    {{- /* Pages from before the feed's IDs moved to iter.ca keep their smitop.com ones, so readers don't show them again */}}
+                    <guid>{{ if .Date.Before (time "2026-11-10") }}https://smitop.com{{ .RelPermalink }}{{ else }}{{ .Permalink }}{{ end }}</guid>
                     <description>{{ if (eq .Params.fmat_id nil) }}{{ .Content | html }}{{ else }}{{ .RawContent | safeHTML | html }}{{ end }}</description>
                     <creativeCommons:license>http://www.creativecommons.org/licenses/by-sa/4.0</creativeCommons:license>
                 </item>
             {{ end }}
-        {{ end }}
+        {{ end }}{{ end }}
     </channel>
 </rss>

@@ -1,0 +1,36 @@
+{{- /* Returns the verbosity of a stream item, from (dict "Item" <page or data item> "Overrides" <id to verbosity> "SelfOnly" <bool> "Games" <bool>).
+     A stream shows the items whose verbosity is in its range; -1 and below are featured, and the homepage shows 0. */ -}}
+{{- $i := .Item -}}
+{{- $v := 0 -}}
+{{- if (hasPrefix $i.File.Dir "p/") -}}
+    {{- $v = 1 -}}
+{{- end -}}
+{{- if (eq $i.Params nil) -}}
+    {{- if (ne $i.Verbose nil) -}}
+        {{- $v = $i.Verbose -}}
+    {{- end -}}
+{{- end -}}
+{{- if (ne $i.Params.Featured nil) -}}
+    {{- $v = -1 -}}
+{{- end -}}
+{{- if (eq $i.Params nil) -}}
+    {{- if (ne $i.Id nil) -}}
+        {{- if (ne (index .Overrides $i.Id) nil) -}}
+            {{- $v = int (index .Overrides $i.Id) -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if (and (eq $i.HNType "story") .SelfOnly) -}}
+        {{- $v = 100 -}}
+    {{- end -}}
+    {{- if (and (not (or (eq $i.Type "itch") (eq $i.NoteType "Game"))) .Games) -}}
+        {{- $v = 100 -}}
+    {{- end -}}
+{{- else -}}
+    {{- if .Games -}}
+        {{- $v = 100 -}}
+    {{- end -}}
+{{- end -}}
+{{- if (and (not .Games) (ne $i.Params.Verbose nil)) -}}
+    {{- $v = $i.Params.Verbose -}}
+{{- end -}}
+{{- return $v -}}

@@ -36,7 +36,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Special:Contributions/Smitop">User:Smitop</a></li>
 <li>Flickr: <a href="https://www.flickr.com/photos/204436251@N02/">lotsofloops</a></li>
 <li>Manifold: <a href="https://manifold.markets/loops">@loops</a></li>
-<li class="inactive">X/Twitter: <a href="https://x.com/_smitop">@_smitop</a></li>
+<li>X/Twitter: <a href="https://x.com/_smitop">@_smitop</a></li>
 <li class="inactive">wasteof.money: <a href="https://wasteof.money/users/smitop">@smitop</a></li>
 </ul>
 

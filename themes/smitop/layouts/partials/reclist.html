@@ -1,7 +1,7 @@
 <ul>
     {{ range . }}
         {{ if (eq (len (.Pages)) 0) }}
-            <li>{{ if .Date }}<time class="list-date">{{ dateFormat "January 2 2006" (int .Date.Unix) }}</time>{{ end }}<a href="{{.Permalink}}">{{.Title}}</a></li>
+            <li>{{ if .Date }}<time class="list-date">{{ partial "date.html" (dict "t" (int .Date.Unix) "f" "January 2 2006") }}</time>{{ end }}<a href="{{.Permalink}}">{{.Title}}</a></li>
         {{ else }}
             <li>
                 <a href="{{.Permalink}}">{{.Title}}</a>

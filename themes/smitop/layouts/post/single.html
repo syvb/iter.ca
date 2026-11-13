@@ -14,7 +14,7 @@
         {{ end }}
       </span>
     </span>
-    · <span itemprop="datePublished" content="{{ .Date.Format "2006-01-02" }}" class="dt-published">{{ .Date.Format "Jan 2, 2006" }}</span>
+    · <span itemprop="datePublished" content="{{ partial "date.html" (dict "t" .Date "f" "2006-01-02") }}" class="dt-published">{{ partial "date.html" (dict "t" .Date "f" "Jan 2, 2006") }}</span>
     </div>
     <div>
       <article itemprop="articleBody" id="content" class="e-content">

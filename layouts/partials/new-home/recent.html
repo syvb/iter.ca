@@ -25,7 +25,7 @@
 {{- end -}}
 {{- range $i, $it := first .Limit $items -}}{{ with $it -}}
     {{- $ext := hasPrefix .url "http" -}}
-    <li{{ if and $.Extra (ge $i $.Extra) }} class="x"{{ end }}><a href="{{ .url }}"><time class="m" datetime="{{ dateFormat "2006-01-02" .t }}">{{ if $.Long }}{{ dateFormat "2006·01·02" .t }}{{ else }}{{ dateFormat "Jan 2" .t }}{{ end }}</time><span class="t">{{ .title }}</span>
+    <li{{ if and $.Extra (ge $i $.Extra) }} class="x"{{ end }}><a href="{{ .url }}"><time class="m" datetime="{{ partial "date.html" (dict "t" .t "f" "2006-01-02") }}">{{ if $.Long }}{{ partial "date.html" (dict "t" .t "f" "2006·01·02") }}{{ else }}{{ partial "date.html" (dict "t" .t "f" "Jan 2") }}{{ end }}</time><span class="t">{{ .title }}</span>
         {{- if or $.Long $.Kind }}<span class="kd{{ if eq .kind "LessWrong" }} lw{{ else if in .kind "app" }} app{{ end }}">{{ .kind }}</span>{{ end -}}
         <span class="ar{{ if $ext }} ext{{ end }}">{{ if $ext }}↗{{ else }}→{{ end }}</span></a></li>
 {{ end -}}

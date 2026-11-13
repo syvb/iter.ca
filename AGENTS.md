@@ -8,7 +8,7 @@ You may run `./regen.sh` locally to test regeneration of `data/data.json`. Do no
 
 ## Adding posts
 
-When adding posts (notes in `notes/`), use Toronto time for the `Date` field.
+When adding posts (notes in `notes/`), use San Francisco time for the `Date` field. The site shows dates from Nov 11 2026 on in San Francisco time (`themes/smitop/layouts/partials/date.html`); a date with no time of day, such as `Date=Nov 20 2026` or `date = "2026-11-20T00:00:00Z"`, stays on that day.
 
 ## Adding LessWrong posts
 
@@ -40,7 +40,7 @@ curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application
 
 Skip `shortform: true` results (the shortform container, not a post), and skip posts whose `_id` already appears in a `Uri` under `notes/`.
 
-`postedAt` is UTC; convert it to Toronto time for `Date` (e.g. `TZ=America/Toronto date -d <postedAt>`). Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
+`postedAt` is UTC; convert it to San Francisco time for `Date` (e.g. `TZ=America/Los_Angeles date -d <postedAt>`). Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
 
 ## Building
 

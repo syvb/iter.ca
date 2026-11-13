@@ -1,0 +1,9 @@
+{{- /* Formats (dict "t" <time or Unix seconds> "f" <layout>). Times from Nov 11 2026 on are shown in San Francisco time;
+     earlier ones keep their old zone (UTC for Unix seconds). A time at exactly midnight UTC is a date with no time of day,
+     such as a note's Date=Nov 20 2026, so it stays on that day. */ -}}
+{{- $t := time.AsTime .t -}}
+{{- $sf := time.AsTime "2026-11-11T00:00:00" "America/Los_Angeles" -}}
+{{- if and (ge $t.Unix $sf.Unix) (ne (mod $t.Unix 86400) 0) -}}
+    {{- $t = $t.In $sf.Location -}}
+{{- end -}}
+{{- return dateFormat .f $t -}}

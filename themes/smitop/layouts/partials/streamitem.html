@@ -69,7 +69,7 @@
                 merged
             {{ end -}}
             {{- if (.scr.Get "mini") }} on {{ end -}}
-            {{- dateFormat "January 2, 2006" (int .Item.Date.Unix) -}}
+            {{- partial "date.html" (dict "t" (int .Item.Date.Unix) "f" "January 2, 2006") -}}
         </div>
         {{- if (isset .Item "Uri") -}}
             <a href="{{- .Item.Uri -}}">
@@ -117,7 +117,7 @@
                 {{- else -}}
                     {{- if (.scr.Get "mini") }} on {{ end -}}
                 {{- end -}}
-                {{- .Item.Date.Format "January 2, 2006" -}}
+                {{- partial "date.html" (dict "t" .Item.Date "f" "January 2, 2006") -}}
             </div>
             {{- if (and (isset .Item.Params "image") (not (isset .Item.Params "no_stream_image")) (not (.scr.Get "mini"))) -}}
                 <div class="stream-item-thumb-wrapper">

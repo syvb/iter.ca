@@ -57,9 +57,10 @@
                     <div>
                         <ul>
                             <li><a href="mailto:me&#x000000000000000000000000000000040;iter.ca">{{ partial "email.html" }}</a></li>
+                            <li><a href="https://x.com/_smitop">X</a></li>
                             <li><a href="https://github.com/syvb">GitHub</a></li>
                             <li><a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">YouTube</a></li>
-                            <li><a href="https://stackexchange.com/users/13986849/smitop?tab=accounts">Stack Exchange</a></li>
+                            <li><button type="button" id="copy-discord" data-tip="@moreloops" aria-label="Discord, @moreloops">Discord</button></li>
                             <li><a href="/p/accounts/">more</a></li>
                         </ul>
                     </div>
@@ -96,6 +97,39 @@
     <a href="https://github.com/syvb/iter.ca" class="source-link">
       (view the source code for this website)
     </a>
+    <script>
+      (function () {
+        var btn = document.getElementById("copy-discord");
+        // Without this script the button can't copy, so only the script says it does.
+        btn.setAttribute("aria-label", "Discord, @moreloops, click to copy");
+        // The tooltip centers on the button, which moves when the row wraps.
+        function place() {
+          var r = btn.getBoundingClientRect();
+          btn.style.setProperty("--x", r.left + r.width / 2 + "px");
+        }
+        // Each time the tooltip appears, it offers to copy again.
+        function show() {
+          place();
+          btn.dataset.tip = "@moreloops (click to copy)";
+          btn.classList.remove("tip-hidden");
+        }
+        btn.addEventListener("pointerenter", show);
+        btn.addEventListener("focus", show);
+        addEventListener("resize", place);
+        addEventListener("keydown", function (e) {
+          if (e.key === "Escape") btn.classList.add("tip-hidden");
+        });
+        btn.addEventListener("click", function () {
+          btn.classList.remove("tip-hidden");
+          // Discord usernames have no "@"; its Add Friend box takes the bare name.
+          navigator.clipboard.writeText("moreloops").then(function () {
+            btn.dataset.tip = "@moreloops (copied)";
+          }, function () {
+            btn.dataset.tip = "@moreloops (couldn't copy)";
+          });
+        });
+      })();
+    </script>
     <script async defer data-hostname="smitop.com" src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?hostname=smitop.com" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
 </body>

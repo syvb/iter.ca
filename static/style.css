@@ -823,13 +823,14 @@ summary h2 {
     margin-bottom: 1em;
 }
 
-/* Footnotes copied into the right margin, next to their references (see post/single.html). Shown only when the
-   margin can fit a 12rem column: the post is 45rem wide and centered, and the column leaves 2rem on each side. */
+/* Footnotes copied into the right margin, next to their references (see post/single.html). Shown only on screens
+   whose margin can fit a 12rem column: the post is 45rem wide and centered, and the column leaves 2rem on each side.
+   A printout, however wide its paper, has just the footnotes at the bottom. */
 .margin-notes {
     display: none;
 }
 
-@media (min-width: 77rem) {
+@media screen and (min-width: 77rem) {
     #content {
         position: relative;
     }

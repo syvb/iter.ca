@@ -314,6 +314,11 @@ li > ul {
     margin: 0;
 }
 
+/* Override Hugo's inline Monokai comment color for readable contrast. */
+.highlight [style*="#75715e"] {
+    color: #a6a28c !important;
+}
+
 a.playground {
     font-size: 1rem;
     margin: 0;

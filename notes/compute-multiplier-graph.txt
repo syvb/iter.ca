@@ -1,0 +1,5 @@
+Date=Nov 14 2026
+Title=Trying to understand that compute multiplier graph
+Verbose=0
+NoteType=Blog post
+Uri=https://www.lesswrong.com/posts/WKt2mqJrsFuMiszed/trying-to-understand-that-compute-multiplier-graph

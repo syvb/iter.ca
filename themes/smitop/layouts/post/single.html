@@ -29,10 +29,12 @@
         {{ $cta := printf "%s" (partial "cta.html" .) }}
         {{ if (eq .Params.fmat_id nil) }}
           {{ $content := printf "%s" .Content }}
+          {{/* Mark inline code with a run of 30+ characters without a space, such as a URL, so style.css can break it anywhere. */}}
+          {{ $content = replaceRE `<code>((?:[^<\n]*\s)?(?:&#?\w+;|[^<&\s]){30}[^<\n]*)</code>` `<code class="long">$1</code>` $content }}
           {{ if findRE `<div class="footnotes"` $content }}
             {{ replaceRE `(<div class="footnotes")` (printf "%s$1" $cta) $content | safeHTML }}
           {{ else }}
-            {{ .Content }}
+            {{ $content | safeHTML }}
             {{ $cta | safeHTML }}
           {{ end }}
         {{ else }}

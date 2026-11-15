@@ -111,6 +111,11 @@ kbd {
     font-size: 111%;
 }
 
+/* Long inline code (marked by post/single.html) breaks anywhere instead of moving whole to the next line, which would spread out the justified line before it. */
+#content code.long {
+    word-break: break-all;
+}
+
 #main-section {
     display: flex;
     flex-direction: column;

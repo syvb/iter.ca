@@ -1,4 +1,4 @@
-Date=Nov 14 2026
+Date=2026-11-14T21:25:44-08:00
 Title=Trying to understand that compute multiplier graph
 Verbose=0
 NoteType=Blog post

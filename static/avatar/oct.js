@@ -182,7 +182,9 @@
   const charge = (now) => drag && !drag.dragged ? clamp(((now - drag.t0) / 1000 - .12) / 3) : 0;
   // the pointer (finger) that started a drag owns it until it lets go; other fingers are ignored meanwhile
   const mine = (e) => drag && e.pointerId === drag.id;
+  let pressed = 'mouse';   // the kind of pointer that last pressed the gem, for a menu that doesn't say what opened it
   const press = (e) => {
+    pressed = e.pointerType;
     if (drag || e.button !== 0) return;   // only the main button: a right (or middle) click is left to the browser
     wake();
     e.preventDefault(); hit.setPointerCapture(e.pointerId); hit.classList.add('drag');
@@ -192,10 +194,11 @@
   };
   hit.addEventListener('pointerdown', press);
   hit.addEventListener('contextmenu', (e) => {
-    if (!drag) return;   // a right click opens the menu as anywhere else
-    if (drag.type !== 'mouse') e.preventDefault();   // a long press on touch shouldn't open a menu
-    // a Mac's Control-click is a left press that also opens the menu, which takes its release: let go of the gem unpoked
-    else { hit.classList.remove('drag'); drag = null; act = performance.now(); }
+    // a long press on touch or pen shouldn't open a menu, including on Windows, which opens it once the finger lifts
+    if ((e.pointerType || pressed) !== 'mouse') { e.preventDefault(); return; }
+    // a right click opens it as anywhere else. A Mac's Control-click is a left press that also opens it, and the menu
+    // takes its release: let go of the gem unpoked
+    if (drag && drag.type === 'mouse') { hit.releasePointerCapture(drag.id); hit.classList.remove('drag'); drag = null; act = performance.now(); }
   });
   hit.addEventListener('pointermove', (e) => {
     if (settle) wake(); else act = performance.now();   // hovering keeps it awake, and catches it while it settles (but doesn't wake it once still)

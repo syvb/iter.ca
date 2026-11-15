@@ -694,9 +694,19 @@ dl {
     padding-bottom: 0;
 }
 
+.list-entry {
+    display: flex;
+    text-align: left;
+}
+
+.list-entry > a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
 .list-date {
-    width: 9em;
-    display: inline-block;
+    flex: 0 0 11em;
+    display: block;
 }
 
 details {
@@ -847,6 +857,9 @@ summary h2 {
 }
 
 @media (max-width: 470px) {
+    .list-entry {
+        display: block;
+    }
     .stream {
         display: block;
     }

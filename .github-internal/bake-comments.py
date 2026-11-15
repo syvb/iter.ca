@@ -10,10 +10,15 @@ embeds the post's entry in its page. Entries are keyed by the post's path under 
 The workflow also publishes the file as https://iter.ca/comments.json. When a source
 can't be fetched, its comments from there (the last deploy) are kept, so an outage at
 build time doesn't empty a comment section.
+
+It also writes static/recent-comments.html, an unlinked page listing the newest comments
+on any post for the blog author to review, which Hugo publishes as /recent-comments.html.
 """
 
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import datetime, timezone
+from html import escape
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
@@ -175,12 +180,91 @@ def merge_threads(results):
     return [comment for thread in threads for comment in thread]
 
 
+class PlainText(HTMLParser):
+    """The text of a LessWrong comment's HTML, with math as its TeX like the post page shows it."""
+
+    def __init__(self, html):
+        super().__init__()
+        self.parts, self.math = [], 0
+        self.feed(html)
+        self.close()
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "mjx-container":
+            if not self.math:
+                self.parts.append("$%s$" % (dict(attrs).get("aria-label") or ""))
+            self.math += 1
+        elif tag in ("br", "li"):
+            self.parts.append("\n")
+
+    def handle_endtag(self, tag):
+        if tag == "mjx-container" and self.math:
+            self.math -= 1
+        elif tag in ("p", "blockquote", "pre", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol"):
+            self.parts.append("\n\n")
+
+    def handle_data(self, data):
+        if not self.math:
+            self.parts.append(data)
+
+    def text(self):
+        return re.sub(r"\n{3,}", "\n\n", "".join(self.parts)).strip()
+
+
+def link(url, text):
+    # Like the post page, only https URLs become links.
+    if url and url.startswith("https://"):
+        return f'<a href="{escape(url)}">{escape(text)}</a>'
+    return escape(text)
+
+
+def write_recent(baked, titles):
+    """Write the unlinked page of the 10 newest comments on any post, newest first."""
+    everything = [(post, comment) for post, entry in baked.items() for comment in entry["comments"]]
+    newest = sorted(everything, key=lambda item: posted(item[1]), reverse=True)[:10]
+    items = []
+    for post, comment in newest:
+        url = "/" + re.sub(r"(/index)?\.md$", "/", post) + "#comments"
+        author = link(comment["author"].get("url"), comment["author"]["name"])
+        if comment["isAuthor"]:
+            author += " (blog author)"
+        when = datetime.fromtimestamp(posted(comment), timezone.utc)
+        source = {"bsky": "Bluesky", "lw": "LessWrong"}[comment["source"]]
+        text = PlainText(comment["html"]).text() if "html" in comment else comment["text"]
+        items.append(f'<li><div class="meta">{link(comment["url"], f"{when:%Y-%m-%d %H:%M} UTC on {source}")}'
+                     f' · {author} · on <a href="{escape(url)}">{escape(titles[post])}</a></div>\n'
+                     f'<div class="text">{escape(text)}</div></li>\n')
+    now = datetime.now(timezone.utc)
+    body = "".join(items)
+    (ROOT / "static/recent-comments.html").write_text(f"""<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Recent comments</title>
+<style>
+body {{ font-family: sans-serif; max-width: 45em; margin: 2em auto; padding: 0 1em; line-height: 1.4; }}
+ol {{ list-style: none; padding: 0; }}
+li {{ border-top: 1px solid #ccc; padding: 0.75em 0; }}
+.meta {{ font-size: 0.9em; color: #555; margin-bottom: 0.25em; }}
+.text {{ white-space: pre-wrap; overflow-wrap: anywhere; }}
+</style>
+<h1>Recent comments</h1>
+<p>The newest {len(newest)} of {len(everything)} comments on posts, as of the build at {now:%Y-%m-%d %H:%M} UTC.</p>
+<ol>
+{body}</ol>
+""", encoding="utf-8")
+
+
 def main():
     content = ROOT / "content"
     jobs = []
+    titles = {}
     for path in sorted(content.glob("post/**/*.md")):
         front = tomllib.loads(path.read_text().split("+++", 2)[1])
-        jobs += [(path.relative_to(content).as_posix(), kind, front[kind]) for kind in SOURCES if front.get(kind)]
+        post = path.relative_to(content).as_posix()
+        titles[post] = front.get("title", post)
+        jobs += [(post, kind, front[kind]) for kind in SOURCES if front.get(kind)]
     with ThreadPoolExecutor(8) as pool:
         results = list(pool.map(lambda job: fetch(*job[1:]), jobs))
 
@@ -204,6 +288,7 @@ def main():
         }
         print(f"{post}: {len(baked[post]['comments'])} comments")
     (ROOT / "data/comments.json").write_text(json.dumps(baked, indent=1) + "\n")
+    write_recent(baked, titles)
 
 
 if __name__ == "__main__":

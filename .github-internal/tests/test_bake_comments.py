@@ -83,7 +83,7 @@ class BakeCommentsTest(unittest.TestCase):
     def test_merges_sources_and_keeps_last_deploy_when_a_source_is_down(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            for directory in [".github", "data", "content/post/bundle"]:
+            for directory in [".github", "data", "static", "content/post/bundle"]:
                 (root / directory).mkdir(parents=True)
             shutil.copy(SCRIPT, root / ".github")
             (root / "content/post/shared.md").write_text(
@@ -119,6 +119,17 @@ class BakeCommentsTest(unittest.TestCase):
                               ("lw", "https://www.lesswrong.com/posts/Post1/slug")])
             self.assertEqual(baked["post/bundle/index.md"]["sources"][0]["url"],
                              "https://bsky.app/profile/other.test/post/xyz")
+
+            # The recent comments page lists comments from every post and source newest first, ignoring threads.
+            page = (root / "static/recent-comments.html").read_text()
+            newest_first = ["bob.test/post/o1", "bob.test/post/b1b", "commentId=L5", "commentId=L3", "commentId=L2",
+                            "bob.test/post/b2", "commentId=L1", "iter.ca/post/b1a", "alice.test/post/b1"]
+            positions = [page.index(comment) for comment in newest_first]
+            self.assertEqual(positions, sorted(positions))
+            self.assertIn('<a href="/post/bundle/#comments">', page)
+            # LessWrong's HTML is shown as text, never passed through.
+            self.assertIn("orphan", page)
+            self.assertNotIn("<p>orphan", page)
 
             # Bluesky is down for the next build. The last deploy has the shared post but not the bundle.
             last_deploy = {"post/shared.md": shared}

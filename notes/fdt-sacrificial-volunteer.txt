@@ -1,4 +1,4 @@
-Date=Nov 11 2026
+Date=2026-11-11T20:27:03-08:00
 Title=FDT and the sacrificial volunteer's dilemma
 Verbose=0
 NoteType=Blog post

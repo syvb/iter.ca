@@ -15,7 +15,7 @@ When adding posts (notes in `notes/`), use San Francisco time for the `Date` fie
 A LessWrong post is linked as a note, not copied into `content/post/`. Add `notes/<short-name>.txt` (the filename becomes the `note-<short-name>` ID) with just this header and no body:
 
 ```
-Date=Oct 7 2026
+Date=2026-10-07T10:00:59-07:00
 Title=Anthropic's corporate structure
 Verbose=0
 NoteType=Blog post
@@ -40,7 +40,7 @@ curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application
 
 Skip `shortform: true` results (the shortform container, not a post), and skip posts whose `_id` already appears in a `Uri` under `notes/`.
 
-`postedAt` is UTC; convert it to San Francisco time for `Date` (e.g. `TZ=America/Los_Angeles date -d <postedAt>`). Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
+`postedAt` is UTC; convert it to a full San Francisco timestamp with its offset for `Date` (`TZ=America/Los_Angeles date -d <postedAt> +%Y-%m-%dT%H:%M:%S%:z`). Keep the time of day: the homepage sorts by timestamp, and a date-only `Date` counts as midnight UTC, which sorts it below a post from the previous San Francisco evening. Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
 
 ## Building
 

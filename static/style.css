@@ -823,6 +823,59 @@ summary h2 {
     margin-bottom: 1em;
 }
 
+/* Footnotes copied into the right margin, next to their references (see post/single.html). Shown only when the
+   margin can fit a 12rem column: the post is 45rem wide and centered, and the column leaves 2rem on each side. */
+.margin-notes {
+    display: none;
+}
+
+@media (min-width: 77rem) {
+    #content {
+        position: relative;
+    }
+    .margin-notes {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: calc(100% + 2rem);
+        width: min(18rem, calc((100vw - 45rem) / 2 - 4rem));
+    }
+}
+
+.margin-note {
+    position: absolute;
+    left: 0;
+    right: 0;
+    font-size: 0.8em;
+    line-height: 1.4;
+    text-align: left;
+    color: #1a1a1a;
+}
+
+/* The shadow widens the highlight past the note's edges without moving its text. */
+.margin-note-hover {
+    background: #fff1a8;
+    box-shadow: 0 0 0 0.4em #fff1a8;
+}
+
+.footnote-ref-hover {
+    background: #fff1a8;
+    box-shadow: 0 0 0 0.15em #fff1a8;
+}
+
+.margin-note p {
+    padding-bottom: 0.5em;
+}
+
+.margin-note > :last-child {
+    padding-bottom: 0;
+}
+
+.margin-note-num {
+    font-weight: bold;
+    margin-right: 0.4em;
+}
+
 @media (max-width: 900px) {
     #metop {
         flex-direction: column;

@@ -41,6 +41,87 @@
         {{ end }}
         <hr>
       </article>
+      {{ if in (string .Content) `class="footnote-ref"` }}
+        <script>
+          // On screens wide enough for a right margin, also show each footnote there, next to its first shown reference.
+          (function () {
+            var content = document.getElementById("content");
+            var side = document.createElement("div");
+            side.className = "margin-notes";
+            // The footnotes at the bottom stay the copy that screen readers and keyboards use.
+            side.setAttribute("aria-hidden", "true");
+            var notes = [];
+            // Hovering a reference highlights its margin note, and hovering a margin note highlights every reference to it.
+            // A touch doesn't hover, and a tap would otherwise leave the highlight on until the next tap elsewhere.
+            function highlight(from, to, cls) {
+              from.addEventListener("pointerenter", function (e) {
+                if (e.pointerType !== "touch") to.forEach(function (el) { el.classList.add(cls); });
+              });
+              from.addEventListener("pointerleave", function () { to.forEach(function (el) { el.classList.remove(cls); }); });
+            }
+            content.querySelectorAll("a.footnote-ref").forEach(function (ref) {
+              var fn = document.getElementById(ref.getAttribute("href").slice(1));
+              if (!fn) return;
+              var note = notes.find(function (n) { return n.fn === fn; });
+              if (!note) {
+                var el = document.createElement("div");
+                el.className = "margin-note";
+                el.innerHTML = fn.innerHTML;
+                el.querySelectorAll(".footnote-backref").forEach(function (a) { a.remove(); });
+                el.querySelectorAll("[id]").forEach(function (e) { e.removeAttribute("id"); });
+                // Links still work with a mouse, but nothing here can be tabbed to, such as the tabindex="0" Hugo gives code blocks.
+                el.querySelectorAll("a, button, input, select, textarea, iframe, summary, audio[controls], video[controls], [tabindex], [contenteditable]").forEach(function (e) { e.tabIndex = -1; });
+                var num = document.createElement("span");
+                num.className = "margin-note-num";
+                num.textContent = ref.textContent;
+                (el.querySelector("p") || el).prepend(num);
+                side.appendChild(el);
+                notes.push(note = { fn: fn, refs: [], el: el });
+                highlight(el, note.refs, "footnote-ref-hover");
+              }
+              note.refs.push(ref);
+              highlight(ref, [note.el], "margin-note-hover");
+            });
+            content.appendChild(side);
+            // Where a reference is shown on the page, or null if it isn't. Chromium still gives a box to what's in a closed
+            // <details>, so that's checked first; a summary is the part of a closed <details> that shows.
+            function shownTop(ref) {
+              if (ref.closest("details:not([open]) > :not(summary)")) return null;
+              var rect = ref.getClientRects()[0];
+              return rect ? rect.top : null;
+            }
+            function layout() {
+              if (getComputedStyle(side).display === "none") return;
+              var origin = side.getBoundingClientRect().top;
+              // Each note goes next to the first of its references that's shown; a note with none shown is hidden.
+              var placed = [];
+              notes.forEach(function (n) {
+                var top = null;
+                for (var i = 0; i < n.refs.length && top === null; i++) top = shownTop(n.refs[i]);
+                n.el.hidden = top === null;
+                if (top !== null) placed.push({ el: n.el, top: top - origin });
+              });
+              // Going down the page, a note that would overlap the one above it goes below it instead.
+              placed.sort(function (a, b) { return a.top - b.top; });
+              var bottom = -Infinity;
+              placed.forEach(function (p) {
+                var top = Math.max(p.top, bottom + 16);
+                p.el.style.top = top + "px";
+                bottom = top + p.el.offsetHeight;
+              });
+            }
+            // Reflows of the post (images, fonts, <details>) move references; window resizes change note widths; images
+            // or a <details> in a note change its height.
+            var observer = new ResizeObserver(layout);
+            observer.observe(content);
+            observer.observe(side);
+            notes.forEach(function (n) { observer.observe(n.el); });
+            // Opening one <details name> closes another, which can move references without changing the post's height.
+            // toggle doesn't bubble, so it's caught on the way down.
+            content.addEventListener("toggle", layout, true);
+          })();
+        </script>
+      {{ end }}
     </div>
     <footer>
       <div id="meta">

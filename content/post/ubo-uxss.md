@@ -3,6 +3,7 @@ date = "2026-11-15T10:30:35-08:00"
 description = "One-click UXSS issue with uBlock Origin on Firefox through element picker"
 tags = ["security", "programming"]
 title = "Universal XSS in uBlock Origin from website-driven element picker"
+bsky = "https://bsky.app/profile/iter.ca/post/3n2epijpcm22r"
 +++
 
 Earlier this month I found a one-click universal XSS issue with uBlock Origin (the MV2 Firefox version, although a similar but less problematic issue also affected the MV3 version, uBO Lite), where a malicious website could trick the extension into adding arbitrary trusted filters. Trusted filters can inject JavaScript code into pages, and so the malicious website could create a trusted filter on another website and run arbitrary JS in the context of any site. This issue is fixed now; you can read [the GitHub advisory](https://github.com/gorhill/uBlock/security/advisories/GHSA-cmqw-9r2w-6wv2) for some more details.

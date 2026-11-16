@@ -12,7 +12,21 @@ WORKFLOW = Path(__file__).resolve().parents[1] / ".github/workflows/sync-with-pu
 
 
 class PublicSyncTest(unittest.TestCase):
-    def test_commit_metadata_and_repeat_sync(self):
+    def test_privacy_exclusions_commit_metadata_and_repeat_sync(self):
+        private_files = [f"{directory}/private.txt" for directory in (
+            "work", "self", "selfdata", "270", "chromelol", "bin", "consulting", ".private",
+        )] + [
+            "content/post/draft-private.md", "content/post/draft-bundle/index.md",
+            "static/audit.log", "static/projects.toml",
+            "static/private.png", "static/private.js", "static/private.eml", "static/private.html",
+        ] + [f"static/{directory}/private.txt" for directory in (
+            "scr-thumbs", "yt-thumbs", "uploads", "start", "dct-stimulus-playground", "miniposts",
+        )]
+        public_files = {path: f"Public fixture: {path}\n" for path in (
+            "content/post/published.md", "content/post/bundle/index.md", "content/post/drafting.md",
+            "notes/public.txt", "static/public.svg", "static/public.css",
+            "static/project/index.html", "static/project/app.js", "static/project/image.png",
+        )}
         cases = [
             ("Amp <amp@ampcode.com>", "Publish feature", [
                 "Private implementation details.",
@@ -61,6 +75,10 @@ class PublicSyncTest(unittest.TestCase):
                 (source / ".github/sync.yml").write_text(workflow)
                 (source / "README.md").write_text("Private readme\n")
                 (source / "README.public.md").write_text("Public readme\n")
+                for name, text in {**dict.fromkeys(private_files, "Private fixture\n"), **public_files}.items():
+                    path = source / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(text)
                 run("git", "add", ".", cwd=source)
                 message = subject + ("\n\n" + "\n\n".join(body) if body else "")
                 run("git", "commit", "--author=" + author, "--date=2026-10-07T23:45:12-04:00",
@@ -91,6 +109,11 @@ class PublicSyncTest(unittest.TestCase):
                                      "--", ".github-internal", cwd=remote), ".github-internal/sync.yml")
                 self.assertEqual(run("git", "show", "master:.github-internal/sync.yml", cwd=remote),
                                  workflow.strip())
+                # Inspect the published commit, not just the sync's working directory.
+                published = set(run("git", "ls-tree", "-r", "--name-only", "master", cwd=remote).splitlines())
+                self.assertEqual(published, set(public_files) | {"README.md", ".github-internal/sync.yml"})
+                for name, text in {**public_files, "README.md": "Public readme\n"}.items():
+                    self.assertEqual(run("git", "show", f"master:{name}", cwd=remote), text.strip())
                 public_hash = run("git", "rev-parse", "master", cwd=remote)
                 run("bash", "-eo", "pipefail", "-c", script)
                 self.assertEqual(run("git", "rev-parse", "master", cwd=remote), public_hash)

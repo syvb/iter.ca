@@ -12,7 +12,7 @@ from unittest.mock import patch
 from zipfile import ZipFile
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "neocities-audit.py"
+SCRIPT = Path(__file__).resolve().parents[1] / ".github/neocities-audit.py"
 ABC_SHA1 = "a9993e364706816aba3e25717850c26c9cd0d89d"
 
 

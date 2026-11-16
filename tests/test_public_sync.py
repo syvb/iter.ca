@@ -8,7 +8,7 @@ import textwrap
 import unittest
 
 
-WORKFLOW = Path(__file__).resolve().parents[1] / "workflows/sync-with-public.yml"
+WORKFLOW = Path(__file__).resolve().parents[1] / ".github/workflows/sync-with-public.yml"
 
 
 class PublicSyncTest(unittest.TestCase):

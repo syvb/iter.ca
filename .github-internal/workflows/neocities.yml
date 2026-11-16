@@ -110,12 +110,10 @@ jobs:
           cp public/404.html public/not_found.html
           # the next build keeps these comments for any source it can't fetch
           cp data/comments.json public/comments.json
-      - name: Test Neocities audit
+      # test_homepage_links runs `hugo` from PATH.
+      - name: Run tests
         if: ${{ steps.generation.outputs.full == 'true' }}
-        run: python3 -B -m unittest discover -s .github/tests -p 'test_neocities*.py' -v
-      - name: Test full asset generation failure handling
-        if: ${{ steps.generation.outputs.full == 'true' }}
-        run: python3 -B -m unittest discover -s .github/tests -p 'test_subrepos.py' -v
+        run: PATH="$PWD/hugo-bin:$PATH" python3 -B -m unittest discover -s tests -v
       - name: Compare build with Neocities (read-only)
         id: audit
         if: ${{ steps.generation.outputs.full == 'true' }}

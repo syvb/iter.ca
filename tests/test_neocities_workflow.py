@@ -8,7 +8,7 @@ import textwrap
 import unittest
 
 
-WORKFLOW = Path(__file__).resolve().parents[1] / "workflows/neocities.yml"
+WORKFLOW = Path(__file__).resolve().parents[1] / ".github/workflows/neocities.yml"
 
 
 class GenerationModeTest(unittest.TestCase):

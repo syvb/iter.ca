@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 PNG_NAMES = ["idat-raw", "idat", "defiltered", "inter-idat"] + [
     f"inter-{i}" for i in range(1, 8)
 ]

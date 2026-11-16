@@ -47,7 +47,7 @@ jobs:
         curl -fsSL https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_extended_0.98.0_Linux-64bit.tar.gz | tar -xz -C "$RUNNER_TEMP/hugo-bin" hugo
         echo "$RUNNER_TEMP/hugo-bin" >> "$GITHUB_PATH"
     - name: Test sync
-      run: python3 -B -m unittest discover -s smitop-blog/.github/tests -v
+      run: python3 -B -m unittest discover -s smitop-blog/tests -v
     - name: Do sync
       run: |
         ls -a .

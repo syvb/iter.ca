@@ -13,7 +13,7 @@ from urllib.error import HTTPError
 from urllib.parse import parse_qs, urlsplit
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "bake-comments.py"
+SCRIPT = Path(__file__).resolve().parents[1] / ".github/bake-comments.py"
 BLOG_AUTHOR = "did:plc:n3csajkwabhchilmzmrsnvlc"
 
 

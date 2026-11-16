@@ -1,0 +1,28 @@
+# Generated files
+/public/
+/data/comments.json
+/static/recent-comments.html
+/static/transform-playground
+/static/segme
+/static/bn
+/static/ext
+/static/fmat
+/static/pngcomp/*
+!/static/pngcomp/gen.sh
+/static/where/*
+!/static/where/gen.js
+/static/music/unsudden-movements.flac
+/static/music/unsuddentmovements.flac
+sm4/public
+
+# Lock files
+.hugo_build.lock
+
+# Local Hugo install (see AGENTS.md)
+/hugo-bin/
+
+# Nix
+result
+
+# Amp orb portals
+/.amp/portals/*

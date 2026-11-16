@@ -26,7 +26,10 @@ class PublicSyncTest(unittest.TestCase):
             "content/post/published.md", "content/post/bundle/index.md", "content/post/drafting.md",
             "notes/public.txt", "static/public.svg", "static/public.css",
             "static/project/index.html", "static/project/app.js", "static/project/image.png",
+            ".agents/setup", "static/ext/README.md",
         )}
+        # Ignores a file the private repo force-added, which must still be published.
+        public_files[".gitignore"] = "/static/ext\n"
         cases = [
             ("Amp <amp@ampcode.com>", "Publish feature", [
                 "Private implementation details.",
@@ -79,7 +82,7 @@ class PublicSyncTest(unittest.TestCase):
                     path = source / name
                     path.parent.mkdir(parents=True, exist_ok=True)
                     path.write_text(text)
-                run("git", "add", ".", cwd=source)
+                run("git", "add", "-f", ".", cwd=source)
                 message = subject + ("\n\n" + "\n\n".join(body) if body else "")
                 run("git", "commit", "--author=" + author, "--date=2026-10-07T23:45:12-04:00",
                     "-F", "-", cwd=source, input=message)
@@ -89,6 +92,8 @@ class PublicSyncTest(unittest.TestCase):
                 (public / ".github-internal/.github/stale.yml").write_text("Old nested workflow\n")
                 (public / ".github-internal/stale.yml").write_text("Deleted source workflow\n")
                 (public / ".github-internal/sync.yml").write_text("Outdated workflow\n")
+                (public / ".agents").mkdir()
+                (public / ".agents/stale").write_text("Deleted source setup script\n")
                 run("git", "add", ".", cwd=public)
                 run("git", "commit", "-m", "Initial public commit", cwd=public)
                 run("git", "init", "--bare", str(remote))

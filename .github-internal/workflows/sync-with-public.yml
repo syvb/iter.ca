@@ -50,8 +50,9 @@ jobs:
     - name: Do sync
       run: |
         ls -a .
-        rm -rf $GITHUB_WORKSPACE/smitop.com/* # * doesn't include .git since it starts with a dot
-        rsync -av --progress $GITHUB_WORKSPACE/smitop-blog/* $GITHUB_WORKSPACE/smitop.com --exclude .git
+        # * skips dotfiles such as .git, so the public ones are named here
+        rm -rf $GITHUB_WORKSPACE/smitop.com/{*,.gitignore,.agents}
+        rsync -av --progress $GITHUB_WORKSPACE/smitop-blog/{*,.gitignore,.agents} $GITHUB_WORKSPACE/smitop.com --exclude .git
         cd $GITHUB_WORKSPACE/smitop-blog
         LASTMSG=$(git log --format=format:"%s" -1)
         LASTHASH=$(git log --format=format:"%H" -1)
@@ -67,7 +68,8 @@ jobs:
         rm -rf static/{audit.log,projects.toml,scr-thumbs,yt-thumbs,uploads,start,dct-stimulus-playground,miniposts} static/*.{png,js,eml,html}
         rm README.md
         mv README.public.md README.md
-        git add .
+        # -f: the synced .gitignore must not drop files the private repo tracks
+        git add -f .
         git config user.email "me@iter.ca"
         git config user.name "syvb"
         # Only commit if there are public changes.

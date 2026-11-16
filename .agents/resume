@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Hugo's Git data (enableGitInfo) needs full history, but orbs start from a shallow clone.
+# Setup gets no GitHub credentials, so fetch the history here. Amp stops waiting after 10s and
+# leaves this running, so give a slow fetch time to finish.
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+if [[ "$(git rev-parse --is-shallow-repository)" == true ]]; then
+    timeout 120 git fetch --quiet --unshallow origin ||
+        echo "warning: could not fetch full Git history; Hugo's Git dates will be wrong" >&2
+fi

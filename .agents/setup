@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Prepares an Amp orb for this repo: Hugo for builds, build-data deps for regen.sh, and the
+# tools subrepos.sh needs for full asset generation (see .github/workflows/neocities.yml).
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+hugo_version=0.98.0
+# From https://github.com/gohugoio/hugo/releases/download/v0.98.0/hugo_0.98.0_checksums.txt
+hugo_sha256=66577b6aad435073bc9d16f5e12a83566d1ceafcdfb09e3f06045562216c69fc
+bin_dir="$HOME/.local/bin"
+mkdir -p "$bin_dir"
+
+run() {
+    local name=$1 start=$SECONDS
+    shift
+    echo "==> $name"
+    "$@"
+    echo "<== $name ($((SECONDS - start))s)"
+}
+
+apt_packages() {
+    local missing=()
+    command -v rsync >/dev/null || missing+=(rsync) # tests/test_public_sync.py
+    command -v wget >/dev/null || missing+=(wget)
+    command -v convert >/dev/null || missing+=(imagemagick)
+    command -v zopflipng >/dev/null || missing+=(zopfli)
+    command -v shellcheck >/dev/null || missing+=(shellcheck)
+    if (( ${#missing[@]} )); then
+        sudo apt-get update -qq
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends "${missing[@]}"
+    fi
+}
+
+# Only this exact version works for the site; install it as `hugo` on PATH.
+install_hugo() (
+    if "$bin_dir/hugo" version 2>/dev/null | grep -q "v$hugo_version-.*+extended"; then
+        return
+    fi
+    tmp="$(mktemp -d)"
+    trap 'rm -rf "$tmp"' EXIT
+    curl -fsSL -o "$tmp/hugo.tar.gz" \
+        "https://github.com/gohugoio/hugo/releases/download/v$hugo_version/hugo_extended_${hugo_version}_Linux-64bit.tar.gz"
+    echo "$hugo_sha256  $tmp/hugo.tar.gz" | sha256sum -c --quiet
+    tar -xzf "$tmp/hugo.tar.gz" -C "$tmp" hugo
+    install -m 755 "$tmp/hugo" "$bin_dir/hugo"
+)
+
+# og/gen.js looks for google-chrome, chromium, or chromium-browser; reuse agent-browser's Chrome.
+link_chrome() {
+    local chrome
+    chrome="$(printf '%s\n' "$HOME"/.agent-browser/browsers/chrome-*/chrome | sort -V | tail -n 1)"
+    if [[ -x "$chrome" ]]; then
+        ln -sfn "$chrome" "$bin_dir/chromium"
+    else
+        echo "warning: agent-browser Chrome not found; set CHROME to run og/gen.js" >&2
+    fi
+}
+
+install_rust() {
+    if [[ ! -x "$HOME/.cargo/bin/rustup" ]]; then
+        curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+    fi
+    # The installer cannot update this running script's environment. Sourcing this also puts
+    # ~/.cargo/bin on the PATH that Amp saves to ~/.env for later shells.
+    # shellcheck disable=SC1091
+    source "$HOME/.cargo/env"
+    rustup target add wasm32-unknown-unknown
+    if ! command -v wasm-pack >/dev/null; then
+        curl -fsSL https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
+    fi
+    (cd binformats && cargo fetch --quiet)
+}
+
+node_deps() {
+    (cd build-data/get && yarn install --frozen-lockfile --non-interactive --silent)
+}
+
+run "Install system packages" apt_packages
+run "Install Hugo $hugo_version extended" install_hugo
+run "Link Chrome for og/gen.js" link_chrome
+run "Install Rust and wasm-pack" install_rust
+run "Install build-data/get dependencies" node_deps
+
+"$bin_dir/hugo" version
+cargo --version
+wasm-pack --version

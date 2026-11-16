@@ -10,7 +10,7 @@
     {{- else -}}
         <h2 class="stream-item-type">
         {{- if (isset .Item "Uri") -}}
-            <a href="{{- .Item.Uri -}}">
+            <a href="{{- .Item.Uri | relURL -}}">
         {{- end -}}
     {{- end -}}
         {{- if (isset .Item "Type") -}}
@@ -56,7 +56,7 @@
         {{- if (isset .Item "Title") -}}
             <h2>
                 {{- if (isset .Item "Uri") -}}
-                    <a href="{{- .Item.Uri -}}">
+                    <a href="{{- .Item.Uri | relURL -}}">
                 {{- end -}}
                     {{- .Item.Title -}}
                 {{- if (isset .Item "Uri") -}}
@@ -72,7 +72,7 @@
             {{- partial "date.html" (dict "t" (int .Item.Date.Unix) "f" "January 2, 2006") -}}
         </div>
         {{- if (isset .Item "Uri") -}}
-            <a href="{{- .Item.Uri -}}">
+            <a href="{{- .Item.Uri | relURL -}}">
         {{- end -}}
             {{- if (and (isset .Item "Thumb") (not (.scr.Get "mini"))) -}}
                 <div class="stream-item-thumb-wrapper">
@@ -109,7 +109,7 @@
     {{- else -}}
         <div
             ><h2
-                ><a href="{{- .Item.Permalink -}}">{{- .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
+                ><a href="{{- .Item.RelPermalink -}}">{{- .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
             </h2>
             <div class="stream-item-date">
                 {{- if (hasPrefix .Item.File.Dir "p/") -}}
@@ -134,7 +134,7 @@
                 {{- if (not (.scr.Get "mini")) -}}
                     <div class="summary">
                         {{- .Item.Description }}
-                        <a class="cont-reading" href="{{- .Item.Permalink -}}">(continue reading)</a>
+                        <a class="cont-reading" href="{{- .Item.RelPermalink -}}">(continue reading)</a>
                     </div>
                 {{- end -}}
             {{- end -}}

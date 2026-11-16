@@ -1,7 +1,7 @@
 {{ define "main" }}
   {{ partial "topbar" .Params.topbar_id }}
   <section itemscope itemtype="http://schema.org/Article" class="h-entry" id="main-section">
-    <h1 itemprop="name" id="title" class="p-name">{{ .Title }}</h1>
+    <h1 itemprop="name" id="title" class="p-name">{{ partial "title.html" .Title }}</h1>
     <div>
     By
     <span class="p-author h-card">
@@ -132,7 +132,7 @@
             <h2>Related</h2>
             <ul class="rel-list">
               {{ range . }}
-                <li><a href="{{.Permalink}}">{{.Title}}</a></li>
+                <li><a href="{{.Permalink}}">{{ partial "title.html" .Title }}</a></li>
               {{ end }}
             </ul>
           </div>

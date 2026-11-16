@@ -19,7 +19,7 @@
         {{- if ne .Params.Featured nil }}{{ $v = -1 }}{{ end -}}
         {{- if ne .Params.Verbose nil }}{{ $v = .Params.Verbose }}{{ end -}}
         {{- if eq $v 0 -}}
-            {{- $items = $items | append (dict "t" (int .Date.Unix) "title" .Title "url" .RelPermalink "kind" (cond (hasPrefix .File.Dir "p/") "page" "post")) -}}
+            {{- $items = $items | append (dict "t" (int .Date.Unix) "title" (partial "title.html" .Title) "url" .RelPermalink "kind" (cond (hasPrefix .File.Dir "p/") "page" "post")) -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}

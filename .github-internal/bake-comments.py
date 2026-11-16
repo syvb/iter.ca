@@ -231,8 +231,10 @@ def write_recent(baked, titles):
         when = datetime.fromtimestamp(posted(comment), timezone.utc)
         source = {"bsky": "Bluesky", "lw": "LessWrong"}[comment["source"]]
         text = PlainText(comment["html"]).text() if "html" in comment else comment["text"]
+        # *Italics* in a title, as themes/smitop/layouts/partials/title.html shows them.
+        title = re.sub(r"\*([^\s*](?:[^*]*[^\s*])?)\*", r"<em>\1</em>", escape(titles[post]))
         items.append(f'<li><div class="meta">{link(comment["url"], f"{when:%Y-%m-%d %H:%M} UTC on {source}")}'
-                     f' · {author} · on <a href="{escape(url)}">{escape(titles[post])}</a></div>\n'
+                     f' · {author} · on <a href="{escape(url)}">{title}</a></div>\n'
                      f'<div class="text">{escape(text)}</div></li>\n')
     now = datetime.now(timezone.utc)
     body = "".join(items)

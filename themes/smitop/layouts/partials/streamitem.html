@@ -109,7 +109,7 @@
     {{- else -}}
         <div
             ><h2
-                ><a href="{{- .Item.RelPermalink -}}">{{- .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
+                ><a href="{{- .Item.RelPermalink -}}">{{- partial "title.html" .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
             </h2>
             <div class="stream-item-date">
                 {{- if (hasPrefix .Item.File.Dir "p/") -}}

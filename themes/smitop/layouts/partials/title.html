@@ -1,0 +1,4 @@
+{{- /* A page title as HTML, with *asterisks* around a span setting it in italics as in Markdown. Takes the title.
+     Where a title must be plain text, such as <title> and meta tags, pipe this through plainify | htmlUnescape,
+     which drops the asterisks too. */ -}}
+{{- return (. | htmlEscape | replaceRE `\*([^\s*](?:[^*]*[^\s*])?)\*` "<em>$1</em>" | safeHTML) -}}

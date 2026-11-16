@@ -1,4 +1,5 @@
 <div>
+  <div>X: <a href="https://x.com/_smitop">@_smitop</a></div>
   <div>📧 <a href="mailto:me&#x000000000000000000000000000000040;iter.ca">{{ partial "email.html" }}</a></div>
   <div>Discord: <code>@moreloops</code></div>
 </div>
@@ -7,7 +8,7 @@
 </div>
 <div>
   {{ with .Params.tags }}
-    <div id="tags">
+    <div id="tags">Tags:
       {{ range . }}
       <a href="{{ "tags/" | absURL }}{{ . | urlize }}/" class="p-category">{{ . }}</a>
       {{ end }}

@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="alternate" type="application/rss+xml" title="All posts" href="/index.xml">
     <meta http-equiv="origin-trial" content="ApGfbnUOpX+fKw4aW90l9VludEb3Yl4IDX7Lyd2lS1SEnd1nGI0FAwthjyURxdyMbR5ay1c9dAx0xSs4Fbq6UAIAAABVeyJvcmlnaW4iOiJodHRwczovL2Jsb2cuc21pdG9wLmNvbTo0NDMiLCJmZWF0dXJlIjoiQ29udGVudEluZGV4IiwiZXhwaXJ5IjoxNTg0NDYyMTI4fQ==">
-    {{- $title := partial "title.html" .Title | plainify | htmlUnescape }}
-    <title>{{ $title }}</title>
+    <title>{{.Title}}</title>
     {{ partial "style.html" }}
     <link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
     <link rel="canonical" href="{{ .Permalink }}" />
@@ -19,13 +18,13 @@
     {{- block "sitewide" . }}{{- end }}
     {{- block "head" . }}{{- end }}
     {{ if .IsPage }}
-      <meta name="twitter:title" content="{{ $title }}">
+      <meta name="twitter:title" content="{{.Title}}">
       {{ if (eq .Params.image nil) }}
         <meta name="twitter:card" content="summary">
       {{ else }}
         <meta name="twitter:card" content="summary_large_image">
       {{ end }}
-      <meta property="og:title" content="{{ $title }}">
+      <meta property="og:title" content="{{.Title}}">
       <meta property="og:site_name" content="loops">
       <meta property="og:type" content="article" />
       <meta property="og:url" content="{{.Permalink}}" />
@@ -66,7 +65,7 @@
         },{
           "@type": "ListItem",
           "position": 2,
-          "name": "{{ $title }}",
+          "name": "{{.Title}}",
           "item": "{{ .Permalink }}"
         }]
       }

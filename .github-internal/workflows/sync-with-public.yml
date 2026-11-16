@@ -29,7 +29,6 @@ jobs:
     concurrency:
       group: iter-ca-public-sync
       cancel-in-progress: false
-    continue-on-error: true # for when there are no public changes
     steps:
     - name: Clone public repo
       uses: actions/checkout@master

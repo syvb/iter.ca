@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns#">
+<html lang="en" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -18,6 +18,8 @@
     {{- block "sitewide" . }}{{- end }}
     {{- block "head" . }}{{- end }}
     {{ if .IsPage }}
+      <meta name="twitter:site" content="@_smitop">
+      <meta name="twitter:creator" content="@_smitop">
       <meta name="twitter:title" content="{{.Title}}">
       {{ if (eq .Params.image nil) }}
         <meta name="twitter:card" content="summary">
@@ -30,23 +32,23 @@
       <meta property="og:url" content="{{.Permalink}}" />
       {{ if (ge .Date 5) }}
         <!-- https://ar.al/2018/06/17/formatting-an-iso-8601-date-stamp-in-hugo/ -->
-        <meta property="og:article:published_time" content="{{.Date.Format "2006-01-02T15:04:05Z0700"}}" />
+        <meta property="article:published_time" content="{{.Date.Format "2006-01-02T15:04:05Z0700"}}" />
       {{ end }}
       {{ range .Params.Tags }}
-        <meta property="og:article:tags" content="{{.}}" />
+        <meta property="article:tag" content="{{.}}" />
       {{ end }}
       {{ with .Description }}
         <meta name="description" content="{{ . }}">
         <meta name="twitter:description" content="{{ . }}">
-        <meta name="og:description" content="{{ . }}">
+        <meta property="og:description" content="{{ . }}">
       {{ end }}
       {{ if (ne .Params.image nil) }}
-        <meta name="twitter:image" content="{{ .Site.BaseURL }}{{ .Params.image }}">
-        <meta name="og:image" content="{{ .Site.BaseURL }}{{ .Params.image }}">
+        <meta name="twitter:image" content="{{ .Params.image | absURL }}">
+        <meta property="og:image" content="{{ .Params.image | absURL }}">
       {{ end }}
       {{ with .Params.image_alt }}
         <meta name="twitter:image:alt" content="{{ . }}">
-        <meta name="og:image:alt" content="{{ . }}">
+        <meta property="og:image:alt" content="{{ . }}">
       {{ end }}
       <!-- TODO: image -->
       <script type="application/ld+json">

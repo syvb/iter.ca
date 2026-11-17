@@ -1,17 +1,92 @@
 """Exercise baked comments in a real browser. Like og/gen.js, requires Chrome or CHROME."""
 
-from html import unescape
+import contextlib
+import fcntl
+import itertools
 import json
 import os
 from pathlib import Path
-import re
+import select
 import shutil
+import signal
 import subprocess
 import tempfile
+import time
 import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def read_test_result(chrome, url, profile, timeout=30):
+    """Open url in headless Chrome and return the text the page puts in #test-result.
+
+    Chrome's --dump-dom has no timeout: it waits for the page's load event, then for a virtual-time budget
+    that stops while any fetch is pending, and Chrome can hang on exit after printing. On CI one of these
+    sometimes never finished. This drives Chrome over its DevTools pipe instead, waits in real time for
+    the result alone, and then kills Chrome.
+    """
+    deadline = time.monotonic() + timeout
+    commands, replies = os.pipe(), os.pipe()
+    # Chrome reads commands from fd 3 and writes replies to fd 4. Its ends are first moved above 4, so
+    # putting one in place can't close the other.
+    theirs = [fcntl.fcntl(fd, fcntl.F_DUPFD_CLOEXEC, 5) for fd in (commands[0], replies[1])]
+    ids = itertools.count(1)
+    received = b""
+    reply = None
+
+    def send(method, session=None, **params):
+        nonlocal received
+        message = {"id": next(ids), "method": method, "params": params}
+        if session:
+            message["sessionId"] = session
+        os.write(commands[1], json.dumps(message).encode() + b"\0")
+        while True:
+            while b"\0" not in received:
+                wait = deadline - time.monotonic()
+                if wait <= 0 or not select.select([replies[0]], [], [], wait)[0]:
+                    raise TimeoutError
+                chunk = os.read(replies[0], 1 << 16)
+                if not chunk:
+                    raise TimeoutError
+                received += chunk
+            line, received = received.split(b"\0", 1)
+            answer = json.loads(line)
+            if answer.get("id") == message["id"]:
+                return answer
+
+    with tempfile.TemporaryFile("w+") as log:
+        # The page and all test data are local; fail DNS rather than contacting any external service.
+        browser = subprocess.Popen([
+            chrome, "--headless=new", "--no-sandbox", "--disable-background-networking",
+            "--no-proxy-server", "--host-resolver-rules=MAP * ~NOTFOUND",
+            f"--user-data-dir={profile}", "--remote-debugging-pipe", "about:blank",
+        ], stdout=log, stderr=log, close_fds=False, start_new_session=True,
+           preexec_fn=lambda: (os.dup2(theirs[0], 3), os.dup2(theirs[1], 4)))
+        for fd in (commands[0], replies[1], *theirs):
+            os.close(fd)
+        try:
+            target = send("Target.createTarget", url=url)["result"]["targetId"]
+            session = send("Target.attachToTarget", targetId=target, flatten=True)["result"]["sessionId"]
+            while time.monotonic() < deadline:
+                reply = send("Runtime.evaluate", session, returnByValue=True,
+                             expression='document.getElementById("test-result")?.textContent')
+                text = reply.get("result", {}).get("result", {}).get("value")
+                if text is not None:
+                    return text
+                time.sleep(0.05)
+            raise TimeoutError
+        except TimeoutError:
+            log.seek(0)
+            raise AssertionError(f"No #test-result within {timeout}s; last reply {reply}; Chrome's log:\n"
+                                 + log.read()) from None
+        finally:
+            # Kill the renderers and other helpers too, so none still writes to the profile as it's deleted.
+            with contextlib.suppress(ProcessLookupError):
+                os.killpg(browser.pid, signal.SIGKILL)
+            browser.wait()
+            os.close(commands[1])
+            os.close(replies[0])
 
 
 class CommentRenderingTest(unittest.TestCase):
@@ -117,17 +192,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 "--cacheDir", str(root / "cache"),
             ], cwd=ROOT, capture_output=True, text=True, timeout=30)
             self.assertEqual(build.returncode, 0, build.stdout + build.stderr)
-            # The page and all test data are local; fail DNS rather than contacting any external service.
-            browser = subprocess.run([
-                chrome, "--headless=new", "--no-sandbox", "--disable-background-networking",
-                "--no-proxy-server", "--host-resolver-rules=MAP * ~NOTFOUND",
-                f"--user-data-dir={root / 'chrome'}", "--virtual-time-budget=1000", "--dump-dom",
-                (root / "public/post/comments/index.html").as_uri(),
-            ], capture_output=True, text=True, timeout=30)
-            self.assertEqual(browser.returncode, 0, browser.stderr)
-            match = re.search(r'<pre id="test-result">([^<]+)</pre>', browser.stdout)
-            self.assertIsNotNone(match, browser.stdout + browser.stderr)
-            rendered = json.loads(unescape(match[1]))
+            rendered = json.loads(read_test_result(
+                chrome, (root / "public/post/comments/index.html").as_uri(), root / "chrome"))
 
         self.assertEqual(rendered["count"], 2)
         self.assertFalse(rendered["executed"])

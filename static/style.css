@@ -846,6 +846,11 @@ summary h2 {
         left: calc(100% + 2rem);
         width: min(18rem, calc((100vw - 45rem) / 2 - 4rem));
     }
+    /* Only where its margin note is shown. */
+    .footnote-ref-hover {
+        background: #fff8d4;
+        box-shadow: 0 0 0 0.15em #fff8d4;
+    }
 }
 
 .margin-note {
@@ -860,13 +865,8 @@ summary h2 {
 
 /* The shadow widens the highlight past the note's edges without moving its text. */
 .margin-note-hover {
-    background: #fff1a8;
-    box-shadow: 0 0 0 0.4em #fff1a8;
-}
-
-.footnote-ref-hover {
-    background: #fff1a8;
-    box-shadow: 0 0 0 0.15em #fff1a8;
+    background: #fff8d4;
+    box-shadow: 0 0 0 0.4em #fff8d4;
 }
 
 .margin-note p {

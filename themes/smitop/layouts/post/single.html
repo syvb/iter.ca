@@ -53,13 +53,15 @@
             // The footnotes at the bottom stay the copy that screen readers and keyboards use.
             side.setAttribute("aria-hidden", "true");
             var notes = [];
-            // Hovering a reference highlights its margin note, and hovering a margin note highlights every reference to it.
+            // Hovering a margin note or any reference to it highlights the note and every reference to it, like LessWrong.
             // A touch doesn't hover, and a tap would otherwise leave the highlight on until the next tap elsewhere.
-            function highlight(from, to, cls) {
-              from.addEventListener("pointerenter", function (e) {
-                if (e.pointerType !== "touch") to.forEach(function (el) { el.classList.add(cls); });
-              });
-              from.addEventListener("pointerleave", function () { to.forEach(function (el) { el.classList.remove(cls); }); });
+            function highlight(from, note) {
+              function set(on) {
+                note.el.classList.toggle("margin-note-hover", on);
+                note.refs.forEach(function (ref) { ref.classList.toggle("footnote-ref-hover", on); });
+              }
+              from.addEventListener("pointerenter", function (e) { if (e.pointerType !== "touch") set(true); });
+              from.addEventListener("pointerleave", function () { set(false); });
             }
             content.querySelectorAll("a.footnote-ref").forEach(function (ref) {
               var fn = document.getElementById(ref.getAttribute("href").slice(1));
@@ -79,10 +81,10 @@
                 (el.querySelector("p") || el).prepend(num);
                 side.appendChild(el);
                 notes.push(note = { fn: fn, refs: [], el: el });
-                highlight(el, note.refs, "footnote-ref-hover");
+                highlight(el, note);
               }
               note.refs.push(ref);
-              highlight(ref, [note.el], "margin-note-hover");
+              highlight(ref, note);
             });
             content.appendChild(side);
             // Where a reference is shown on the page, or null if it isn't. Chromium still gives a box to what's in a closed

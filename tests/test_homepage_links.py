@@ -1,4 +1,4 @@
-"""Homepage links stay on the preview origin without changing external links."""
+"""Homepage links stay on the preview origin without changing external links, and each one has something to click."""
 
 from html.parser import HTMLParser
 import json
@@ -15,11 +15,25 @@ class Links(HTMLParser):
     def __init__(self, html):
         super().__init__()
         self.hrefs = []
+        self.empty = []  # hrefs of links with no text or image in them
+        self.open = None
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
         if tag == "a":
             self.hrefs.append(dict(attrs).get("href"))
+            self.open = self.hrefs[-1]
+        elif tag == "img":
+            self.open = None
+
+    def handle_data(self, data):
+        if data.strip():
+            self.open = None
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.open is not None:
+            self.empty.append(self.open)
+            self.open = None
 
 
 class HomepageLinksTest(unittest.TestCase):
@@ -52,8 +66,10 @@ class HomepageLinksTest(unittest.TestCase):
                 "--cacheDir", str(root / "cache"),
             ], cwd=ROOT, capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            hrefs = Links((root / "public/index.html").read_text()).hrefs
+            links = Links((root / "public/index.html").read_text())
+        hrefs = links.hrefs
 
+        self.assertEqual(links.empty, [])
         self.assertIn("/post/local/", hrefs)
         self.assertIn(local, hrefs)
         self.assertIn("/post/local/#untitled", hrefs)

@@ -49,7 +49,7 @@ h2, h3, h4, h5, h6 {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-p, ul {
+p, ul, ol {
     margin: 0;
     padding-bottom: 1rem;
 }
@@ -88,6 +88,11 @@ figcaption {
     text-align: center;
 }
 
+/* A footnote reference doesn't make its line taller than the lines around it. */
+sup {
+    line-height: 0;
+}
+
 kbd {
     border: 1px solid #c6cbd1;
     border-radius: 4px;
@@ -109,6 +114,20 @@ kbd {
     margin-top: 1em;
     text-align: justify;
     font-size: 111%;
+}
+
+/* In prose, a long word that doesn't fit breaks with a hyphen, instead of moving whole to the next line and
+   spreading out the justified line before it. Only paragraphs and list items are prose: a hyphen added to text a
+   post shows as-is, such as the output of one of its demos, would read as part of that text. */
+#content :is(p, li) {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+/* Likewise for code in prose. */
+#content :is(pre, code, kbd, samp) {
+    -webkit-hyphens: manual;
+    hyphens: manual;
 }
 
 /* Long inline code (marked by post/single.html) breaks anywhere instead of moving whole to the next line, which would spread out the justified line before it. */
@@ -305,8 +324,13 @@ h1 {
     left: 0.2rem;
 }
 
-li > ul {
+li > ul, li > ol {
     padding-bottom: 0;
+}
+
+/* The footnote list follows a rule, not a paragraph whose padding would set it apart. */
+.footnotes > ol {
+    margin-top: 1em;
 }
 
 #avatar {
@@ -616,6 +640,8 @@ dl {
     width: 1.5em;
     height: 1.5em;
     border-radius: 50%;
+    /* Without the margin every img gets, which would raise the avatar above the name next to it. */
+    margin-bottom: 0;
 }
 
 .comment-author {
@@ -657,11 +683,6 @@ dl {
 .comment-html > :last-child {
     padding-bottom: 0;
     margin-bottom: 0;
-}
-
-.comment-html ol {
-    margin: 0;
-    padding-bottom: 1rem;
 }
 
 /* LessWrong footnotes: keep the note on the same line as its ^ back-link. */
@@ -912,6 +933,10 @@ summary h2 {
     }
     #meta {
         display: block;
+    }
+    /* A column this narrow has too few words on a line to justify without wide gaps. */
+    #content {
+        text-align: left;
     }
     #content img {
         position: relative;

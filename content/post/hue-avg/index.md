@@ -16,7 +16,7 @@ Here's what a naive arithmetic mean would look like for averaging 40° and 300°
 
 <img src="color-line-avg.svg" width="400" alt="A color line with points indicated at 40° and 300°, and their average shown exactly between them at 170°">
 
-That averaged color doesn't look right. We averaged <span style="color: hsl(40deg, 70%, 33%)">orange</span> and <span style="color: hsl(300deg, 70%, 33%)">magenta</span> but got a <span style="color: hsl(170deg, 70%, 33%)">greenish cyan</span>. Something like <span style="color: hsl(350deg, 65%, 50%)">red</span> would have been a better in-between color.
+That averaged color doesn't look right. We averaged <span class="hue" style="color: hsl(40deg, 70%, 33%); --dark: hsl(40deg, 70%, 65%)">orange</span> and <span class="hue" style="color: hsl(300deg, 70%, 33%); --dark: hsl(300deg, 70%, 65%)">magenta</span> but got a <span class="hue" style="color: hsl(170deg, 70%, 33%); --dark: hsl(170deg, 70%, 65%)">greenish cyan</span>. Something like <span class="hue" style="color: hsl(350deg, 65%, 50%); --dark: hsl(350deg, 65%, 65%)">red</span> would have been a better in-between color.
 
 ## The color wheel
 
@@ -137,6 +137,20 @@ document.getElementById("explainer-next").style.display = "block";
     #explainer-area {
       display: block;
       margin-bottom: 1em;
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    /* The script dims the steps with an inline color. */
+    #explainer-step-list[style] {
+      color: #8f8f8f !important;
+    }
+    /* Each colored word names its color, lighter here; the light one is inline. */
+    .hue {
+      color: var(--dark) !important;
+    }
+    /* Like the color wheel pictures above it, so its black points on the wheel's edge show. */
+    #explainer-area svg {
+      background: white;
     }
   }
 </style>

@@ -18,7 +18,7 @@ I have waived all copyright and related or neighboring rights to these works und
 <a id="6t"></a>
 <a href="/avatar/6t/maxrescomp.png" download>download PNG</a>
 
-<div><img src="/avatar/6t/a256.png" alt="" width="256"></div>
+<div><img src="/avatar/6t/a256.png" alt="" width="256" class="keep-transparent"></div>
 
 ### A letter S
 <a id="4"></a>

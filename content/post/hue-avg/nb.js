@@ -124,9 +124,9 @@ html`<style>
     transition: 0.333s opacity;
   }
   /* only for blog post */
-  #explainer-area li#explainer-phase-2 { color: ${phase >= 2 ? "black" : "inherit"} }
-  #explainer-area li#explainer-phase-3 { color: ${phase >= 3 ? "black" : "inherit"} }
-  #explainer-area li#explainer-phase-4 { color: ${phase >= 4 ? "black" : "inherit"} }
+  #explainer-area li#explainer-phase-2 { color: ${phase >= 2 ? "CanvasText" : "inherit"} }
+  #explainer-area li#explainer-phase-3 { color: ${phase >= 3 ? "CanvasText" : "inherit"} }
+  #explainer-area li#explainer-phase-4 { color: ${phase >= 4 ? "CanvasText" : "inherit"} }
 </style>`
 )}
 

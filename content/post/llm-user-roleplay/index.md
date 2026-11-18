@@ -67,6 +67,11 @@ cw = "This post has references to harmful activities."
                 content: unset;
             }
         /*}*/
+        @media (prefers-color-scheme: dark) {
+            .llm-run-meta {
+                color: #cccccc;
+            }
+        }
     </style>
 {{< /rawhtml >}}
 

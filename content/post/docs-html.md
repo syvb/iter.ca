@@ -13,7 +13,7 @@ You can try pasting some HTML in this [`contenteditable`](https://developer.mozi
     #input {
         width: 50px;
         height: 50px;
-        border: 2px solid black;
+        border: 2px solid currentColor;
         overflow: hidden;
     }
     #output {

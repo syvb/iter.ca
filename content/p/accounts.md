@@ -10,6 +10,7 @@ Email to {{< email >}} is the best way to reach me, do feel free to contact me. 
 
 <style>
 .acc-list > li.inactive, .acc-list > li.inactive > a { color: #585858; font-style: italic; }
+@media (prefers-color-scheme: dark) { .acc-list > li.inactive, .acc-list > li.inactive > a { color: #999999; } }
 .acc-list > li.inactive:after { content: " (inactive)" }
 </style>
 

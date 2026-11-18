@@ -29,7 +29,7 @@ fmat_id = "png"
             text-align: center;
         }
         .chunk {
-            border: 2px solid black;
+            border: 2px solid currentColor;
             border-bottom: 0;
             width: 20em;
             max-width: 85vw;
@@ -47,7 +47,7 @@ fmat_id = "png"
             font-size: 1.5em;
         }
         .chunk > div {
-            border-bottom: 2px solid black;
+            border-bottom: 2px solid currentColor;
             padding: 4px;
         }
         .chunk > div > .chunk-label {
@@ -103,6 +103,17 @@ fmat_id = "png"
         @media (max-width: 530px) {
             .chunk {
                 margin-right: 0;
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            .chunk-IDAT {
+                background: #4a4a0a;
+            }
+            .filt-amount {
+                background-color: rgb(70, 70, 70);
+            }
+            .filt-counts div:nth-child(2n) .filt-amount {
+                background-color: rgb(100, 100, 100);
             }
         }
     </style>

@@ -64,6 +64,11 @@ toc = 1
                 content: unset;
             }
         }
+        @media (prefers-color-scheme: dark) {
+            .codex-run-meta {
+                color: #cccccc;
+            }
+        }
     </style>
 {{< /rawhtml >}}
 

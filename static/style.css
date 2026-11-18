@@ -981,3 +981,129 @@ summary h2 {
         margin: 0;
     }
 }
+
+/* Dark mode, for visitors whose system asks for it. Everything above is the light theme; this only swaps its colors.
+   color-scheme also gives links, form controls, and scrollbars the browser's dark colors. */
+:root {
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #111111;
+        color: #ffffff;
+    }
+
+    /* Many charts and diagrams in posts are transparent, with black lines and text drawn for a white page. The color is for
+       the alt text of an image that fails to load. Give an image drawn for any background class="keep-transparent". */
+    #content img:not(.keep-transparent) {
+        background: white;
+        color: #111111;
+    }
+
+    #lastmod-info {
+        color: #b0b0b0;
+    }
+
+    kbd {
+        border-color: #5c6168;
+        box-shadow: 1px 1px 0 #3d4147;
+        color: #ffffff;
+    }
+
+    #copy-discord:hover::after,
+    #copy-discord:focus-visible::after {
+        background: #ffffff;
+        background-clip: padding-box;
+        color: #111111;
+    }
+
+    .source-link {
+        color: #cccccc;
+    }
+
+    .stream-item {
+        background: none;
+    }
+
+    .stream-item.featured {
+        background: #26260f;
+    }
+
+    #TableOfContents {
+        background: #1e1e1e;
+    }
+
+    blockquote {
+        background: #222222;
+    }
+
+    #topbar {
+        background: #1e1e1e;
+        border-bottom-color: #383838;
+    }
+
+    .dia-text {
+        background: #2a2a2a;
+    }
+
+    #ai-info {
+        color: #d8d8d8;
+    }
+
+    .comment {
+        border-left-color: #888888;
+    }
+
+    .comment-date {
+        color: #aaaaaa;
+    }
+
+    .comment-html :is(td, th) {
+        border-color: #444444;
+    }
+
+    details, .sidenote {
+        border-color: #666666;
+        background: #1c1c1c;
+    }
+
+    .sidenote-label {
+        background: #1c1c1c;
+        color: #aaaaaa;
+    }
+
+    .post-cta {
+        border-color: rgb(90, 140, 185);
+        background: rgb(20, 32, 44);
+    }
+
+    .post-cta-label {
+        background: rgb(20, 32, 44);
+        color: rgb(125, 175, 215);
+    }
+
+    .post-cta-lastmod {
+        color: rgb(140, 160, 180);
+    }
+
+    .cw {
+        background: rgb(38, 33, 18);
+    }
+
+    .margin-note {
+        color: #d0d0d0;
+    }
+
+    .margin-note-hover {
+        background: #3a3520;
+        box-shadow: 0 0 0 0.4em #3a3520;
+    }
+}
+
+@media screen and (min-width: 77rem) and (prefers-color-scheme: dark) {
+    .footnote-ref-hover {
+        background: #3a3520;
+        box-shadow: 0 0 0 0.15em #3a3520;
+    }
+}

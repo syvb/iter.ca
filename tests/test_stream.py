@@ -12,6 +12,12 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def lw_fetch(reply, ok=True):
+    """A node-fetch stub that answers the LessWrong GraphQL request with reply."""
+    return (f"module.exports = async () => ({{ok: {json.dumps(ok)}, status: {200 if ok else 502}, "
+            f"json: async () => ({json.dumps(reply)})}});\n")
+
+
 class StreamTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -26,17 +32,20 @@ class StreamTest(unittest.TestCase):
         shutil.copy2(ROOT / "regen.sh", self.root)
         shutil.copy2(ROOT / "build-data/get/all.sh", self.get)
         self.generators = ["notes", "gh", "yt", "hn", "itch", "scrprojs",
-                           "se", "observable", "buttondown"]
+                           "se", "observable", "buttondown", "lw"]
         for name in self.generators:
             (self.get / f"{name}.js").write_text(
                 f'console.log(JSON.stringify({{Id: "{name}"}}));\n')
         self.env = dict(os.environ, NODE_OPTIONS="")
 
-    def importer(self, name, fetch):
+    def install(self, name, fetch):
         shutil.copy2(ROOT / f"build-data/get/{name}.js", self.get)
         module = self.get / "node_modules/node-fetch"
-        module.mkdir(parents=True)
+        module.mkdir(parents=True, exist_ok=True)
         (module / "index.js").write_text(fetch)
+
+    def importer(self, name, fetch):
+        self.install(name, fetch)
         result = subprocess.run(["node", f"{name}.js"], cwd=self.get,
                                 env=self.env, capture_output=True, text=True,
                                 timeout=30)
@@ -83,6 +92,44 @@ module.exports = async url => {
 """)
         self.assertEqual([row["Id"] for row in rows],
                          [f"gh-pr-{i}" for i in range(1, 206)])
+
+    def test_lw_skips_posts_on_this_site_and_dates_old_posts_in_sf(self):
+        posts = [
+            ("Exact", "2026-11-11T08:30:00.900Z", {}),
+            ("BeforeCutoff", "2026-11-11T07:30:00.000Z", {}),
+            ("Old", "2026-04-28T06:46:24.097Z", {}),
+            ("Short", "2026-10-13T19:59:43.684Z", {"shortform": True}),
+            ("Link", "2024-09-28T23:43:10.870Z",
+             {"url": "https://iter.ca/post/llm-user-roleplay/"}),
+        ]
+        results = [dict({"_id": id, "title": f"{id} title", "postedAt": at,
+                         "shortform": False, "url": None,
+                         "pageUrl": f"https://www.lesswrong.com/posts/{id}/slug"}, **extra)
+                   for id, at, extra in posts]
+        rows = self.importer("lw", lw_fetch({"data": {"posts": {"results": results}}}))
+        # 2026-11-11T08:30:00Z, then midnight UTC of the San Francisco dates Nov 10 and Apr 27
+        self.assertEqual([(row["Id"], row["Date"]["Unix"]) for row in rows],
+                         [("lw-Exact", 1794385800), ("lw-BeforeCutoff", 1794268800),
+                          ("lw-Old", 1777248000)])
+        self.assertEqual(rows[0]["Uri"], "https://www.lesswrong.com/posts/Exact/slug")
+
+    def test_failed_or_partial_lw_listing_preserves_previous_data(self):
+        good = {"_id": "Good", "title": "Good title", "postedAt": "2026-11-12T00:00:00.000Z",
+                "shortform": False, "url": None,
+                "pageUrl": "https://www.lesswrong.com/posts/Good/slug"}
+        for name, reply, ok in [
+            ("HTTP error", {}, False),
+            ("GraphQL errors", {"errors": [{"message": "timeout"}],
+                                "data": {"posts": {"results": [good]}}}, True),
+            ("empty listing", {"data": {"posts": {"results": []}}}, True),
+            ("no URL", {"data": {"posts": {"results": [good, dict(good, pageUrl=None)]}}}, True),
+            ("bad date", {"data": {"posts": {"results": [good, dict(good, postedAt="soon")]}}}, True),
+        ]:
+            with self.subTest(name):
+                self.install("lw", lw_fetch(reply, ok))
+                result = self.regenerate()
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertEqual(self.data.read_bytes(), self.original)
 
     def test_successful_regen_replaces_previous_data(self):
         result = self.regenerate()

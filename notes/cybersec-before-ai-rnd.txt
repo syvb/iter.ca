@@ -1,5 +1,0 @@
-Date=Apr 7 2026
-Title=Why was cybersecurity automated before AI R&D?
-Verbose=0
-NoteType=Blog post
-Uri=https://www.lesswrong.com/posts/xzPjd3ZF2oBK6ADFz/why-was-cybersecurity-automated-before-ai-r-and-d

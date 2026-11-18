@@ -34,6 +34,8 @@
                 Itch {{ .Item.ItchType -}}
             {{- else if (eq .Item.Type "buttondown") -}}
                 Newsletter
+            {{- else if (eq .Item.Type "lw") -}}
+                Blog post
             {{- else if (eq .Item.Type "gh-pr") -}}
                 Pull request
             {{- else -}}

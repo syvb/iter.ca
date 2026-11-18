@@ -10,38 +10,6 @@ You may run `./regen.sh` locally to test regeneration of `data/data.json`. Do no
 
 When adding posts (notes in `notes/`), use San Francisco time for the `Date` field. The site shows dates from Nov 11 2026 on in San Francisco time (`themes/smitop/layouts/partials/date.html`); a date with no time of day, such as `Date=Nov 20 2026` or `date = "2026-11-20T00:00:00Z"`, stays on that day.
 
-## Adding LessWrong posts
-
-A LessWrong post is linked as a note, not copied into `content/post/`. Add `notes/<short-name>.txt` (the filename becomes the `note-<short-name>` ID) with just this header and no body:
-
-```
-Date=2026-10-07T10:00:59-07:00
-Title=Anthropic's corporate structure
-Verbose=0
-NoteType=Blog post
-Uri=https://www.lesswrong.com/posts/Hb5aCFtLuHc5uvAgX/anthropic-s-corporate-structure
-```
-
-Always use `Verbose=0` for new LW notes; the homepage stream only shows `Verbose=0` items.
-
-Take the title and date from the LW API instead of guessing from the URL slug:
-
-```sh
-curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application/json' \
-  -d '{"query":"{ post(input: {selector: {_id: \"<postId>\"}}) { result { title slug postedAt } } }"}'
-```
-
-To find recent posts, list the user's posts newest first (the `/api/user/loops` Markdown page from https://www.lesswrong.com/api/SKILL.md also lists recent posts, but may lag behind a just-published post):
-
-```sh
-curl -sS -X POST https://www.lesswrong.com/graphql -H 'Content-Type: application/json' \
-  -d '{"query":"{ posts(input: {terms: {view: \"userPosts\", userId: \"nDWrtEhgEPvoYqyyk\", sortedBy: \"new\", limit: 5}}) { results { _id title slug postedAt shortform } } }"}'
-```
-
-Skip `shortform: true` results (the shortform container, not a post), and skip posts whose `_id` already appears in a `Uri` under `notes/`.
-
-`postedAt` is UTC; convert it to a full San Francisco timestamp with its offset for `Date` (`TZ=America/Los_Angeles date -d <postedAt> +%Y-%m-%dT%H:%M:%S%:z`). Keep the time of day: the homepage sorts by timestamp, and a date-only `Date` counts as midnight UTC, which sorts it below a post from the previous San Francisco evening. Use the canonical `https://www.lesswrong.com/posts/<postId>/<slug>` URL for `Uri`.
-
 ## Building
 
 You may run Hugo when a build or preview is useful, but skip it when it is not needed (for example, for documentation-only changes).
@@ -83,7 +51,7 @@ The deploy also publishes the file as `https://iter.ca/comments.json`. When the 
 
 A local Hugo build has comment sections only if the script ran first (`python3 .github/bake-comments.py`); otherwise Hugo warns and leaves them out.
 
-For `lw`, use the canonical LW URL of the crosspost (look up the post as in "Adding LessWrong posts").
+For `lw`, use the canonical LW URL of the crosspost.
 
 Given a Bluesky URL, confirm which post it belongs to from the link embed instead of guessing from the text:
 

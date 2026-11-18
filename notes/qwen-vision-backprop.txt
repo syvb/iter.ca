@@ -1,0 +1,5 @@
+Date=2026-11-17T17:09:06-08:00
+Title=Backpropagating through Qwen3-VL-8B's vision stack to the input image
+Verbose=0
+NoteType=X post
+Uri=https://x.com/_smitop/status/2122859608066973939

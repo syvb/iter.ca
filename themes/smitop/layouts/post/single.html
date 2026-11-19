@@ -287,14 +287,28 @@
       {{ end }}
       <hr>
       <div class="footer-newsletter">
-        Subscribe to my occasional email newsletter:
-        <iframe
-          id="footer-email-sub"
-          scrolling="no"
-          loading="lazy"
-          style="width:100%!important;height:220px;border:1px #ccc solid !important"
-          src="https://buttondown.com/z?as_embed=true&tag=source:scom"
-        ></iframe>
+        {{/* Buttondown's form loads only once a reader clicks the link, which it replaces. Without JavaScript, the link
+             opens the same form on Buttondown's site. */}}
+        <a id="newsletter-open" href="https://buttondown.com/z?tag=source:scom">Subscribe to my occasional email newsletter</a>
+        <template id="newsletter-form">
+          <iframe
+            id="footer-email-sub"
+            title="Subscribe to my email newsletter"
+            scrolling="no"
+            style="width:100%!important;height:220px;border:1px #ccc solid !important"
+            src="https://buttondown.com/z?as_embed=true&tag=source:scom"
+          ></iframe>
+        </template>
+        <script>
+          document.getElementById("newsletter-open").addEventListener("click", function (e) {
+            e.preventDefault();
+            var iframe = document.getElementById("newsletter-form").content.querySelector("iframe");
+            this.replaceWith(iframe);
+            iframe.focus({ preventScroll: true });
+            // The form is taller than the link, and at the end of the page it would open mostly out of view.
+            iframe.scrollIntoView({ block: "nearest" });
+          });
+        </script>
       </div>
     </footer>
   </section>

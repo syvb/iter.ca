@@ -10,6 +10,10 @@ You may run `./regen.sh` locally to test regeneration of `data/data.json`. Do no
 
 When adding posts (notes in `notes/`), use San Francisco time for the `Date` field. The site shows dates from Nov 11 2026 on in San Francisco time (`themes/smitop/layouts/partials/date.html`); a date with no time of day, such as `Date=Nov 20 2026` or `date = "2026-11-20T00:00:00Z"`, stays on that day.
 
+## Homepage lists
+
+The homepage lists stream items in the columns of `data/homecols.toml`, whose comment says how an item finds its column: a post by its `tags`, a `data/data.json` item (a note, a LessWrong post) by its kind or by its Id in a column's `ids`. When adding a post, give it the tags that put it in the right list, and only tags that are true of it. Highlights is the exception: its sentences are written by hand in that file. Featured items (`verbose = -1` in a post's front matter, `Verbose=-1` in a note) are in none of the lists, so the homepage links to one only from a Highlights sentence.
+
 ## Building
 
 You may run Hugo when a build or preview is useful, but skip it when it is not needed (for example, for documentation-only changes).

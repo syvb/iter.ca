@@ -3,7 +3,7 @@
 <!-- <?xml version="1.0" encoding="utf-8" standalone="yes"?> -->
 {{- $items := slice -}}
 {{- range sort (.Site.RegularPages | append .Site.Data.data) ".Date.Unix" "desc" | uniq -}}
-    {{- /* Blog posts, and the stream items the homepage shows: its stream (in index.html) has VerboseMin and VerboseMax 0 */ -}}
+    {{- /* Blog posts, and the stream items of verbosity 0, which the homepage lists (partials/homecols.html) */ -}}
     {{- $verbose := partial "streamverbose.html" (dict "Item" . "Overrides" $.Site.Data.voverrides) -}}
     {{- if or (and (eq .Section "post") (eq .Params.reply nil)) (and (ge $verbose 0) (le $verbose 0)) -}}
         {{- /* Wrapped in a dict: append turns pages and slices into nested page lists */ -}}

@@ -1,7 +1,7 @@
 NoteType=Web app
-Title=Segme
+Title=Segme: a tool to see the Unicode segmentation of text
 Date=2021-10-04
-Uri=https://smitop.com/segme/
+Uri=https://iter.ca/segme/
 Thumb=/segme.png
 Verbose=-1
 

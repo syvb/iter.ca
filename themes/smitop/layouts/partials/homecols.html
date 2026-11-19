@@ -1,0 +1,92 @@
+{{- /* The homepage's lists of stream items, one per column of data/homecols.toml, which says how an item finds its
+     column. style.css lays them out: a row on a wide screen, cards on a narrower one. Draws from the stream's featured
+     items and its items of verbosity 0. Takes the homepage. */ -}}
+{{- $conf := .Site.Data.homecols -}}
+{{- /* without its lists the homepage would be empty, so the build fails instead */ -}}
+{{- if not $conf.columns }}{{ errorf "data/homecols.toml has no columns: the homepage needs them for its lists" }}{{ end -}}
+{{- $scr := newScratch -}}
+{{- /* walk the same sorted list as stream.html so ties on a date come out in the same order */ -}}
+{{- range sort (.Site.RegularPages | append .Site.Data.data) ".Date.Unix" "desc" | uniq -}}
+    {{- $verbose := partial "streamverbose.html" (dict "Item" . "Overrides" $.Site.Data.voverrides) -}}
+    {{- /* featured as in stream.html; ge and le, since eq tells the integer 0 from the float 0 that data.json has */ -}}
+    {{- $featured := le $verbose -1 -}}
+    {{- if not (or $featured (and (ge $verbose 0) (le $verbose 0))) }}{{ continue }}{{ end -}}
+    {{- $id := "" -}}
+    {{- $kind := "" -}}
+    {{- $tags := slice -}}
+    {{- $item := dict -}}
+    {{- if eq .Params nil -}}
+        {{- $id = .Id -}}
+        {{- $kind = .Type -}}
+        {{- if eq .Type "note" }}{{ $kind = .NoteType | default "note" }}{{ end -}}
+        {{- /* an untitled item is listed by its text, which is what a stream shows of it, or else by what it is */ -}}
+        {{- $text := trim (.Text | default "" | plainify | htmlUnescape) " \n" | truncate 80 -}}
+        {{- /* an item with no link of its own links to its entry on the stream page */ -}}
+        {{- $url := .Uri -}}
+        {{- if and (not $url) $id }}{{ $url = printf "/stream/interesting/#stream-item-%s" $id }}{{ end -}}
+        {{- $item = dict "title" (.Title | default $text | default (humanize $kind)) "url" $url "t" (int .Date.Unix) -}}
+    {{- else -}}
+        {{- $kind = cond (hasPrefix .File.Dir "p/") "page" "post" -}}
+        {{- $tags = .Params.tags | default (slice) -}}
+        {{- /* a page with no title is listed by its file's name */ -}}
+        {{- $item = dict "title" (partial "title.html" (.Title | default .File.ContentBaseName)) "url" .RelPermalink "t" .Date "page" (eq $kind "page") "draft" .Draft -}}
+    {{- end -}}
+    {{- /* a featured item is listed however new it is, and isn't the newest of its kind for the other lists */ -}}
+    {{- if and (not $featured) (in $conf.latest_only $kind) -}}
+        {{- if $scr.Get (printf "seen-%s" $kind) }}{{ continue }}{{ end -}}
+        {{- $scr.Set (printf "seen-%s" $kind) true -}}
+    {{- end -}}
+    {{- $col := -1 -}}
+    {{- if $featured -}}
+        {{- /* a featured item goes in the featured column, whatever else it matches */ -}}
+        {{- range $i, $c := $conf.columns -}}
+            {{- if $c.featured }}{{ $col = $i }}{{ break }}{{ end -}}
+        {{- end -}}
+    {{- else -}}
+        {{- range $i, $c := $conf.columns -}}
+            {{- if and $id (in ($c.ids | default (slice)) $id) }}{{ $col = $i }}{{ break }}{{ end -}}
+        {{- end -}}
+        {{- if eq $col -1 -}}
+            {{- range $i, $c := $conf.columns -}}
+                {{- if or (in ($c.kinds | default (slice)) $kind) (intersect ($c.tags | default (slice)) $tags) }}{{ $col = $i }}{{ break }}{{ end -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if eq $col -1 -}}
+            {{- range $i, $c := $conf.columns -}}
+                {{- if $c.rest }}{{ $col = $i }}{{ break }}{{ end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if ne $col -1 -}}
+        {{- $scr.Add (printf "col-%d" $col) (slice $item) -}}
+    {{- end -}}
+{{- end -}}
+<div class="home-cols">
+    {{- range $i, $c := $conf.columns }}
+    <div class="home-col">
+        <h2>{{ with $c.more }}<a href="{{ . }}">{{ $c.title }}</a>{{ else }}{{ $c.title }}{{ end }}</h2>
+        {{- /* role, since Safari doesn't present a list without markers as one */}}
+        <ul role="list">
+            {{- /* a link has the title and url of a stream item, and no date. One with words before or after its title is
+                 a sentence, of which the title is the part that links */ -}}
+            {{- range first $conf.limit ($scr.Get (printf "col-%d" $i) | default (slice)) | append ($c.links | default (slice)) }}
+            <li>
+                {{- with .before }}{{ . }} {{ end -}}
+                {{- with .url }}<a href="{{ . | relURL }}">{{ end -}}
+                {{- .title }}{{ if .draft }} (DRAFT){{ end -}}
+                {{- with .url }}</a>{{ end }}
+                {{- with .after }} {{ . }}{{ end }}
+                {{- $page := .page }}
+                {{- with .t }}
+                <span class="home-col-date">{{ if $page }}updated {{ end }}{{ partial "date.html" (dict "t" . "f" "Jan 2, 2006") }}</span>
+                {{- end }}
+            </li>
+            {{- end }}
+            {{- with $c.more }}
+            {{- /* named for its list, so the page's "more..." links can be told apart without seeing where they are */}}
+            <li class="home-col-more"><a href="{{ . }}" aria-label="more in {{ $c.title }}">more...</a></li>
+            {{- end }}
+        </ul>
+    </div>
+    {{- end }}
+</div>

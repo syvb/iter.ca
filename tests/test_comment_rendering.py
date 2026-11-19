@@ -172,6 +172,8 @@ document.addEventListener("DOMContentLoaded", function () {
             data.mkdir()
             (data / "data.json").write_text("[]")
             (data / "voverrides.json").write_text("{}")
+            # the build fails without the homepage's lists
+            (data / "homecols.toml").write_text('limit = 1\n[[columns]]\ntitle = "Everything"\nrest = true\n')
             (data / "comments.json").write_text(json.dumps({"post/comments.md": {
                 "sources": [{"type": "lw", "replyUrl": "https://www.lesswrong.com/posts/Post1/slug"},
                             {"type": "bsky", "replyUrl": "https://bsky.app/profile/iter.ca/post/abc"}],

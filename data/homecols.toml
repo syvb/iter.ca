@@ -1,0 +1,73 @@
+# The homepage's lists, in order (themes/smitop/layouts/partials/homecols.html); on a wide screen they are columns, left
+# to right. A featured item (verbosity -1 or below) goes in the column with featured = true. No column has that now, so
+# no list has the featured items: Highlights, which is written by hand, links to them. An item of verbosity 0 goes in
+# one column: the one that lists its Id in ids; failing that, the first one that lists one of its tags or its kind;
+# failing that, the one with rest = true. Other items are not listed. An item's kind is "post" or "page" for a page of
+# the site, a note's NoteType ("note" if it has none), and the Type of any other data/data.json item.
+#
+# After its stream items, a column lists its links, which are written here: a title and the url it links to. With before
+# or after, a link is a sentence: they are the words around the title, and only the title links. more is where a
+# column's heading and its "more..." link go.
+
+# How many stream items a column lists.
+limit = 10
+
+# Kinds of which only the newest item is listed, featured items aside.
+latest_only = []
+
+[[columns]]
+title = "Highlights"
+#more = "/stream/me/"
+
+[[columns.links]]
+before = "Made an"
+title = "explainer of the PNG file format"
+url = "/post/png/"
+
+[[columns.links]]
+title = "Found a bug"
+after = "in GitHub's commit signature verification logic"
+url = "/post/gh-sig-pwn/"
+
+[[columns.links]]
+before = "Wrote about"
+title = "averaging hues"
+url = "/post/hue-avg/"
+
+[[columns.links]]
+title = "Elicited hidden goals"
+after = "from Claude"
+url = "https://www.lesswrong.com/posts/mYM9EAAhpbYDDmA3e/what-secret-goals-does-claude-think-it-has"
+
+[[columns.links]]
+before = "Made"
+title = "a tool to see the Unicode segmentation of text"
+url = "/segme/"
+
+[[columns.links]]
+before = "Made"
+title = "a few small games"
+url = "/stream/games/"
+
+[[columns.links]]
+title = "Compared several PNG compressors"
+url = "/pngcomp/"
+
+[[columns]]
+title = "AI"
+tags = ["ai"]
+kinds = ["lw"]
+ids = ["note-qwen-vision-backprop", "note-bench-af-hackathon"]
+more = "/tags/ai/"
+
+[[columns]]
+title = "Programming"
+tags = ["programming", "security", "git", "github", "rust", "javascript"]
+kinds = ["Report"]
+more = "/tags/programming/"
+
+[[columns]]
+title = "Everything else"
+rest = true
+ids = ["note-positive-sum"]
+more = "/stream/interesting/"

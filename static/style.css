@@ -137,10 +137,11 @@ kbd {
 
 /* A link in a post or page, or in the lists on the homepage and stream pages, ends with a mark of where it goes: a
    raised dot for iter.ca (a path here, iter.ca, or kb.iter.ca) and an arrow for any other site. Links within the page
-   (#...), such as footnote references, links around an image, mailto links, and the generated lists of posts get none.
+   (#...), such as footnote references, links around an image, mailto links, the generated lists of posts, and the
+   headings of the homepage's lists (which look like headings, not links) get none.
    The mark is drawn in the link's own padding, so a line can't break between the link and its mark, and in the link's
    color, visited or not. */
-:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a) {
+:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a, .home-col h2 a) {
     padding-right: 0.42em;
     background-image: radial-gradient(circle closest-side, currentColor calc(100% - 0.6px), transparent);
     background-repeat: no-repeat;
@@ -149,7 +150,7 @@ kbd {
 }
 
 /* The arrow is a line along its top, a line down its right side, and a diagonal into that corner. */
-:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a) {
+:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, .home-col h2 a) {
     padding-right: 0.55em;
     background-image:
         linear-gradient(currentColor, currentColor),
@@ -295,19 +296,90 @@ h1 {
     font-size: 100%;
     font-weight: 400;
 }
-.stream.mini .stream-item a:not(.stream-more > a) {
+.stream.mini .stream-item a {
     font-weight: bold;
 }
 
-.things-done {
-    list-style-position: inside;
-    padding-left: 0;
+/* The homepage's lists of stream items (partials/homecols.html). On a wide screen they are a row of columns; on a
+   narrower one each is a card, two to a row, or one to a row on a phone. */
+.home-cols {
+    --home-rule: #c2c2c2;
+    --home-card-head: #e7e7e7;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    max-width: 96rem;
 }
-.things-done > li {
-    padding: 4px;
+
+/* A word too long for its list breaks instead of overflowing it. */
+.home-col {
+    overflow-wrap: anywhere;
 }
-.things-done a {
+
+.home-col h2 {
+    border-bottom: 1px solid var(--home-rule);
+    font-size: 1.3em;
+}
+
+/* A heading links to where its list's "more..." goes, and looks like a heading. */
+.home-col h2 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.home-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.home-col li {
+    padding: 0.35rem 0;
+    line-height: 1.3;
+}
+
+.home-col li:not(.home-col-more) a {
     font-weight: bold;
+}
+
+.home-col-date {
+    display: block;
+    color: #555;
+    font-size: 85%;
+}
+
+@media not all and (min-width: 72rem) {
+    .home-col {
+        border: 1px solid var(--home-rule);
+        border-radius: 0.5rem;
+        /* keeps the heading's background inside the rounded corners */
+        overflow: hidden;
+    }
+    .home-col h2 {
+        background: var(--home-card-head);
+        padding: 0.4rem 0.75rem;
+    }
+    .home-col ul {
+        padding: 0.3rem 0.75rem 0.5rem;
+    }
+}
+
+@media (min-width: 40rem) {
+    .home-cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 72rem) {
+    .home-cols {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        gap: 2rem;
+    }
+    .home-col h2 {
+        padding-bottom: 0.2rem;
+        margin-bottom: 0.5rem;
+    }
 }
 
 .stream-item-thumb-wrapper {
@@ -968,6 +1040,26 @@ summary h2 {
     }
 }
 
+/* On a phone, where the homepage's lists are one card wide (see .home-cols), the gem, the greeting, and the links are
+   centered over them. */
+@media not all and (min-width: 40rem) {
+    #me-links > div, #me-links > div > ul, #me-links p, #metop .h-card {
+        text-align: center;
+    }
+    /* centered, the gem needs no nudge to clear the window's left edge */
+    .oct #oct-box {
+        left: 0;
+    }
+}
+
+/* Centered, the gem's canvas (1.5 × --oct wide, see .oct #oct) has to fit in the window, or it sticks out of the right
+   edge and the page scrolls sideways. On a screen narrower than it, the gem is smaller. */
+@media not all and (min-width: 336px) {
+    #oct-box {
+        --oct: 200px;
+    }
+}
+
 @media (max-width: 47rem) {
     #main-section {
         /* don't try to center, causes some text to go off screen */
@@ -1070,6 +1162,15 @@ summary h2 {
 
     .stream-item.featured {
         background: #26260f;
+    }
+
+    .home-cols {
+        --home-rule: #383838;
+        --home-card-head: #1e1e1e;
+    }
+
+    .home-col-date {
+        color: #aaaaaa;
     }
 
     #TableOfContents {

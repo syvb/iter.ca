@@ -33,11 +33,6 @@
             {{- end -}}
         {{- end -}}
     {{- end -}}
-    {{ if .MoreLink }}
-        <div class="stream-item stream-more" data-verbose="-100" data-idx="{{ $scr.Get "idx" }}"
-            ><a href="{{ .MoreLink }}">more...</a>
-        </div>
-    {{ end }}
 </div>
 {{- if .Count -}}
     <div>

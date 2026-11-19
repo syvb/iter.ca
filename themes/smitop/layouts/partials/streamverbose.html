@@ -1,5 +1,5 @@
 {{- /* Returns the verbosity of a stream item, from (dict "Item" <page or data item> "Overrides" <id to verbosity> "SelfOnly" <bool> "Games" <bool>).
-     A stream shows the items whose verbosity is in its range; -1 and below are featured, and the homepage shows 0. */ -}}
+     A stream shows the items whose verbosity is in its range; -1 and below are featured, and the homepage lists those and 0. */ -}}
 {{- $i := .Item -}}
 {{- $v := 0 -}}
 {{- if (hasPrefix $i.File.Dir "p/") -}}

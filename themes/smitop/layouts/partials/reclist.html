@@ -1,4 +1,4 @@
-<ul>
+<ul class="reclist">
     {{ range . }}
         {{ if (eq (len (.Pages)) 0) }}
             <li><div class="list-entry">{{ if .Date }}<time class="list-date">{{ partial "date.html" (dict "t" (int .Date.Unix) "f" "January 2 2006") }}</time>{{ end }}<a href="{{.Permalink}}">{{ partial "title.html" .Title }}</a></div></li>

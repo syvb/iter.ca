@@ -135,6 +135,31 @@ kbd {
     word-break: break-all;
 }
 
+/* A link in a post or page, or in the lists on the homepage and stream pages, ends with a mark of where it goes: a
+   raised dot for iter.ca (a path here, iter.ca, or kb.iter.ca) and an arrow for any other site. Links within the page
+   (#...), such as footnote references, links around an image, mailto links, and the generated lists of posts get none.
+   The mark is drawn in the link's own padding, so a line can't break between the link and its mark, and in the link's
+   color, visited or not. */
+:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a) {
+    padding-right: 0.42em;
+    background-image: radial-gradient(circle closest-side, currentColor calc(100% - 0.6px), transparent);
+    background-repeat: no-repeat;
+    background-size: 0.32em 0.32em;
+    background-position: right 0.04em top 0.2em;
+}
+
+/* The arrow is a line along its top, a line down its right side, and a diagonal into that corner. */
+:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a) {
+    padding-right: 0.55em;
+    background-image:
+        linear-gradient(currentColor, currentColor),
+        linear-gradient(currentColor, currentColor),
+        linear-gradient(-45deg, transparent calc(50% - 0.55px), currentColor calc(50% - 0.55px), currentColor calc(50% + 0.55px), transparent calc(50% + 0.55px));
+    background-repeat: no-repeat;
+    background-size: 0.3em 1.1px, 1.1px 0.3em, 0.36em 0.36em;
+    background-position: right 0.03em top 0.16em;
+}
+
 #main-section {
     display: flex;
     flex-direction: column;

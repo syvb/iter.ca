@@ -18,6 +18,9 @@
     // Chrome's autofill sends keydown events without a key.
     if ((e.key || "").toLowerCase() !== "k" || !(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return;
     e.preventDefault();
+    // Holding the keys repeats the keydown, which would open and close the box over and over. Its repeats still don't
+    // do what the browser would, such as going to the address bar.
+    if (e.repeat) return;
     if (dialog && dialog.open) return dialog.close();
     if (!dialog) build();
     dialog.showModal();

@@ -1,6 +1,64 @@
+/* Source Serif 4, self-hosted from Google Fonts' files (SIL OFL 1.1, license in fonts/), so every reader gets the same
+   font. Each file has every weight, and an optical size axis that browsers set from the font size, so headings get
+   the display design. The roman Latin file is preloaded by partials/style.html; the others load only when a page
+   uses them. Each Latin rule comes after its Latin Extended one, as in Google's CSS: where their ranges overlap, the
+   later rule is tried first, and only the Latin file has œ and ı. */
+@font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 200 900; font-display: swap; src: url(fonts/source-serif-4-latin-ext.woff2) format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 200 900; font-display: swap; src: url(fonts/source-serif-4-latin.woff2) format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Source Serif 4"; font-style: italic; font-weight: 200 900; font-display: swap; src: url(fonts/source-serif-4-italic-latin-ext.woff2) format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Source Serif 4"; font-style: italic; font-weight: 200 900; font-display: swap; src: url(fonts/source-serif-4-italic-latin.woff2) format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* Until Source Serif 4 loads, or if it can't, text is set in a local font made to take about the same space, so little
+   moves when it loads. Its lines are as tall, but a paragraph or title can still wrap to one more or one fewer line,
+   and readers with neither font get the unadjusted fonts after them. size-adjust scales each face so the posts' text is
+   as wide as in Source Serif 4 at their size (17.76px; measured over 12 posts, per style and weight; Source Serif 4's
+   optical sizing makes other sizes match less closely). The overrides give it Source Serif 4's ascent (1.036em) and
+   descent (0.335em), divided by the size-adjust that scales them, so its lines and baselines fall where Source Serif
+   4's will. Safari ignores the overrides, which is why body sets a line height. Palatino is on macOS, iOS, and Windows
+   (Palatino Linotype), and on Linux as P052, its metric clone, which the values were measured with. Noto Serif is
+   Android's serif. */
+@font-face { font-family: "Source Serif 4 Palatino"; font-style: normal; font-weight: 400; src: local("Palatino-Roman"), local("Palatino"), local("PalatinoLinotype-Roman"), local("Palatino Linotype"), local("P052-Roman"), local("P052 Roman");
+    size-adjust: 103.02%; ascent-override: 100.56%; descent-override: 32.52%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Palatino"; font-style: italic; font-weight: 400; src: local("Palatino-Italic"), local("Palatino Italic"), local("PalatinoLinotype-Italic"), local("Palatino Linotype Italic"), local("P052-Italic"), local("P052 Italic");
+    size-adjust: 105.41%; ascent-override: 98.28%; descent-override: 31.78%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Palatino"; font-style: normal; font-weight: 700; src: local("Palatino-Bold"), local("Palatino Bold"), local("PalatinoLinotype-Bold"), local("Palatino Linotype Bold"), local("P052-Bold"), local("P052 Bold");
+    size-adjust: 102.54%; ascent-override: 101.03%; descent-override: 32.67%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Palatino"; font-style: italic; font-weight: 700; src: local("Palatino-BoldItalic"), local("Palatino Bold Italic"), local("PalatinoLinotype-BoldItalic"), local("Palatino Linotype Bold Italic"), local("P052-BoldItalic"), local("P052 Bold Italic");
+    size-adjust: 100.70%; ascent-override: 102.88%; descent-override: 33.27%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Noto"; font-style: normal; font-weight: 400; src: local("NotoSerif-Regular"), local("Noto Serif"), local("Noto Serif Regular");
+    size-adjust: 95.44%; ascent-override: 108.55%; descent-override: 35.10%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Noto"; font-style: italic; font-weight: 400; src: local("NotoSerif-Italic"), local("Noto Serif Italic");
+    size-adjust: 90.59%; ascent-override: 114.36%; descent-override: 36.98%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Noto"; font-style: normal; font-weight: 700; src: local("NotoSerif-Bold"), local("Noto Serif Bold");
+    size-adjust: 92.52%; ascent-override: 111.98%; descent-override: 36.21%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Noto"; font-style: italic; font-weight: 700; src: local("NotoSerif-BoldItalic"), local("Noto Serif Bold Italic");
+    size-adjust: 88.54%; ascent-override: 117.01%; descent-override: 37.84%; line-gap-override: 0%; }
+/* Titles are 32px and bold, where optical sizing makes Source Serif 4 narrower than at the posts' size, so they get
+   their own stand-ins, measured over the titles of all posts. */
+@font-face { font-family: "Source Serif 4 Palatino Title"; font-style: normal; font-weight: 700; src: local("Palatino-Bold"), local("Palatino Bold"), local("PalatinoLinotype-Bold"), local("Palatino Linotype Bold"), local("P052-Bold"), local("P052 Bold");
+    size-adjust: 96.93%; ascent-override: 106.88%; descent-override: 34.56%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Noto Title"; font-style: normal; font-weight: 700; src: local("NotoSerif-Bold"), local("Noto Serif Bold");
+    size-adjust: 88.22%; ascent-override: 117.43%; descent-override: 37.97%; line-gap-override: 0%; }
+
 body {
-    /* windows has no built-in serif fonts that look very good :( Sitka, Constantia, Cambria are at least decent */
-    font-family: "Source Serif Pro", P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+    /* After the stand-ins, the fonts are for characters Source Serif 4 doesn't have. Windows has no built-in serif
+       fonts that look very good :( Sitka, Constantia, Cambria are at least decent */
+    --serif-rest: "Source Serif Pro", P052, "Noto Serif", "Abyssinica SIL", C059, "Nimbus Roman", Utopia, Sitka, Constantia, Cambria, Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+    font-family: "Source Serif 4", "Source Serif 4 Palatino", "Source Serif 4 Noto", var(--serif-rest);
+    /* Source Serif 4's own normal line height ((1036 + 335) / 1000), set so that text in a stand-in font, whose
+       normal line height differs, is just as tall in browsers that ignore the overrides above. normal rounds the
+       ascent and descent to whole pixels, so each line here is a fraction of a pixel shorter than with normal; only
+       on pages of hundreds of items, like the stream pages, does that add up to a visible total. */
+    line-height: 1.371;
+}
+
+/* The sans-serif parts don't use Source Serif 4, so they keep their font's line height. */
+#topbar, #metop, #search {
+    line-height: normal;
 }
 
 /* body::before {
@@ -140,13 +198,15 @@ kbd {
    (#...), such as footnote references, links around an image, mailto links, the generated lists of posts, and the
    headings of the homepage's lists (which look like headings, not links) get none.
    The mark is drawn in the link's own padding, so a line can't break between the link and its mark, and in the link's
-   color, visited or not. */
+   color, visited or not. It's placed down from the top of the link's box, whose height above the text is the font's
+   ascent, so its offsets fit Source Serif 4: the dot's top is at cap height, the arrow's tip a little above it, and
+   both end just below x-height. */
 :is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a, .home-col h2 a) {
     padding-right: 0.42em;
     background-image: radial-gradient(circle closest-side, currentColor calc(100% - 0.6px), transparent);
     background-repeat: no-repeat;
     background-size: 0.32em 0.32em;
-    background-position: right 0.04em top 0.2em;
+    background-position: right 0.04em top 0.35em;
 }
 
 /* The arrow is a line along its top, a line down its right side, and a diagonal into that corner. */
@@ -158,7 +218,7 @@ kbd {
         linear-gradient(-45deg, transparent calc(50% - 0.55px), currentColor calc(50% - 0.55px), currentColor calc(50% + 0.55px), transparent calc(50% + 0.55px));
     background-repeat: no-repeat;
     background-size: 0.3em 1.1px, 1.1px 0.3em, 0.36em 0.36em;
-    background-position: right 0.03em top 0.16em;
+    background-position: right 0.03em top 0.31em;
 }
 
 #main-section {
@@ -244,6 +304,7 @@ kbd {
 h1 {
     margin: 0;
     margin-top: 0.25em;
+    font-family: "Source Serif 4", "Source Serif 4 Palatino Title", "Source Serif 4 Noto Title", var(--serif-rest);
 }
 
 .stream {
@@ -454,16 +515,18 @@ a.playground {
     max-width: 58rem;
 }
 
+/* A post's table of contents (toc = 1): a box above the post, or on a screen wide enough for margin notes, a list in
+   the left margin, mirroring them (see .margin-notes). It isn't floated beside the post, which would squeeze the
+   justified text next to it into a narrow column. */
 #TableOfContents {
     background: rgb(231, 231, 231);
     border: 1px solid gray;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    width: max-content;
-    margin-right: 1em;
-    padding-right: 1em;
-    padding-top: 1em;
-    float: left;
+    width: fit-content;
+    margin: 0 0 1.25em;
+    padding: 0.75em 1em 0.75em 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+    text-align: left;
 }
 
 /* https://stackoverflow.com/questions/4098195/can-ordered-list-produce-result-that-looks-like-1-1-1-2-1-3-instead-of-just-1 */
@@ -471,12 +534,16 @@ a.playground {
 #TableOfContents ul {
     counter-reset: item;
     padding-inline-start: 1em;
+    padding-bottom: 0;
     margin-block-start: 0;
     margin-block-end: 0;
 }
 
+/* Entries are headings, not prose, so they aren't hyphenated like the post's list items. */
 #TableOfContents li {
     display: block;
+    -webkit-hyphens: manual;
+    hyphens: manual;
 }
 
 #TableOfContents li:before {
@@ -981,6 +1048,35 @@ summary h2 {
         left: calc(100% + 2rem);
         width: min(18rem, calc((100vw - 45rem) / 2 - 4rem));
     }
+    #TableOfContents {
+        position: absolute;
+        top: 0;
+        right: calc(100% + 2rem);
+        width: min(16rem, calc((100vw - 45rem) / 2 - 4rem));
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: none;
+        font-size: 0.8em;
+    }
+    #TableOfContents ul {
+        padding-inline-start: 0;
+    }
+    #TableOfContents ul ul {
+        padding-inline-start: 1em;
+    }
+    #TableOfContents a {
+        text-decoration: none;
+    }
+    /* A wrapped entry lines up under its own text, not under its number. */
+    #TableOfContents li {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 0.3em;
+    }
+    #TableOfContents li > ul {
+        grid-column: 1 / -1;
+    }
     /* Only where its margin note is shown. */
     .footnote-ref-hover {
         background: #fff8d4;
@@ -1377,6 +1473,10 @@ summary h2 {
 }
 
 @media screen and (min-width: 77rem) and (prefers-color-scheme: dark) {
+    /* In the margin it has no box, so it doesn't take the dark box color. */
+    #TableOfContents {
+        background: none;
+    }
     .footnote-ref-hover {
         background: #3a3520;
         box-shadow: 0 0 0 0.15em #3a3520;

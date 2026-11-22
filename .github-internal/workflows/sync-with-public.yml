@@ -65,6 +65,12 @@ jobs:
         cp -r $GITHUB_WORKSPACE/smitop-blog/.github .github-internal
         rm -rf {work,.github,self,selfdata,270,chromelol,bin,consulting}/
         rm -rf content/post/draft-*
+        # Drafts without the prefix: posts and page bundles whose front matter sets draft = true
+        for post in content/post/*.md content/post/*/index.md; do
+          if awk 'NR == 1 && !/^\+\+\+$/ || NR > 1 && /^\+\+\+$/ { exit } /^draft *= *true/ { draft = 1; exit } END { exit !draft }' "$post"; then
+            rm -rf "${post%/index.md}"
+          fi
+        done
         rm -rf static/{audit.log,projects.toml,scr-thumbs,yt-thumbs,uploads,start,dct-stimulus-playground,miniposts} static/*.{png,js,eml,html}
         rm README.md
         mv README.public.md README.md

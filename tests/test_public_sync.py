@@ -17,6 +17,8 @@ class PublicSyncTest(unittest.TestCase):
             "work", "self", "selfdata", "270", "chromelol", "bin", "consulting", ".private",
         )] + [
             "content/post/draft-private.md", "content/post/draft-bundle/index.md",
+            "content/post/unprefixed.md", "content/post/unprefixed-bundle/index.md",
+            "content/post/unprefixed-bundle/private.svg",
             "static/audit.log", "static/projects.toml",
             "static/private.png", "static/private.js", "static/private.eml", "static/private.html",
         ] + [f"static/{directory}/private.txt" for directory in (
@@ -30,6 +32,10 @@ class PublicSyncTest(unittest.TestCase):
         )}
         # Ignores a file the private repo force-added, which must still be published.
         public_files[".gitignore"] = "/static/ext\n"
+        # Only front matter makes a post without the draft- prefix a draft; after it, draft = true is just text.
+        public_files["content/post/drafting.md"] = '+++\ntitle = "Drafting"\ndraft = false\n+++\ndraft = true\n'
+        drafts = {"content/post/unprefixed.md": '+++\ntitle = "Unprefixed"\ndraft = true\n+++\nPrivate fixture\n',
+                  "content/post/unprefixed-bundle/index.md": "+++\ndraft=true\n+++\n"}
         cases = [
             ("Amp <amp@ampcode.com>", "Publish feature", [
                 "Private implementation details.",
@@ -78,7 +84,8 @@ class PublicSyncTest(unittest.TestCase):
                 (source / ".github/sync.yml").write_text(workflow)
                 (source / "README.md").write_text("Private readme\n")
                 (source / "README.public.md").write_text("Public readme\n")
-                for name, text in {**dict.fromkeys(private_files, "Private fixture\n"), **public_files}.items():
+                for name, text in {**dict.fromkeys(private_files, "Private fixture\n"), **drafts,
+                                   **public_files}.items():
                     path = source / name
                     path.parent.mkdir(parents=True, exist_ok=True)
                     path.write_text(text)

@@ -19,16 +19,16 @@
    optical sizing makes other sizes match less closely). The overrides give it Source Serif 4's ascent (1.036em) and
    descent (0.335em), divided by the size-adjust that scales them, so its lines and baselines fall where Source Serif
    4's will. Safari ignores the overrides, which is why body sets a line height. Palatino is on macOS, iOS, and Windows
-   (Palatino Linotype), and on Linux as P052, its metric clone, which the values were measured with. Noto Serif is
-   Android's serif. */
+   (Palatino Linotype), and on Linux as P052, its metric clone. Its values were measured with macOS Palatino in Safari;
+   P052 is within 1% of them. Noto Serif is Android's serif. */
 @font-face { font-family: "Source Serif 4 Palatino"; font-style: normal; font-weight: 400; src: local("Palatino-Roman"), local("Palatino"), local("PalatinoLinotype-Roman"), local("Palatino Linotype"), local("P052-Roman"), local("P052 Roman");
-    size-adjust: 103.02%; ascent-override: 100.56%; descent-override: 32.52%; line-gap-override: 0%; }
+    size-adjust: 102.47%; ascent-override: 101.10%; descent-override: 32.69%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Palatino"; font-style: italic; font-weight: 400; src: local("Palatino-Italic"), local("Palatino Italic"), local("PalatinoLinotype-Italic"), local("Palatino Linotype Italic"), local("P052-Italic"), local("P052 Italic");
-    size-adjust: 105.41%; ascent-override: 98.28%; descent-override: 31.78%; line-gap-override: 0%; }
+    size-adjust: 104.41%; ascent-override: 99.22%; descent-override: 32.09%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Palatino"; font-style: normal; font-weight: 700; src: local("Palatino-Bold"), local("Palatino Bold"), local("PalatinoLinotype-Bold"), local("Palatino Linotype Bold"), local("P052-Bold"), local("P052 Bold");
-    size-adjust: 102.54%; ascent-override: 101.03%; descent-override: 32.67%; line-gap-override: 0%; }
+    size-adjust: 102.57%; ascent-override: 101.00%; descent-override: 32.66%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Palatino"; font-style: italic; font-weight: 700; src: local("Palatino-BoldItalic"), local("Palatino Bold Italic"), local("PalatinoLinotype-BoldItalic"), local("Palatino Linotype Bold Italic"), local("P052-BoldItalic"), local("P052 Bold Italic");
-    size-adjust: 100.70%; ascent-override: 102.88%; descent-override: 33.27%; line-gap-override: 0%; }
+    size-adjust: 101.31%; ascent-override: 102.26%; descent-override: 33.07%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Noto"; font-style: normal; font-weight: 400; src: local("NotoSerif-Regular"), local("Noto Serif"), local("Noto Serif Regular");
     size-adjust: 95.44%; ascent-override: 108.55%; descent-override: 35.10%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Noto"; font-style: italic; font-weight: 400; src: local("NotoSerif-Italic"), local("Noto Serif Italic");
@@ -37,12 +37,17 @@
     size-adjust: 92.52%; ascent-override: 111.98%; descent-override: 36.21%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Noto"; font-style: italic; font-weight: 700; src: local("NotoSerif-BoldItalic"), local("Noto Serif Bold Italic");
     size-adjust: 88.54%; ascent-override: 117.01%; descent-override: 37.84%; line-gap-override: 0%; }
-/* Titles are 32px and bold, where optical sizing makes Source Serif 4 narrower than at the posts' size, so they get
-   their own stand-ins, measured over the titles of all posts. */
+/* Titles (32px) and section headings (h2 at 26.64px, h3 at 20.78px) are bold and bigger than the posts' text, and
+   optical sizing makes Source Serif 4 narrower the bigger it is, so they get their own stand-ins: one measured over
+   the titles of all posts, and one over all their h2 and h3 headings. */
 @font-face { font-family: "Source Serif 4 Palatino Title"; font-style: normal; font-weight: 700; src: local("Palatino-Bold"), local("Palatino Bold"), local("PalatinoLinotype-Bold"), local("Palatino Linotype Bold"), local("P052-Bold"), local("P052 Bold");
-    size-adjust: 96.93%; ascent-override: 106.88%; descent-override: 34.56%; line-gap-override: 0%; }
+    size-adjust: 96.96%; ascent-override: 106.85%; descent-override: 34.55%; line-gap-override: 0%; }
 @font-face { font-family: "Source Serif 4 Noto Title"; font-style: normal; font-weight: 700; src: local("NotoSerif-Bold"), local("Noto Serif Bold");
     size-adjust: 88.22%; ascent-override: 117.43%; descent-override: 37.97%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Palatino Heading"; font-style: normal; font-weight: 700; src: local("Palatino-Bold"), local("Palatino Bold"), local("PalatinoLinotype-Bold"), local("Palatino Linotype Bold"), local("P052-Bold"), local("P052 Bold");
+    size-adjust: 98.82%; ascent-override: 104.84%; descent-override: 33.90%; line-gap-override: 0%; }
+@font-face { font-family: "Source Serif 4 Noto Heading"; font-style: normal; font-weight: 700; src: local("NotoSerif-Bold"), local("Noto Serif Bold");
+    size-adjust: 89.76%; ascent-override: 115.42%; descent-override: 37.32%; line-gap-override: 0%; }
 
 body {
     /* After the stand-ins, the fonts are for characters Source Serif 4 doesn't have. Windows has no built-in serif
@@ -96,6 +101,10 @@ body {
 
 h2, h3, h4, h5, h6 {
     margin: 0;
+}
+
+#content :is(h2, h3) {
+    font-family: "Source Serif 4", "Source Serif 4 Palatino Heading", "Source Serif 4 Noto Heading", var(--serif-rest);
 }
 
 #things-i-like h2 {

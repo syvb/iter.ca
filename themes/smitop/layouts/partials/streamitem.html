@@ -13,39 +13,7 @@
             <a href="{{- .Item.Uri | relURL -}}">
         {{- end -}}
     {{- end -}}
-        {{- if (isset .Item "Type") -}}
-            {{- if (eq .Item.Type "note") -}}
-                {{- if (isset .Item "NoteType") -}}
-                    {{- .Item.NoteType -}}
-                {{- else -}}
-                    Note
-                {{- end -}}
-            {{- else if (eq .Item.Type "video") -}}
-                Video
-            {{- else if (eq .Item.Type "observable") -}}
-                Observable notebook
-            {{- else if (eq .Item.Type "hn") -}}
-                HN {{ .Item.HNType -}}
-            {{- else if (eq .Item.Type "scrproj") -}}
-                Scratch project
-            {{- else if (eq .Item.Type "SePost") -}}
-                Stack Exchange post
-            {{- else if (eq .Item.Type "itch") -}}
-                Itch {{ .Item.ItchType -}}
-            {{- else if (eq .Item.Type "buttondown") -}}
-                Newsletter
-            {{- else if (eq .Item.Type "lw") -}}
-                Blog post
-            {{- else if (eq .Item.Type "gh-pr") -}}
-                Pull request
-            {{- else -}}
-                Note
-            {{- end -}}
-        {{- else if (hasPrefix .Item.File.Dir "p/") -}}
-            Page
-        {{- else -}}
-            Blog post
-        {{- end -}}
+        {{- partial "streamtype.html" .Item -}}
     {{- if .Item.Title -}}
         </div>
     {{- else -}}

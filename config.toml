@@ -14,6 +14,16 @@ lastmod = ["lastmod", ":git", "date", "publishDate"]
 [taxonomies]
   tag = "tags"
 
+# /search.json, the index that static/search/search.js searches (themes/smitop/layouts/index.searchindex.json)
+[outputFormats.SearchIndex]
+mediaType = "application/json"
+baseName = "search"
+isPlainText = true
+notAlternative = true
+
+[outputs]
+home = ["HTML", "RSS", "SearchIndex"]
+
 
 [markup.goldmark.renderer]
 unsafe = true # allow raw HTML in posts

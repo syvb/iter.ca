@@ -1,0 +1,38 @@
+{{- /* /search.json: what the search box in static/search/search.js searches. Each entry has a title as shown
+     (title.html's *italics* as plain text), a URL, a description, and its text as plaintext.html has it. A stream item
+     also has its type, as the stream labels it, and an empty title if it has none. */ -}}
+{{- $entries := slice -}}
+{{- range .Site.RegularPages -}}
+    {{- /* as in post/single.html, a page with an fmat_id is its raw HTML */ -}}
+    {{- $html := cond (eq .Params.fmat_id nil) .Content .RawContent -}}
+    {{- /* the sitemap is the titles of the other pages, so it would match whatever they do */ -}}
+    {{- if .HasShortcode "sitemap" }}{{ $html = "" }}{{ end -}}
+    {{- $entries = $entries | append (dict
+        "title" (partial "title.html" (.Title | default .File.ContentBaseName) | plainify | htmlUnescape)
+        "url" .RelPermalink
+        "desc" (.Description | default "")
+        "text" (partial "plaintext.html" $html)
+    ) -}}
+{{- end -}}
+{{- /* the data/data.json items that the full stream (content/stream/me.md, verbosity 1 and below) shows */ -}}
+{{- range .Site.Data.data -}}
+    {{- $verbose := partial "streamverbose.html" (dict "Item" . "Overrides" $.Site.Data.voverrides "SelfOnly" 1) -}}
+    {{- if gt $verbose 1 }}{{ continue }}{{ end -}}
+    {{- /* an item with no link of its own links to its entry on the full stream */ -}}
+    {{- $url := .Uri | default (printf "/stream/me/#stream-item-%s" .Id) -}}
+    {{- /* as in streamitem.html, the text of a note or an HN comment is HTML, and other text is Markdown */ -}}
+    {{- $html := .Text | default "" -}}
+    {{- if not (in (slice "note" "hn") .Type) }}{{ $html = markdownify $html }}{{ end -}}
+    {{- $text := partial "plaintext.html" $html -}}
+    {{- /* a LessWrong post's whole text, which the stream doesn't show: text, but with its entities
+         (build-data/get/lw.js) */ -}}
+    {{- with .FullText }}{{ $text = htmlUnescape . }}{{ end -}}
+    {{- $entries = $entries | append (dict
+        "title" (.Title | default "")
+        "type" (partial "streamtype.html" .)
+        "url" ($url | relURL)
+        "desc" ""
+        "text" $text
+    ) -}}
+{{- end -}}
+{{- $entries | jsonify -}}

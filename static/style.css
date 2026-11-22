@@ -1116,6 +1116,98 @@ summary h2 {
     }
 }
 
+/* The search box that Ctrl-K or ⌘K opens (static/search/search.js) */
+#search {
+    width: min(40rem, calc(100vw - 2rem));
+    max-height: min(40rem, calc(100vh - 4rem));
+    margin: 8vh auto auto;
+    padding: 0;
+    border: 1px solid #c2c2c2;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111111;
+    font-family: sans-serif;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.25);
+}
+
+#search::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* The dialog's height follows the results, up to its max-height, past which they scroll */
+.search-box {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+}
+
+.search-box input {
+    font: inherit;
+    font-size: 1.15rem;
+    padding: 0.75rem 1rem;
+    border: 0;
+    border-bottom: 1px solid #c2c2c2;
+    outline: none;
+    background: transparent;
+    color: inherit;
+}
+
+.search-status {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    color: #555555;
+}
+
+.search-status:empty {
+    display: none;
+}
+
+#search-results {
+    margin: 0;
+    padding: 0 0 0.5rem;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+#search-results a {
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+}
+
+#search-results [aria-selected="true"] a {
+    background: #e7e7e7;
+}
+
+.search-title {
+    display: block;
+    font-weight: bold;
+}
+
+.search-type {
+    font-weight: normal;
+    font-size: 0.8rem;
+    color: #555555;
+    white-space: nowrap;
+}
+
+.search-preview {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    margin-top: 0.15rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: #444444;
+}
+
+#search mark {
+    background: #fff0a0;
+    color: inherit;
+}
+
 /* Dark mode, for visitors whose system asks for it. Everything above is the light theme; this only swaps its colors.
    color-scheme also gives links, form controls, and scrollbars the browser's dark colors. */
 :root {
@@ -1251,6 +1343,36 @@ summary h2 {
     .margin-note-hover {
         background: #3a3520;
         box-shadow: 0 0 0 0.4em #3a3520;
+    }
+
+    #search {
+        border-color: #383838;
+        background: #1e1e1e;
+        color: #ffffff;
+    }
+
+    #search::backdrop {
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .search-box input {
+        border-bottom-color: #383838;
+    }
+
+    .search-status, .search-type {
+        color: #aaaaaa;
+    }
+
+    #search-results [aria-selected="true"] a {
+        background: #2e2e2e;
+    }
+
+    .search-preview {
+        color: #cccccc;
+    }
+
+    #search mark {
+        background: #5a4f10;
     }
 }
 

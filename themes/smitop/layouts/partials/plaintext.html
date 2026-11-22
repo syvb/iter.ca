@@ -1,0 +1,9 @@
+{{- /* The text of HTML as the search index has it: without the code in its <script> and <style> elements, with a
+     space where a block of text starts or ends (so a table's cells, or the paragraphs of an HN comment, which only
+     starts each with <p>, don't run together), with its entities decoded, and with each run of whitespace as one
+     space. Takes the HTML. */ -}}
+{{- $html := replaceRE `(?is)<(script|style)\b.*?</(script|style)>` " " . -}}
+{{- $block := `address|article|aside|blockquote|br|dd|details|div|dl|dt|figcaption|figure|h[1-6]|hr|li|ol|p|pre` -}}
+{{- $block = printf `%s|section|summary|table|tbody|td|tfoot|th|thead|tr|ul` $block -}}
+{{- $html = replaceRE (printf `(?i)</?(%s)\b` $block) " $0" $html -}}
+{{- return trim (replaceRE `\s+` " " ($html | plainify | htmlUnescape)) " " -}}

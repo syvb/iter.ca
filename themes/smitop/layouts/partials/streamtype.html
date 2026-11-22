@@ -1,0 +1,20 @@
+{{- /* What a stream item is, as its stream entry and its search result label it. Takes the item: a page or a
+     data/data.json item. */ -}}
+{{- $type := "Blog post" -}}
+{{- if (isset . "Type") -}}
+    {{- $type = index (dict
+        "note" (.NoteType | default "Note")
+        "video" "Video"
+        "observable" "Observable notebook"
+        "hn" (printf "HN %s" .HNType)
+        "scrproj" "Scratch project"
+        "SePost" "Stack Exchange post"
+        "itch" (printf "Itch %s" .ItchType)
+        "buttondown" "Newsletter"
+        "lw" "Blog post"
+        "gh-pr" "Pull request"
+    ) .Type | default "Note" -}}
+{{- else if (hasPrefix .File.Dir "p/") -}}
+    {{- $type = "Page" -}}
+{{- end -}}
+{{- return $type -}}

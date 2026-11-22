@@ -114,6 +114,22 @@ module.exports = async url => {
                           ("lw-Old", 1777248000)])
         self.assertEqual(rows[0]["Uri"], "https://www.lesswrong.com/posts/Exact/slug")
 
+    def test_lw_keeps_post_text_for_search(self):
+        # LessWrong splits words across inline tags, and MathJax leaves a formula's text in neither the formula nor the
+        # page: it draws it from the CSS in a <style>, so only the formula's aria-label has its TeX.
+        html = ('<style>mjx-container { line-height: 0; }</style>'
+                '<p><span>Activation </span><span>verbal</span><span>izers</span> map '
+                '<span class="math-tex"><mjx-container class="MathJax" aria-label="x^2 &amp; y" role="math">'
+                '<mjx-math><mjx-c class="mjx-c78"></mjx-c></mjx-math></mjx-container></span> to text.</p>'
+                '<ul><li>One</li><li>Two&lt;3</li></ul><h2>End<img alt="an <activation> of a > b" src="x"></h2>')
+        post = {"_id": "Post", "title": "Post title", "postedAt": "2026-11-12T00:00:00.000Z",
+                "shortform": False, "isEvent": False, "url": None,
+                "pageUrl": "https://www.lesswrong.com/posts/Post/slug", "contents": {"html": html}}
+        rows = self.importer("lw", lw_fetch({"data": {"posts": {"results": [post]}}}))
+        # entities stay, for the search index to decode
+        self.assertEqual(rows[0]["FullText"], "Activation verbalizers map $x^2 &amp; y$ to text. One Two&lt;3 End")
+        self.assertNotIn("Text", rows[0])
+
     def test_failed_or_partial_lw_listing_preserves_previous_data(self):
         good = {"_id": "Good", "title": "Good title", "postedAt": "2026-11-12T00:00:00.000Z",
                 "shortform": False, "url": None,

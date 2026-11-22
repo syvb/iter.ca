@@ -12,7 +12,11 @@
         "itch" (printf "Itch %s" .ItchType)
         "buttondown" "Newsletter"
         "lw" "Blog post"
+        "lw-comment" (printf "LessWrong %s" .LwType)
         "gh-pr" "Pull request"
+        "gh-repo" "GitHub repository"
+        "bsky" (printf "Bluesky %s" .BskyType)
+        "kb" (printf "kb.iter.ca %s" .KbType)
     ) .Type | default "Note" -}}
 {{- else if (hasPrefix .File.Dir "p/") -}}
     {{- $type = "Page" -}}

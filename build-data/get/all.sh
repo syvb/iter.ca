@@ -6,6 +6,8 @@ echo [
 node notes.js | sed 's/$/,/'
 >&2 echo "Generating GitHub data"
 node gh.js | sed 's/$/,/'
+>&2 echo "Generating GitHub repository data"
+node ghrepos.js | sed 's/$/,/'
 >&2 echo "Generating YT data"
 node yt.js | sed 's/$/,/'
 >&2 echo "Generating HN data"
@@ -22,6 +24,10 @@ node observable.js | sed 's/$/,/'
 node buttondown.js | sed 's/$/,/'
 >&2 echo "Generating LessWrong data"
 node lw.js | sed 's/$/,/'
+>&2 echo "Generating Bluesky data"
+node bsky.js | sed 's/$/,/'
+>&2 echo "Generating kb.iter.ca data"
+node kb.js | sed 's/$/,/'
 >&2 echo "Writing final note"
 cat <<EOF
 {"Type":"note","Date":{"Unix":1615179600},"Title":"First note","Text":"\nIf you are reading this, then I've sucessfully set up my notes system. This is for notes with less content than full blog posts.\n\n", "Verbose": 1, "Id": "allsh-first-note"}

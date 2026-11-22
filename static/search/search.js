@@ -1,7 +1,7 @@
 // Ctrl-K or ⌘K opens a box that searches the text of every page of the site and of the items in its full stream, most
-// of which link to other sites (pull requests, Stack Exchange posts, HN comments). The first time it opens on a page,
-// it loads /search.json, which Hugo writes at build time (themes/smitop/layouts/index.searchindex.json). style.css
-// styles the box.
+// of which link to other sites (pull requests, Stack Exchange posts, HN comments), and of the items only search has (my
+// GitHub repositories, the pages of kb.iter.ca). The first time it opens on a page, it loads /search.json, which Hugo
+// writes at build time (themes/smitop/layouts/index.searchindex.json). style.css styles the box.
 (function () {
   var LIMIT = 40; // how many results are shown
   var PREVIEW = 200; // about how many characters of a page a result shows
@@ -89,6 +89,8 @@
           json.forEach(function (page) {
             page.label = page.title ? page.type || "" : "";
             page.title = page.title || page.type;
+            // A page's tags aren't shown, but it can be found by them.
+            page.tags = page.tags || "";
           });
           pages = json;
           search();
@@ -154,11 +156,11 @@
     // The words in a row, with anything but words between them.
     var phrase = new RegExp("(?<![" + WORD + "])" + words.join("[^" + WORD + "]+").replace(/'/g, "['’]"), "iu");
 
-    // Each page is scored with BM25 (https://en.wikipedia.org/wiki/Okapi_BM25) over its label, description, and text,
-    // plus more for each word in its title. A page has to have every word somewhere.
+    // Each page is scored with BM25 (https://en.wikipedia.org/wiki/Okapi_BM25) over its label, description, tags, and
+    // text, plus more for each word in its title. A page has to have every word somewhere.
     var avgLength = 0;
     var found = pages.map(function (page) {
-      var body = page.label + " " + page.desc + " " + page.text;
+      var body = page.label + " " + page.desc + " " + page.tags + " " + page.text;
       avgLength += body.length / pages.length;
       return { page: page, title: counts(patterns, page.title), body: counts(patterns, body), length: body.length };
     });

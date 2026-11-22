@@ -93,8 +93,9 @@ module.exports = async url => {
         self.assertEqual([row["Id"] for row in rows],
                          [f"gh-pr-{i}" for i in range(1, 206)])
 
-    def test_lw_skips_posts_on_this_site_and_dates_old_posts_in_sf(self):
+    def test_lw_skips_events_and_posts_on_this_site_and_dates_old_posts_in_sf(self):
         posts = [
+            ("Event", "2026-11-20T18:00:00.000Z", {"isEvent": True}),
             ("Exact", "2026-11-11T08:30:00.900Z", {}),
             ("BeforeCutoff", "2026-11-11T07:30:00.000Z", {}),
             ("Old", "2026-04-28T06:46:24.097Z", {}),
@@ -103,7 +104,7 @@ module.exports = async url => {
              {"url": "https://iter.ca/post/llm-user-roleplay/"}),
         ]
         results = [dict({"_id": id, "title": f"{id} title", "postedAt": at,
-                         "shortform": False, "url": None,
+                         "shortform": False, "isEvent": False, "url": None,
                          "pageUrl": f"https://www.lesswrong.com/posts/{id}/slug"}, **extra)
                    for id, at, extra in posts]
         rows = self.importer("lw", lw_fetch({"data": {"posts": {"results": results}}}))

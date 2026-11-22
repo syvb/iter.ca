@@ -15,6 +15,9 @@
 /static/music/unsuddentmovements.flac
 sm4/public
 
+# Python bytecode
+__pycache__/
+
 # Lock files
 .hugo_build.lock
 

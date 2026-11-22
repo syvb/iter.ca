@@ -26,7 +26,7 @@ const NOTE_IDS = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             query: `{ posts(input: {terms: {view: "userPosts", userId: "nDWrtEhgEPvoYqyyk", sortedBy: "new", limit: 1000}}) {
-                results { _id title postedAt shortform url pageUrl }
+                results { _id title postedAt shortform isEvent url pageUrl }
             } }`,
         }),
     });
@@ -36,8 +36,8 @@ const NOTE_IDS = {
         throw new Error(`LessWrong API: HTTP ${res.status}, errors ${JSON.stringify(errors)}`);
     }
     data.posts.results.forEach(post => {
-        // skip the shortform container, and crossposts of posts on this site, which are linkposts to them
-        if (post.shortform || post.url?.startsWith("https://iter.ca/")) return;
+        // skip the shortform container, events, and crossposts of posts on this site, which are linkposts to them
+        if (post.shortform || post.isEvent || post.url?.startsWith("https://iter.ca/")) return;
         let date = Date.parse(post.postedAt);
         if (!post.title || !post.pageUrl || isNaN(date)) throw new Error(`LessWrong post ${post._id} is missing fields`);
         if (date < SF_TIMES_FROM) {

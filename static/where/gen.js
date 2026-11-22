@@ -9,12 +9,11 @@ const [input, output] = process.argv.slice(2);
 const raw = JSON.parse(fs.readFileSync(input, "utf8"));
 if (!Array.isArray(raw) || !raw.length) throw new Error("No stays in " + input);
 
-// --- static enrichment: flags + coordinates (home = Toronto) ---
+// --- static enrichment: flags, place aliases, and coordinates ---
 const FLAG = {
   "Canada": "🇨🇦", "United States": "🇺🇸", "France": "🇫🇷",
   "Germany": "🇩🇪", "United Kingdom": "🇬🇧"
 };
-// places that are really just "home" for our purposes
 const ALIAS = { "Toronto/Waterloo/Ayr": "Toronto" };
 const COORD = {
   "Toronto": [43.65, -79.38],
@@ -26,7 +25,6 @@ const COORD = {
   "Hamburg": [53.55, 9.99],
   "London": [51.51, -0.13]
 };
-const HOME = COORD["Toronto"];
 
 function haversine(a, b) {
   if (!a || !b) return null;
@@ -37,7 +35,6 @@ function haversine(a, b) {
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
   return Math.round(2 * R * Math.asin(Math.sqrt(s)));
 }
-function km(n) { return n == null ? null : n.toLocaleString("en-CA") + " km"; }
 
 function parseDate(s) {
   const p = s.split("-");
@@ -72,8 +69,7 @@ function tile(num, lbl) {
 
 function render(raw, today) {
   // normalise + sort chronologically; drop "Plane" rows (they only exist
-  // in the sheet to bridge overnight flights) and fold Waterloo/Ayr into
-  // Toronto, which is home for our purposes
+  // in the sheet to bridge overnight flights) and resolve place aliases
   const stays = raw
     .filter(function (s) { return s.country !== "Plane"; })
     .map(function (s) {
@@ -105,12 +101,9 @@ function render(raw, today) {
   // --- hero ---
   const here = current;
   const flag = FLAG[here.country] || "🌍";
-  const distHome = haversine(COORD[here.place], HOME);
   let out = "";
   out += '<div class="postcard">';
-  out += '<p class="eyebrow">' + (isLive
-    ? '<span class="live-dot"></span>right now i\'m in'
-    : 'last seen in') + '</p>';
+  out += '<p class="eyebrow">' + (isLive ? 'right now i\'m in' : 'last seen in') + '</p>';
   out += '<h1 class="hero-place"><span class="flag">' + flag + '</span> ' +
     '<span class="name">' + esc(here.place) + '</span></h1>';
   out += '<p class="hero-meta">';
@@ -123,13 +116,6 @@ function render(raw, today) {
     out += ' &middot; <b>' + nDays(daysIncl(here.from, here.to)) + '</b>';
   }
   out += '</p>';
-  out += '<div class="hero-chips">';
-  if (here.place === "Toronto") {
-    out += '<span class="chip">🏠 home base</span>';
-  } else if (distHome != null) {
-    out += '<span class="chip">' + km(distHome) + ' from home 🏠</span>';
-  }
-  out += '</div>';
   out += '</div>';
 
   // --- stat tiles ---
@@ -138,7 +124,7 @@ function render(raw, today) {
   out += tile("≈" + Math.round(travelled / 1000) + "k", "km covered");
   out += '</div>';
 
-  // --- timeline of past stays, newest first ---
+  // --- timeline of stays, newest first ---
   out += '<h2 class="sec-h">The trail</h2>';
   out += '<p class="sec-sub">Everywhere I\'ve been, most recent first.</p>';
 
@@ -152,32 +138,23 @@ function render(raw, today) {
       merged.push({ from: s.from, to: s.to, country: s.country, place: s.place });
     }
   });
-  // drop the current stay from the trail (it's already the hero) when live
-  let trail = merged.slice();
-  if (isLive) {
-    trail = merged.filter(function (s) {
-      return !(s.place === current.place && +s.from === +current.from && +s.to === +current.to);
-    });
-  }
-  trail.reverse();
 
   let lastYear = null;
-  trail.forEach(function (s) {
+  merged.reverse().forEach(function (s) {
     const yr = s.from.getUTCFullYear();
     if (yr !== lastYear) { out += '<div class="year">' + yr + '</div>'; lastYear = yr; }
 
+    const ongoing = isLive && s.place === here.place && s.country === here.country &&
+      s.from <= here.from && here.to <= s.to;
+    const dates = ongoing ? fmt(s.from, true) + ' – present' : fmtRange(s.from, s.to);
     const flag2 = FLAG[s.country] || "🌍";
-    const dist = haversine(COORD[s.place], HOME);
-    const distChip = s.place === "Toronto"
-      ? '<span class="tcountry"> &middot; 🏠 home</span>'
-      : (dist != null ? '<span class="tcountry"> &middot; ' + km(dist) + ' from home</span>' : '');
     out += '<div class="trip">';
     out += '<span class="tflag" aria-hidden="true">' + flag2 + '</span>';
     out += '<div class="tbody">';
     out += '<div class="tplace">' + esc(s.place) + ' <span class="tcountry">' + esc(s.country) + '</span></div>';
-    out += '<div class="tdates">' + fmtRange(s.from, s.to) + distChip + '</div>';
+    out += '<div class="tdates">' + dates + '</div>';
     out += '</div>';
-    const nd = daysIncl(s.from, s.to);
+    const nd = daysIncl(s.from, ongoing ? today : s.to);
     out += '<span class="tdur">' + human(nd) + (nd < 14 ? '' : ' (' + nDays(nd) + ')') + '</span>';
     out += '</div>';
   });
@@ -257,17 +234,6 @@ a { color: var(--link); }
   overflow: hidden;
 }
 .postcard .eyebrow { color: #4a4a4a; }
-.live-dot {
-  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
-  background: #14b866; margin-right: 0.4rem; vertical-align: middle;
-  box-shadow: 0 0 0 0 rgba(20,184,102,0.6);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(20,184,102,0.55); }
-  70% { box-shadow: 0 0 0 9px rgba(20,184,102,0); }
-  100% { box-shadow: 0 0 0 0 rgba(20,184,102,0); }
-}
 .hero-lead { font-size: 1.1rem; margin: 0.5rem 0 0.1rem; color: #333; }
 .hero-place {
   font-size: clamp(2.6rem, 10vw, 4.6rem);
@@ -284,16 +250,6 @@ a { color: var(--link); }
 }
 .hero-meta { font-size: 1.05rem; margin-top: 0.8rem; color: #2b2b2b; }
 .hero-meta b { font-weight: 750; }
-.hero-chips { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.chip {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: #fff;
-  border: 2px solid #111;
-  border-radius: 999px;
-  padding: 3px 11px;
-}
 
 /* ---- stat tiles ---- */
 .stats {
@@ -380,9 +336,6 @@ footer {
 }
 footer a { color: var(--link); }
 
-@media (prefers-reduced-motion: reduce) {
-  .live-dot { animation: none; }
-}
 @media (max-width: 560px) {
   .trip { flex-wrap: wrap; }
   .trip .tdur { align-self: flex-start; }

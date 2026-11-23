@@ -20,7 +20,7 @@
     {{ partial "search.html" }}
     <meta name="google-site-verification" content="LGtQWHbgC8bJSz0orWP71nxayoCJV2F-XH8y0HUFAJ4" />
     <link rel="me" href="https://news.ycombinator.com/user?id=smitop" type="text/html">
-    <link rel="me" href="mailto:me@smitop.com">
+    <link rel="me" href="mailto:me@iter.ca">
     <link rel="me" href="https://opengameart.org/users/smitop" type="text/html">
     <link rel="me" href="https://archive.org/details/@smitop" type="text/html">
     <link rel="me" href="https://scratch.mit.edu/users/smitop/" type="text/html">
@@ -30,6 +30,10 @@
     <link rel="me" href="https://t.me/someloops" type="text/html">
     <link rel="me" href="https://wasteof.money/users/smitop" type="text/html">
     <link rel="me" href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/" type="text/html">
+    <link rel="me" href="https://bsky.app/profile/iter.ca" type="text/html">
+    <link rel="me" href="https://www.lesswrong.com/users/loops" type="text/html">
+    <link rel="me" href="https://crates.io/users/syvb" type="text/html">
+    <link rel="me" href="https://huggingface.co/syvb" type="text/html">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}">
     <link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
     <link rel="canonical" href="{{ .Permalink }}" />
@@ -42,9 +46,9 @@
 <body>
     {{ partial "topbar.html" "home" }}
     <div id="metop-container">
-        <div id="metop">
+        <div id="metop" class="h-card">
             <div id="metop-left">
-                <div class="h-card">
+                <div>
                     <div id="oct-box">
                         <a href="avatar/"><img src="/avatar/a256.png" alt="avatar" id="avatar" class="u-photo" width="160" height="160" loading="lazy"></a>
                         <img src="/avatar/oct-still.webp?rel={{ substr (sha256 (readFile "static/avatar/oct-still.webp")) 0 8 }}" alt="" id="oct-still">
@@ -61,14 +65,17 @@
                 </div> -->
             </div>
             <div id="metop-right">
+                <data class="u-url u-uid" value="{{ .Permalink }}"></data>
+                <data class="p-nickname" value="loops"></data>
+                <data class="p-note" value="{{ $description }}"></data>
                 <div id="me-links">
-                    <p>Hi, I'm <span style="font-weight: bold;">Smitty van Bodegom</span>!</p>
+                    <p>Hi, I'm <span class="p-name" style="font-weight: bold;">Smitty van Bodegom</span>!</p>
                     <div>
                         <ul>
-                            <li><a href="mailto:me&#x000000000000000000000000000000040;iter.ca">{{ partial "email.html" }}</a></li>
-                            <li><a href="https://x.com/_smitop">X</a></li>
-                            <li><a href="https://github.com/syvb">GitHub</a></li>
-                            <li><a href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">YouTube</a></li>
+                            <li><a class="u-email" href="mailto:me@iter.ca">{{ partial "email.html" }}</a></li>
+                            <li><a class="u-url" href="https://x.com/_smitop">X</a></li>
+                            <li><a class="u-url" href="https://github.com/syvb">GitHub</a></li>
+                            <li><a class="u-url" href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/">YouTube</a></li>
                             <li><button type="button" id="copy-discord" data-tip="@moreloops" aria-label="Discord, @moreloops">Discord</button></li>
                             <li><a href="/p/accounts/">more</a></li>
                         </ul>

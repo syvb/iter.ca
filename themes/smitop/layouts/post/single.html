@@ -6,15 +6,15 @@
     By
     <span class="p-author h-card">
       <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <a href="/" class="p-nickname u-url" rel="me">
+        <a href="/" class="p-name u-url" rel="author">
           <span itemprop="name">Smitty van Bodegom</span
-        ></a> (loops)
-        {{ if (ne .Params.ai nil) }}
-          (with AI)
-        {{ end }}
+        ></a> (<span class="p-nickname">loops</span>)
       </span>
     </span>
-    · <span itemprop="datePublished" content="{{ partial "date.html" (dict "t" .Date "f" "2006-01-02") }}" class="dt-published">{{ partial "date.html" (dict "t" .Date "f" "Jan 2, 2006") }}</span>
+    {{ if (ne .Params.ai nil) }}
+      (with AI)
+    {{ end }}
+    · <time itemprop="datePublished" datetime="{{ partial "date.html" (dict "t" .Date "f" "2006-01-02") }}" class="dt-published">{{ partial "date.html" (dict "t" .Date "f" "Jan 2, 2006") }}</time>
     </div>
     <div>
       <article itemprop="articleBody" id="content" class="e-content">

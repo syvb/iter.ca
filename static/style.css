@@ -121,10 +121,6 @@ p, ul, ol {
     padding-bottom: 1rem;
 }
 
-.h-card {
-    text-align: center;
-}
-
 .smitop {
     font-weight: bold;
     color: black;
@@ -622,6 +618,7 @@ blockquote > p:last-child {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    text-align: center;
 }
 
 #metop-right {
@@ -1158,7 +1155,7 @@ summary h2 {
     #me-links p {
         margin-top: 0.5em;
     }
-    #me-links > div, #me-links > div > ul, #me-links p, .h-card {
+    #me-links > div, #me-links > div > ul, #me-links p, #metop-left {
         text-align: left;
     }
     #on-this-site {
@@ -1169,7 +1166,7 @@ summary h2 {
 /* On a phone, where the homepage's lists are one card wide (see .home-cols), the gem, the greeting, and the links are
    centered over them. */
 @media not all and (min-width: 40rem) {
-    #me-links > div, #me-links > div > ul, #me-links p, #metop .h-card {
+    #me-links > div, #me-links > div > ul, #me-links p, #metop-left {
         text-align: center;
     }
     /* centered, the gem needs no nudge to clear the window's left edge */

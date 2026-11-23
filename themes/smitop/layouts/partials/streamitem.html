@@ -81,6 +81,7 @@
             ><h2
                 ><a href="{{- .Item.RelPermalink -}}">{{- partial "title.html" .Item.Title -}} {{- if (.Item.Draft) -}}(DRAFT){{- end -}}</a>
             </h2>
+            {{- if not .Item.Date.IsZero }}
             <div class="stream-item-date">
                 {{- if (hasPrefix .Item.File.Dir "p/") -}}
                     {{- if (.scr.Get "mini") }} updated {{ else }}Updated {{ end -}}
@@ -89,6 +90,7 @@
                 {{- end -}}
                 {{- partial "date.html" (dict "t" .Item.Date "f" "January 2, 2006") -}}
             </div>
+            {{- end -}}
             {{- if (and (isset .Item.Params "image") (not (isset .Item.Params "no_stream_image")) (not (.scr.Get "mini"))) -}}
                 <div class="stream-item-thumb-wrapper">
                     <!-- Just going to call these images decorative. This is how YouTube handles thumbnail alt text. -->

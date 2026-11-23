@@ -1,0 +1,80 @@
+{{- /* The homepage's newsletter shelf (rendered below the columns of partials/homecols.html). Shows the newest
+     Buttondown issue with its excerpt (and section headings once build-data populates them), links directly to
+     previous recent issues and the full archive, and lazy-loads Buttondown's subscribe form on click. Without
+     JavaScript, the subscribe button remains a normal link to Buttondown. */ -}}
+{{- $issues := slice -}}
+{{- range sort (where .Site.Data.data "Type" "buttondown") ".Date.Unix" "desc" -}}
+    {{- $issues = $issues | append . -}}
+{{- end -}}
+{{- with $issues -}}
+{{- $total := len . -}}
+{{- $latest := index . 0 -}}
+{{- $earlier := first 4 (after 1 .) -}}
+{{- $raw := $latest.Text | default "" | htmlUnescape -}}
+{{- $raw = replaceRE `\[([^\]]+)\]\([^)]+\)` `$1` $raw -}}
+{{- $raw = replaceRE `(?:^|\s)#{1,6}\s+` ` ` $raw -}}
+{{- $raw = replaceRE `\s+` ` ` $raw -}}
+{{- $excerpt := trim $raw " " | truncate 220 -}}
+<section class="home-newsletter" aria-labelledby="home-newsletter-heading">
+    <div class="home-newsletter-head">
+        <h2 id="home-newsletter-heading">Newsletter</h2>
+        <span class="home-newsletter-meta">{{ $total }} {{ cond (eq $total 1) "issue" "issues" }}</span>
+    </div>
+    <div class="home-newsletter-body">
+        <div class="home-newsletter-preview">
+            <div class="home-newsletter-issue">
+                <a href="{{ $latest.Uri }}">{{ $latest.Title }}</a>
+                <span class="home-col-date">{{ partial "date.html" (dict "t" (int $latest.Date.Unix) "f" "Jan 2, 2006") }}</span>
+            </div>
+            {{- with $latest.Headings }}
+            <p class="home-newsletter-headings">{{ delimit . " · " }}</p>
+            {{- end }}
+            {{- with $excerpt }}
+            <p class="home-newsletter-excerpt">{{ . }}</p>
+            {{- end }}
+            <div class="home-newsletter-picker">
+                {{- with $earlier }}
+                <span>Previous:</span>
+                {{- range $i, $iss := . }}
+                {{- $num := findRE `#\d+` ($iss.Title | default "") 1 -}}
+                {{- $label := cond (gt (len $num) 0) (index $num 0) (partial "date.html" (dict "t" (int $iss.Date.Unix) "f" "Jan 2")) -}}
+                {{- if gt $i 0 }}<span class="home-newsletter-sep" aria-hidden="true">·</span>{{ end -}}
+                <a href="{{ $iss.Uri }}" class="home-newsletter-num" title="{{ $iss.Title }}">{{ $label }}</a>
+                {{- end }}
+                <span class="home-newsletter-sep" aria-hidden="true">·</span>
+                {{- end }}
+                <a href="https://buttondown.com/z/archive/" class="home-newsletter-all">all {{ $total }}</a>
+            </div>
+        </div>
+        <div class="home-newsletter-sub">
+            {{/* Buttondown's form loads only once a reader clicks the link, which it replaces. Without JavaScript, the
+                 link opens the same form on Buttondown's site. */}}
+            <a id="newsletter-open" href="https://buttondown.com/z?tag=source:scom">Subscribe by email</a>
+            <template id="newsletter-form">
+                <iframe
+                    id="footer-email-sub"
+                    title="Subscribe to my email newsletter"
+                    scrolling="no"
+                    style="width:100%!important;height:220px;border:1px #ccc solid !important"
+                    src="https://buttondown.com/z?as_embed=true&tag=source:scom"
+                ></iframe>
+            </template>
+        </div>
+    </div>
+</section>
+<script>
+    (function () {
+        var open = document.getElementById("newsletter-open");
+        var tmpl = document.getElementById("newsletter-form");
+        if (!open || !tmpl) return;
+        open.addEventListener("click", function (e) {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+            e.preventDefault();
+            var iframe = tmpl.content.querySelector("iframe").cloneNode(true);
+            this.replaceWith(iframe);
+            iframe.focus({ preventScroll: true });
+            iframe.scrollIntoView({ block: "nearest" });
+        });
+    })();
+</script>
+{{- end -}}

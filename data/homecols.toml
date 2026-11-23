@@ -19,6 +19,9 @@ limit = 10
 # Kinds of which only the newest item is listed, featured items aside.
 latest_only = []
 
+# Kinds omitted from the columns, featured items aside (newsletters live in the shelf below).
+exclude_kinds = ["buttondown"]
+
 [[columns]]
 title = "Highlights"
 #more = "/stream/me/"

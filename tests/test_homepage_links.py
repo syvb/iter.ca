@@ -287,6 +287,53 @@ class HomepageLinksTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "data/homecols.toml has no columns"):
             build_homepage(None, {"local": 'title = "Local post"\ndate = "2021-01-02"'}, [])
 
+    def test_exclude_kinds_and_newsletter_shelf(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content/post").mkdir(parents=True)
+            (root / "content/post/post.md").write_text('+++\ntitle = "A post"\ndate = "2021-01-09"\n+++\nBody.\n')
+            (root / "data").mkdir()
+            (root / "data/homecols.toml").write_text(
+                'limit = 10\nexclude_kinds = ["buttondown"]\n[[columns]]\ntitle = "Everything"\nrest = true\n'
+            )
+            (root / "data/voverrides.json").write_text("{}")
+            issues = [
+                item(d, f"iter.ca update #{d}", Type="buttondown",
+                     Uri=f"https://buttondown.com/z/archive/update-{d}/",
+                     Text=f"## Section {d} Read [this link](https://example.com/{d}) now.",
+                     **({"Headings": ["posts", "research"]} if d == 6 else {}))
+                for d in range(1, 7)
+            ]
+            (root / "data/data.json").write_text(json.dumps(issues))
+            config = root / "config.json"
+            config.write_text(json.dumps({"dataDir": str(root / "data")}))
+            result = subprocess.run([
+                "hugo", "-t", "smitop", "--enableGitInfo=false",
+                "--config", f"{ROOT / 'config.toml'},{config}",
+                "--contentDir", str(root / "content"),
+                "--destination", str(root / "public"),
+                "--cacheDir", str(root / "cache"),
+            ], cwd=ROOT, capture_output=True, text=True, timeout=30)
+            if result.returncode != 0:
+                raise AssertionError(result.stdout + result.stderr)
+            html = (root / "public/index.html").read_text()
+
+        homepage = Homepage(html)
+        self.assertEqual(homepage.empty, [])
+        # Buttondown issues are excluded from the column and shown in the shelf instead.
+        self.assertEqual(homepage.titles(), [("Everything", ["A post"])])
+        self.assertIn("6 issues", html)
+        self.assertIn("all 6", html)
+        # Latest issue (#6) is previewed and the next four (#5..#2) link directly; #1 is only in the archive count.
+        self.assertIn("iter.ca update #6", html)
+        self.assertIn("https://buttondown.com/z/archive/update-5/", html)
+        self.assertIn("https://buttondown.com/z/archive/update-2/", html)
+        self.assertNotIn("https://buttondown.com/z/archive/update-1/", html)
+        # Headings render when present, and markdown links/headings are cleaned from excerpts.
+        self.assertIn("posts · research", html)
+        self.assertIn("Section 6 Read this link now.", html)
+        self.assertNotIn("## Section", html)
+
 
 if __name__ == "__main__":
     unittest.main()

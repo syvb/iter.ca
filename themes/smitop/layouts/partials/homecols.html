@@ -25,6 +25,8 @@
         {{- /* a page with no title is listed by its file's name */ -}}
         {{- $item = dict "title" (partial "title.html" (.Title | default .File.ContentBaseName)) "url" .RelPermalink "t" .Date "page" (eq $kind "page") "draft" .Draft -}}
     {{- end -}}
+    {{- /* excluded kinds live elsewhere on the homepage (e.g. the newsletter shelf), featured items aside */ -}}
+    {{- if and (not $featured) (in ($conf.exclude_kinds | default (slice)) $kind) }}{{ continue }}{{ end -}}
     {{- /* a featured item is listed however new it is, and isn't the newest of its kind for the other lists */ -}}
     {{- if and (not $featured) (in $conf.latest_only $kind) -}}
         {{- if $scr.Get (printf "seen-%s" $kind) }}{{ continue }}{{ end -}}

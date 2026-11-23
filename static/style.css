@@ -217,7 +217,7 @@ kbd {
 }
 
 /* The arrow is a line along its top, a line down its right side, and a diagonal into that corner. */
-:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, .home-col h2 a) {
+:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, .home-col h2 a, .home-newsletter-num, #newsletter-open) {
     padding-right: 0.55em;
     background-image:
         linear-gradient(currentColor, currentColor),
@@ -372,13 +372,17 @@ h1 {
 
 /* The homepage's lists of stream items (partials/homecols.html). On a wide screen they are a row of columns; on a
    narrower one each is a card, the first as wide as the page and the rest three to a row, or one to a row on a phone. */
-.home-cols {
+.home-cols,
+.home-newsletter {
     --home-rule: #c2c2c2;
     --home-card-head: #e7e7e7;
+    max-width: 96rem;
+}
+
+.home-cols {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
-    max-width: 96rem;
 }
 
 /* A word too long for its list breaks instead of overflowing it. */
@@ -421,14 +425,106 @@ h1 {
     font-size: 85%;
 }
 
+/* The homepage's newsletter shelf (partials/newsletter-shelf.html), below the columns. */
+.home-newsletter {
+    margin-top: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.home-newsletter-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--home-rule);
+}
+
+.home-newsletter-head h2 {
+    font-size: 1.3em;
+}
+
+.home-newsletter-meta {
+    color: #555;
+    font-size: 85%;
+}
+
+.home-newsletter-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+}
+
+.home-newsletter-preview,
+.home-newsletter-sub {
+    min-width: 0;
+}
+
+.home-newsletter-issue {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+}
+
+.home-newsletter-issue a {
+    font-weight: bold;
+}
+
+.home-newsletter-issue .home-col-date {
+    display: inline;
+}
+
+.home-newsletter-headings {
+    margin-top: 0.25rem;
+    font-size: 90%;
+    color: #555;
+}
+
+.home-newsletter-excerpt {
+    margin-top: 0.3rem;
+    color: #444;
+    font-size: 95%;
+    line-height: 1.4;
+}
+
+.home-newsletter-picker {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.45rem;
+    margin-top: 0.55rem;
+    font-size: 90%;
+    color: #555;
+}
+
+.home-newsletter-sub {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+@media not all and (min-width: 40rem) {
+    .home-newsletter-body {
+        gap: 0.75rem;
+        padding: 0.6rem 0.75rem 0.75rem;
+    }
+    .home-newsletter-sub {
+        border-top: 1px solid var(--home-rule);
+        padding-top: 0.65rem;
+    }
+}
+
 @media not all and (min-width: 72rem) {
-    .home-col {
+    .home-col,
+    .home-newsletter {
         border: 1px solid var(--home-rule);
         border-radius: 0.5rem;
         /* keeps the heading's background inside the rounded corners */
         overflow: hidden;
     }
-    .home-col h2 {
+    .home-col h2,
+    .home-newsletter-head {
         background: var(--home-card-head);
         padding: 0.4rem 0.75rem;
     }
@@ -456,6 +552,22 @@ h1 {
     }
 }
 
+@media (min-width: 40rem) {
+    .home-newsletter-body {
+        grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: stretch;
+        padding: 0 0.75rem;
+    }
+    .home-newsletter-preview {
+        padding: 0.6rem 0 0.75rem;
+    }
+    .home-newsletter-sub {
+        border-left: 1px solid var(--home-rule);
+        padding: 0.6rem 0 0.75rem 1.25rem;
+    }
+}
+
 @media (min-width: 72rem) {
     .home-cols {
         grid-template-columns: none;
@@ -466,6 +578,22 @@ h1 {
     .home-col h2 {
         padding-bottom: 0.2rem;
         margin-bottom: 0.5rem;
+    }
+    .home-newsletter-head {
+        padding-bottom: 0.2rem;
+    }
+    .home-newsletter {
+        margin-top: 2rem;
+    }
+    .home-newsletter-body {
+        gap: 2rem;
+        padding: 0;
+    }
+    .home-newsletter-preview {
+        padding: 0.55rem 0 0.15rem;
+    }
+    .home-newsletter-sub {
+        padding: 0.55rem 0 0.15rem 1.5rem;
     }
 }
 
@@ -1379,13 +1507,21 @@ summary h2 {
         background: #26260f;
     }
 
-    .home-cols {
+    .home-cols,
+    .home-newsletter {
         --home-rule: #383838;
         --home-card-head: #1e1e1e;
     }
 
-    .home-col-date {
+    .home-col-date,
+    .home-newsletter-meta,
+    .home-newsletter-headings,
+    .home-newsletter-picker {
         color: #aaaaaa;
+    }
+
+    .home-newsletter-excerpt {
+        color: #cccccc;
     }
 
     #TableOfContents {

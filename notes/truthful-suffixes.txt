@@ -1,0 +1,5 @@
+Date=Jul 1 2024
+Title=Boosting Language Model Honesty with Truthful Suffixes
+Verbose=0
+NoteType=Hackathon submission
+Uri=https://apartresearch.com/sprints/projects/boosting-language-model-honesty-with-truthful-suffixes

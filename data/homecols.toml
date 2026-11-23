@@ -61,7 +61,7 @@ url = "/pngcomp/"
 title = "AI"
 tags = ["ai"]
 kinds = ["lw"]
-ids = ["note-qwen-vision-backprop", "note-bench-af-hackathon"]
+ids = ["note-qwen-vision-backprop", "note-bench-af-hackathon", "note-truthful-suffixes", "note-ai-debate-backdoor-detection"]
 more = "/stream/ai/"
 
 [[columns]]

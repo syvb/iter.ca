@@ -1,0 +1,5 @@
+Date=Mar 31 2025
+Title=Evaluating AI Debate Mechanisms for Backdoor Detection as a Part of AI Control Setting
+Verbose=0
+NoteType=Hackathon submission
+Uri=https://apartresearch.com/sprints/projects/evaluating-ai-debate-mechanisms-for-backdoor-detection-as-a-part-of-ai-control-setting-thsv

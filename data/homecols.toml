@@ -8,6 +8,10 @@
 # After its stream items, a column lists its links, which are written here: a title and the url it links to. With before
 # or after, a link is a sentence: they are the words around the title, and only the title links. more is where a
 # column's heading and its "more..." link go.
+#
+# A page of content/stream/ with homecol set to a column's title is that column's stream: every item that would go in
+# the column by its Id, tags, or kind, featured ones too and as many as there are, up to the page's Verbose (0 if it has
+# none; content/stream/ai.md for AI).
 
 # How many stream items a column lists.
 limit = 10
@@ -58,7 +62,7 @@ title = "AI"
 tags = ["ai"]
 kinds = ["lw"]
 ids = ["note-qwen-vision-backprop", "note-bench-af-hackathon"]
-more = "/tags/ai/"
+more = "/stream/ai/"
 
 [[columns]]
 title = "Programming"

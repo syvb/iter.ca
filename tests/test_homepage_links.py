@@ -100,14 +100,43 @@ class Homepage(HTMLParser):
         return linked
 
 
-def build_homepage(homecols, posts, data):
+class Stream(HTMLParser):
+    """A stream page's items in order, as their titles, each featured one's with a * before it."""
+
+    def __init__(self, html):
+        super().__init__()
+        self.items = []
+        self.in_title = False
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        classes = (dict(attrs).get("class") or "").split()
+        if tag == "div" and "stream-item" in classes:
+            self.items.append("*" if "featured" in classes else "")
+        elif tag == "h2" and self.items and "stream-item-type" not in classes:
+            self.in_title = True
+
+    def handle_data(self, data):
+        if self.in_title:
+            self.items[-1] += data.strip()
+
+    def handle_endtag(self, tag):
+        if tag == "h2":
+            self.in_title = False
+
+
+def build_homepage(homecols, posts, data, streams={}):
     """Builds the site from the posts (name to front matter) and data.json items, and returns its homepage. homecols
-    is the text of data/homecols.toml, or None for a site without that file."""
+    is the text of data/homecols.toml, or None for a site without that file. streams has the front matter of pages of
+    content/stream/ by name, and the homepage's streams has their items (Stream.items) by the same name."""
     with tempfile.TemporaryDirectory() as temp:
         root = Path(temp)
         (root / "content/post").mkdir(parents=True)
         for name, front_matter in posts.items():
             (root / f"content/post/{name}.md").write_text(f"+++\n{front_matter}\n+++\nBody.\n")
+        (root / "content/stream").mkdir()
+        for name, front_matter in streams.items():
+            (root / f"content/stream/{name}.md").write_text(f"+++\n{front_matter}\n+++\n")
         (root / "data").mkdir()
         if homecols is not None:
             (root / "data/homecols.toml").write_text(homecols)
@@ -124,7 +153,10 @@ def build_homepage(homecols, posts, data):
         ], cwd=ROOT, capture_output=True, text=True, timeout=30)
         if result.returncode != 0:
             raise AssertionError(result.stdout + result.stderr)
-        return Homepage((root / "public/index.html").read_text())
+        homepage = Homepage((root / "public/index.html").read_text())
+        homepage.streams = {name: Stream((root / f"public/stream/{name}/index.html").read_text()).items
+                            for name in streams}
+        return homepage
 
 
 def item(day, title, **fields):
@@ -223,7 +255,8 @@ class HomepageLinksTest(unittest.TestCase):
                 item(14, "Too verbose note", Verbose=1),
                 item(15, "Slightly verbose note", Verbose=0.5),
                 item(6, None, Uri=None, Text="\n<p>An untitled note's text.</p>\n"),
-            ])
+            ],
+            {"first": 'title = "First stream"\nVerbose = 1\nhomecol = "First"'})
 
         self.assertEqual(homepage.titles(), [
             # its links follow its stream items and don't count toward the limit
@@ -245,6 +278,10 @@ class HomepageLinksTest(unittest.TestCase):
         self.assertEqual(homepage.entry("By kind"), "https://example.com/9")
         # with no link of its own, to its entry on the stream page
         self.assertEqual(homepage.entry("An untitled note's text."), "/stream/interesting/#stream-item-note-6")
+        # a list's stream page has every item that belongs in the list, of the verbosity the page allows: its featured
+        # ones first, and those past the list's limit or too verbose for the homepage, but not one listed elsewhere by id
+        self.assertEqual(homepage.streams["first"], [
+            "*Featured post", "Too verbose post", "Both tags", "By kind", "Old tag a", "Older tag a"])
 
     def test_build_fails_without_the_lists(self):
         with self.assertRaisesRegex(AssertionError, "data/homecols.toml has no columns"):

@@ -1,0 +1,32 @@
+{{- /* Returns which of data/homecols.toml's columns a stream item belongs in by what it is, from (dict "Item" <page or
+     data item> "Conf" <data/homecols.toml>): (dict "col" <the column's index, or -1 for none> "kind" <the item's kind>).
+     The column is the one that lists the item's Id in ids; failing that, the first one that lists one of its tags or its
+     kind; failing that, the one with rest = true. Takes no account of the item's verbosity, or of the featured column,
+     where homecols.html puts a featured item instead. */ -}}
+{{- $i := .Item -}}
+{{- $id := "" -}}
+{{- $kind := "" -}}
+{{- $tags := slice -}}
+{{- if eq $i.Params nil -}}
+    {{- $id = $i.Id -}}
+    {{- $kind = $i.Type -}}
+    {{- if eq $i.Type "note" }}{{ $kind = $i.NoteType | default "note" }}{{ end -}}
+{{- else -}}
+    {{- $kind = cond (hasPrefix $i.File.Dir "p/") "page" "post" -}}
+    {{- $tags = $i.Params.tags | default (slice) -}}
+{{- end -}}
+{{- $col := -1 -}}
+{{- range $n, $c := .Conf.columns -}}
+    {{- if and $id (in ($c.ids | default (slice)) $id) }}{{ $col = $n }}{{ break }}{{ end -}}
+{{- end -}}
+{{- if eq $col -1 -}}
+    {{- range $n, $c := .Conf.columns -}}
+        {{- if or (in ($c.kinds | default (slice)) $kind) (intersect ($c.tags | default (slice)) $tags) }}{{ $col = $n }}{{ break }}{{ end -}}
+    {{- end -}}
+{{- end -}}
+{{- if eq $col -1 -}}
+    {{- range $n, $c := .Conf.columns -}}
+        {{- if $c.rest }}{{ $col = $n }}{{ break }}{{ end -}}
+    {{- end -}}
+{{- end -}}
+{{- return dict "col" $col "kind" $kind -}}

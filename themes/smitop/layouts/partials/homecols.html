@@ -11,23 +11,17 @@
     {{- /* featured as in stream.html; ge and le, since eq tells the integer 0 from the float 0 that data.json has */ -}}
     {{- $featured := le $verbose -1 -}}
     {{- if not (or $featured (and (ge $verbose 0) (le $verbose 0))) }}{{ continue }}{{ end -}}
-    {{- $id := "" -}}
-    {{- $kind := "" -}}
-    {{- $tags := slice -}}
+    {{- $home := partial "homecol.html" (dict "Item" . "Conf" $conf) -}}
+    {{- $kind := $home.kind -}}
     {{- $item := dict -}}
     {{- if eq .Params nil -}}
-        {{- $id = .Id -}}
-        {{- $kind = .Type -}}
-        {{- if eq .Type "note" }}{{ $kind = .NoteType | default "note" }}{{ end -}}
         {{- /* an untitled item is listed by its text, which is what a stream shows of it, or else by what it is */ -}}
         {{- $text := trim (.Text | default "" | plainify | htmlUnescape) " \n" | truncate 80 -}}
         {{- /* an item with no link of its own links to its entry on the stream page */ -}}
         {{- $url := .Uri -}}
-        {{- if and (not $url) $id }}{{ $url = printf "/stream/interesting/#stream-item-%s" $id }}{{ end -}}
+        {{- if and (not $url) .Id }}{{ $url = printf "/stream/interesting/#stream-item-%s" .Id }}{{ end -}}
         {{- $item = dict "title" (.Title | default $text | default (humanize $kind)) "url" $url "t" (int .Date.Unix) -}}
     {{- else -}}
-        {{- $kind = cond (hasPrefix .File.Dir "p/") "page" "post" -}}
-        {{- $tags = .Params.tags | default (slice) -}}
         {{- /* a page with no title is listed by its file's name */ -}}
         {{- $item = dict "title" (partial "title.html" (.Title | default .File.ContentBaseName)) "url" .RelPermalink "t" .Date "page" (eq $kind "page") "draft" .Draft -}}
     {{- end -}}
@@ -36,25 +30,12 @@
         {{- if $scr.Get (printf "seen-%s" $kind) }}{{ continue }}{{ end -}}
         {{- $scr.Set (printf "seen-%s" $kind) true -}}
     {{- end -}}
-    {{- $col := -1 -}}
+    {{- $col := $home.col -}}
     {{- if $featured -}}
         {{- /* a featured item goes in the featured column, whatever else it matches */ -}}
+        {{- $col = -1 -}}
         {{- range $i, $c := $conf.columns -}}
             {{- if $c.featured }}{{ $col = $i }}{{ break }}{{ end -}}
-        {{- end -}}
-    {{- else -}}
-        {{- range $i, $c := $conf.columns -}}
-            {{- if and $id (in ($c.ids | default (slice)) $id) }}{{ $col = $i }}{{ break }}{{ end -}}
-        {{- end -}}
-        {{- if eq $col -1 -}}
-            {{- range $i, $c := $conf.columns -}}
-                {{- if or (in ($c.kinds | default (slice)) $kind) (intersect ($c.tags | default (slice)) $tags) }}{{ $col = $i }}{{ break }}{{ end -}}
-            {{- end -}}
-        {{- end -}}
-        {{- if eq $col -1 -}}
-            {{- range $i, $c := $conf.columns -}}
-                {{- if $c.rest }}{{ $col = $i }}{{ break }}{{ end -}}
-            {{- end -}}
         {{- end -}}
     {{- end -}}
     {{- if ne $col -1 -}}

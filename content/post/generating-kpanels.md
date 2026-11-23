@@ -21,10 +21,10 @@ Try entering a query and looking at the results! Wait a few seconds after enteri
 ## Explanation
 
 I've had a lot of time on my hands recently (due to COVID-19). If you are an avid search engine user (you almost certainly are), then you'll likely have seen a panel on the side of your search results that looks like this (this screenshot is of Google, but feel free to try these with your search engine of choice):
-![Douglas Adams knowledge graph panel screenshot](https://smitop.com/douglas-adams-kg.png)
+![Douglas Adams knowledge graph panel screenshot](https://iter.ca/douglas-adams-kg.png)
 
 But that's not all! If we search for some specific fact about Douglas Adams, such as his height, Google is able to figure it out and tell it to us:
-![Screenshot of Google's knowledge graph telling me that Douglas Adams height is 1.96 meters](https://smitop.com/douglas-adams-fact.png)
+![Screenshot of Google's knowledge graph telling me that Douglas Adams height is 1.96 meters](https://iter.ca/douglas-adams-fact.png)
 
 How is Google able to figure this out? Google has a database with a bunch of facts in it, called their "knowledge graph". Those facts are sometimes called [triples](https://en.wikipedia.org/wiki/Named_graph#Named_graphs_and_quads), since they have three parts: for the above example, a subject: Douglas Adams, a predicate: height, and a object: 1.96 meters.
 

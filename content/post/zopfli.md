@@ -19,7 +19,7 @@ I compared 10 PNG compression engines:
 [pngout](http://advsys.net/ken/utils.htm),
 [FFmpeg](https://ffmpeg.org/),
 [pngcrush](https://pmt.sourceforge.io/pngcrush/),
-[imagemagick](https://imagemagick.org/index.php),
+[imagemagick](https://imagemagick.org/),
 [optipng](http://optipng.sourceforge.net/),
 [oxipng](https://github.com/shssoichiro/oxipng),
 [ImageWorsener](https://entropymine.com/imageworsener/),

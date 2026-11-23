@@ -126,7 +126,7 @@ do
 	then
 		echo $filename
 	fi
-done <<END
+done &lt;&lt;END
 $(find exercises | sort)
 END
 {{< /codex >}}
@@ -1147,7 +1147,7 @@ Sometimes Codex will suddenly go: "Suprise! That was actually just part of a str
 
 def main():
     if len(sys.argv) &lt; 2:
-        print("Usage: python3 proof.py <theorem>")
+        print("Usage: python3 proof.py &lt;theorem&gt;")
         sys.exit(1)
     theorem = sys.argv[1]
     with open("theorem.tex", "w") as f:

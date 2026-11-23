@@ -9,7 +9,7 @@ image_alt = "A glitchly-looking multicolored letter S."
 image_h = 256
 image_w = 256
 fmat_id = "png"
-# BINFORMATS_URI_PREFIX="https://smitop.com/fmat" ca r gen_png .
+# BINFORMATS_URI_PREFIX="https://iter.ca/fmat" ca r gen_png .
 # then copypaste below from <body> of binformats/public/png/index.html
 +++
     <style>
@@ -119,7 +119,7 @@ fmat_id = "png"
     </style>
     <div>
         <p>Let's look at the complete process of decoding a <abbr title="Portable Network Graphics">PNG</abbr> file. Here's the image I'll be using to demonstrate:</p>
-        <img src="https://smitop.com/a256adpt.png" width="256" height="256" alt="Several letter 'S's on top of each other, each with a different color." />
+        <img src="https://iter.ca/a256adpt.png" width="256" height="256" alt="Several letter 'S's on top of each other, each with a different color." />
     </div>
     <div>
         <h2>Chunking</h2>
@@ -133,7 +133,7 @@ fmat_id = "png"
                 <tr><td>Unsafe to copy</td><td>Safe to copy</td><td>Do programs that modify the PNG data need to understand this chunk?</td></tr>
             </tbody>
         </table>
-        <img src="https://smitop.com/Chunk-letters.svg" alt="c: Ancillary, H: Public, R: Reserved, M: Unsafe to copy" width="571" height="251" />
+        <img src="https://iter.ca/Chunk-letters.svg" alt="c: Ancillary, H: Public, R: Reserved, M: Unsafe to copy" width="571" height="251" />
         <p>Here are the chunks in the image:</p>
         <input type="checkbox" id="all-chunks"><label for="all-chunks"> Show metadata chunks</label>
         <div class="chunks">
@@ -281,13 +281,13 @@ fmat_id = "png"
     <div>
         <h2>Extracting the image data</h2>
         <p>We take all of the <abbr title="Image DATa"><code>IDAT</code></abbr> chunks and concatenate them together. In this image, there is only one <code>IDAT</code> chunk. Some images have multiple IDAT chunks, and the contents are concatenated together by the PNG decoder. This is so streaming encoders <a href="https://stackoverflow.com/a/29517059/10113238">don't need to know the total data length up front</a> since the data length is at the beginning of each chunk. Multiple IDAT chunks are also needed for encoding images with image data having a length longer than the largest possible chunk size (255<sup>4</sup>) Here's what we get if treat the compressed data as raw image data:</p>
-        <img src="https://smitop.com/fmat/png/idat-raw.png" width="256" height="256" loading="lazy" alt="Random noise on the top third, with the rest black." />
+        <img src="https://iter.ca/fmat/png/idat-raw.png" width="256" height="256" loading="lazy" alt="Random noise on the top third, with the rest black." />
         <p>It looks like random noise, and that means that the compression algorithm did a good job. Compressed data should look higher-entropy than the lower-entropy data it is encoding. Also, it's less than a third of the height of the actual image: that's some good compression!</p>
     </div>
     <div>
         <h2>Decompressing</h2>
         <p>The most important chunk is the <code>IDAT</code> chunk, which contains the actual image data. To get the filtered image data, we concatenate the data in the <code>IDAT</code> chunks, and decompress it using zlib. There is no image-specific compression mechanism in play here: just normal zlib compression.</p>
-        <img src="https://smitop.com/fmat/png/idat.png" width="256" height="256" loading="lazy" alt="The example image, increasingly skewed to right from top to bottom. It is mostly black and white, with pixels of intense color scattered throughout." />
+        <img src="https://iter.ca/fmat/png/idat.png" width="256" height="256" loading="lazy" alt="The example image, increasingly skewed to right from top to bottom. It is mostly black and white, with pixels of intense color scattered throughout." />
         <p>Aside from the colors looking all wrong, the image also appears to be skewed horizontally. This is because each line of the image has a filter as the first byte. Filters don't directly reduce the image size, but get it into a form that is more compressible by zlib. I <a href="https://observablehq.com/@smitop/png-filters">have written about PNG filters before</a>.</p>
     </div>
     <div>
@@ -296,30 +296,30 @@ fmat_id = "png"
         <div class="filt-counts">
             <div><span class="filt-label">None</span> <span style="width: 0%" class="filt-amount">0</span></div><div><span class="filt-label">Subtract</span> <span style="width: 8.984375%" class="filt-amount">23</span></div><div><span class="filt-label">Up</span> <span style="width: 30.078125%" class="filt-amount">77</span></div><div><span class="filt-label">Average</span> <span style="width: 52.34375%" class="filt-amount">134</span></div><div><span class="filt-label">Paeth</span> <span style="width: 8.59375%" class="filt-amount">22</span></div>
         </div>
-        <img src="https://smitop.com/fmat/png/defiltered.png" alt="The example image" width="256" height="256" loading="lazy" />
+        <img src="https://iter.ca/fmat/png/defiltered.png" alt="The example image" width="256" height="256" loading="lazy" />
     </div>
     <div>
         <h2>Interlacing</h2>
         <p>PNGs can optionally be <dfn>interlaced</dfn>, which splits the image into 7 different images, each of which covers a non-overlapping area of the image:</p>
-        <img src="https://smitop.com/ext/Adam7-mul.svg" alt="Diagram of the 7 passes in an 8x8 area. The first is a single pixel in the top-left, and the seventh is every other row." width="400" height="400" loading="lazy" />
+        <img src="https://iter.ca/ext/Adam7-mul.svg" alt="Diagram of the 7 passes in an 8x8 area. The first is a single pixel in the top-left, and the seventh is every other row." width="400" height="400" loading="lazy" />
         <p>Each of the 7 images is loaded in sequence, adding more detail to the image as it is loaded. This sequence of images is called <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>.</p>
         <p>The data for each of the 7 images are stored after each other in the image file. If we take the example image and enable interlacing, here's the raw uncompressed image data:</p>
-        <img src="https://smitop.com/fmat/png/inter-idat.png" alt="Same as the earlier skewed letter S, but there are multiple stacked on top of each other. The bottom half has 2, the third above that has 2 more, and above that it increasingly looks like random noise." width="256" height="256" />
+        <img src="https://iter.ca/fmat/png/inter-idat.png" alt="Same as the earlier skewed letter S, but there are multiple stacked on top of each other. The bottom half has 2, the third above that has 2 more, and above that it increasingly looks like random noise." width="256" height="256" />
         <p>Here are the 7 passes that we can extract from that image data, which look like downscaled versions of the image:</p>
         <div class="inter-passes">
             <!-- in-article text describes these well enough, so set null alt text -->
-            <img src="https://smitop.com/fmat/png/inter-1.png" alt="" width="32" height="32" loading="lazy">
-            <img src="https://smitop.com/fmat/png/inter-2.png" alt="" width="32" height="32" loading="lazy">
-            <img src="https://smitop.com/fmat/png/inter-3.png" alt="" width="64" height="32" loading="lazy">
-            <img src="https://smitop.com/fmat/png/inter-4.png" alt="" width="64" height="64" loading="lazy">
-            <img src="https://smitop.com/fmat/png/inter-5.png" alt="" width="128" height="64" loading="lazy">
-            <img src="https://smitop.com/fmat/png/inter-6.png" alt="" width="128" height="128" loading="lazy">
-            <img src="https://smitop.com/fmat/png/inter-7.png" alt="" width="256" height="128" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-1.png" alt="" width="32" height="32" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-2.png" alt="" width="32" height="32" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-3.png" alt="" width="64" height="32" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-4.png" alt="" width="64" height="64" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-5.png" alt="" width="128" height="64" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-6.png" alt="" width="128" height="128" loading="lazy">
+            <img src="https://iter.ca/fmat/png/inter-7.png" alt="" width="256" height="128" loading="lazy">
         </div>
         <p>Since some of those sub-images are rectangles but the actual image is square, there will be more details horizontally than vertically when loading the image, since horizontal detail is more important than vertical detail for human visual perception.</p>
     </div>
     <div>
         <h2>Bonus: bugs</h2>
         <p>Here's what you get when you have a bug in the Average filter that causes it to treat overflows incorrectly (the way integer overflow in filter value calculation is specified to be a bit different than the rest):</p>
-        <img src="https://smitop.com/pngbug.png" alt="The example image, but it looks glitchy starting a quarter of the way down." width="256" height="256" loading="lazy">
+        <img src="https://iter.ca/pngbug.png" alt="The example image, but it looks glitchy starting a quarter of the way down." width="256" height="256" loading="lazy">
     </div>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How PNGs are decoded</title>
-    <link rel="stylesheet" href="https://smitop.com/style.css" />
+    <link rel="stylesheet" href="https://iter.ca/style.css" />
     <style>
         body {
             font-size: 103%;
@@ -104,7 +104,7 @@
 <body>
     <div>
         <p>Let's look at the complete process of decoding a <abbr title="Portable Network Graphics">PNG</abbr> file. Here's the image I'll be using to demonstrate:</p>
-        <img src="https://smitop.com/a256adpt.png" width="256" height="256" alt="Several letter 'S's on top of each other, each with a different color." />
+        <img src="https://iter.ca/a256adpt.png" width="256" height="256" alt="Several letter 'S's on top of each other, each with a different color." />
     </div>
     <div>
         <h2>Chunking</h2>
@@ -118,7 +118,7 @@
                 <tr><td>Unsafe to copy</td><td>Safe to copy</td><td>Do programs that modify the PNG data need to understand this chunk?</td></tr>
             </tbody>
         </table>
-        <img src="https://smitop.com/Chunk-letters.svg" alt="c: Ancillary, H: Public, R: Reserved, M: Unsafe to copy" width="571" height="251" />
+        <img src="https://iter.ca/Chunk-letters.svg" alt="c: Ancillary, H: Public, R: Reserved, M: Unsafe to copy" width="571" height="251" />
         <p>Here are the chunks in the image:</p>
         <input type="checkbox" id="all-chunks"><label for="all-chunks"> Show metadata chunks</label>
         <div class="chunks">
@@ -158,7 +158,7 @@
     <div>
         <h2>Interlacing</h2>
         <p>PNGs can optionally be <dfn>interlaced</dfn>, which splits the image into 7 different images, each of which covers a non-overlapping area of the image:</p>
-        <img src="https://smitop.com/ext/Adam7-mul.svg" alt="Diagram of the 7 passes in an 8x8 area. The first is a single pixel in the top-left, and the seventh is every other row." width="400" height="400" loading="lazy" />
+        <img src="https://iter.ca/ext/Adam7-mul.svg" alt="Diagram of the 7 passes in an 8x8 area. The first is a single pixel in the top-left, and the seventh is every other row." width="400" height="400" loading="lazy" />
         <p>Each of the 7 images is loaded in sequence, adding more detail to the image as it is loaded. This sequence of images is called <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>.</p>
         <p>The data for each of the 7 images are stored after each other in the image file. If we take the example image and enable interlacing, here's the raw uncompressed image data:</p>
         <img src="%PREFIX%inter-idat.png" alt="Same as the earlier skewed letter S, but there are multiple stacked on top of each other. The bottom half has 2, the third above that has 2 more, and above that it increasingly looks like random noise." width="256" height="256" />
@@ -178,7 +178,7 @@
     <div>
         <h2>Bonus: bugs</h2>
         <p>Here's what you get when you have a bug in the Average filter that causes it to treat overflows incorrectly (the way integer overflow in filter value calculation is specified to be a bit different than the rest):</p>
-        <img src="https://smitop.com/pngbug.png" alt="The example image, but it looks glitchy starting a quarter of the way down." width="256" height="256" loading="lazy">
+        <img src="https://iter.ca/pngbug.png" alt="The example image, but it looks glitchy starting a quarter of the way down." width="256" height="256" loading="lazy">
     </div>
 </body>
 </html>

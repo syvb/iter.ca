@@ -181,6 +181,8 @@ kbd {
     margin-top: 1em;
     text-align: justify;
     font-size: 111%;
+    /* A word too long for a line by itself, such as a bare URL or a hash, breaks instead of making a phone scroll sideways. */
+    overflow-wrap: break-word;
 }
 
 /* In prose, a long word that doesn't fit breaks with a hyphen, instead of moving whole to the next line and
@@ -325,6 +327,8 @@ h1 {
 
 .stream.mini {
     display: inline-block;
+    /* Its width fits its longest word, so a long URL in a summary breaks instead of widening the list past a phone's screen. */
+    overflow-wrap: anywhere;
 }
 
 .stream.mini > .stream-item {

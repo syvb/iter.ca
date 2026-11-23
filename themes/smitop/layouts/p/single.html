@@ -4,7 +4,7 @@
     <div>
       <h1>{{ partial "title.html" .Title }}</h1>
       <div id="lastmod-info">
-        Last updated <span itemprop="dateModified" content="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "Jan 2, 2006" }}</span>
+        Last updated <span itemprop="dateModified" content="{{ partial "date.html" (dict "t" .Lastmod "f" "2006-01-02") }}">{{ partial "date.html" (dict "t" .Lastmod "f" "Jan 2, 2006") }}</span>
       </div>
       {{ partial "breadcrumbs.html" . }}
       <article itemprop="articleBody" id="content">

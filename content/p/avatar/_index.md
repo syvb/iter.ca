@@ -22,7 +22,7 @@ I have waived all copyright and related or neighboring rights to these works und
 
 ### A letter S
 <a id="4"></a>
-<a href="/avatar/4/maxrescomp.png" download>download PNG</a> or <a href="/avatar/4/vector.svg">download SVG</a>
+<a href="/avatar/4/maxrescomp.png" download>download PNG</a> or <a href="/avatar/vector.svg">download SVG</a>
 
 <div><img src="/avatar/4/a256.png" alt="" width="256"></div>
 

@@ -87,6 +87,19 @@
               highlight(ref, note);
             });
             content.appendChild(side);
+            // A copy that takes in both the margin notes and the footnotes at the bottom, such as of the whole page, leaves
+            // out the margin notes so each footnote is copied once. Copying from just one of them works as usual.
+            document.addEventListener("copy", function () {
+              var sel = getSelection();
+              var ranges = [];
+              for (var i = 0; i < sel.rangeCount; i++) ranges.push(sel.getRangeAt(i));
+              function selected(node) { return ranges.some(function (r) { return r.intersectsNode(node); }); }
+              if (sel.isCollapsed || !selected(side) || !notes.some(function (n) { return selected(n.fn); })) return;
+              // The browser's own copy, which comes after this, skips unselectable text. It's selectable again before
+              // the next paint, so its highlight doesn't flicker.
+              side.style.userSelect = side.style.webkitUserSelect = "none";
+              requestAnimationFrame(function () { side.style.userSelect = side.style.webkitUserSelect = ""; });
+            });
             // Where a reference is shown on the page, or null if it isn't. Chromium still gives a box to what's in a closed
             // <details>, so that's checked first; a summary is the part of a closed <details> that shows.
             function shownTop(ref) {

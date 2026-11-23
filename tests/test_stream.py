@@ -182,6 +182,37 @@ globalThis.fetch = async url => ({ok: true, status: 200,
         self.assertEqual(rows[0]["Uri"], "https://bsky.app/profile/iter.ca/post/top")
         self.assertEqual(rows[0]["Date"]["Unix"], 1778932800)
 
+    def test_buttondown_excerpt_is_the_first_section_past_the_greeting_and_posts(self):
+        (self.get / "tokens").mkdir()
+        (self.get / "tokens/buttondown.txt").write_text("token\n")
+        emails = {
+            # as Buttondown's editor writes HTML; a figure's caption isn't part of the excerpt
+            "html": "<!-- buttondown-editor-mode: fancy --><p>Hey there!</p><h2>posts</h2><ul><li><p>A post</p></li>"
+                    "</ul><h2>research</h2><p>I wrote about FDT &amp; more.</p><figure><img src=\"a.png\"><figcaption>"
+                    "A caption</figcaption></figure><p>Then NLAs.</p><h2>london</h2><p>Still here.</p>",
+            # Markdown, whose list items are run together, and the posts inside the first section are left out
+            "markdown": "Welcome!\n\n## stuff I’ve done\n\n- I shut down [a service](https://x.example)\n"
+                        "- I hosted **Writehaven**.\n- I made _a game_\n\nNot much else.\n\n### posts\n\n"
+                        "- [A post](https://y.example)\n",
+            # a section with only a subsection in it
+            "nested": "<p>Hi!</p><h2>Travel</h2><h3>SF</h3><p>I stayed in SF.</p>",
+            # with no headings, there's no greeting to tell from the rest
+            "plain": "<p>Hi everyone!</p><p>I've been in SF.</p>",
+        }
+        results = [{"slug": slug, "subject": slug, "body": body, "publish_date": "2026-11-12T00:00:00Z",
+                    "absolute_url": f"https://buttondown.com/z/archive/{slug}/"} for slug, body in emails.items()]
+        rows = self.importer("buttondown", f"""
+globalThis.fetch = async url => ({{json: async () =>
+    ({{results: url.includes("status=sent") ? {json.dumps(results)} : [], next: null}})}});
+""")
+        self.assertEqual({row["Id"]: (row.get("Headings"), row["Excerpt"]) for row in rows}, {
+            "buttondown-html": (["posts", "research", "london"], "I wrote about FDT &amp; more. Then NLAs."),
+            "buttondown-markdown": (["stuff I’ve done", "posts"],
+                                    "I shut down a service, I hosted Writehaven. I made a game, Not much else."),
+            "buttondown-nested": (["Travel", "SF"], "I stayed in SF."),
+            "buttondown-plain": (None, "Hi everyone! I've been in SF."),
+        })
+
     KB_FETCH = """
 const manifest = {
     "public/journals/2024-06-07.html": {slug: "/journals/2024_06_07", title: "2024-06-07"},

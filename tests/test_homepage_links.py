@@ -307,7 +307,7 @@ class HomepageLinksTest(unittest.TestCase):
             issues = [
                 item(d, f"iter.ca update #{d}", Type="buttondown",
                      Uri=f"https://buttondown.com/z/archive/update-{d}/",
-                     Text=f"## Section {d} Read [this link](https://example.com/{d}) now.",
+                     Text=f"Hi readers! Issue {d}'s greeting.", Excerpt=f"Issue {d}&#x27;s first section.",
                      **({"Headings": ["posts", "research"]} if d == 6 else {}))
                 for d in range(1, 7)
             ]
@@ -336,10 +336,10 @@ class HomepageLinksTest(unittest.TestCase):
         self.assertIn("https://buttondown.com/z/archive/update-5/", html)
         self.assertIn("https://buttondown.com/z/archive/update-2/", html)
         self.assertNotIn("https://buttondown.com/z/archive/update-1/", html)
-        # Headings render when present, and markdown links/headings are cleaned from excerpts.
-        self.assertIn("posts · research", html)
-        self.assertIn("Section 6 Read this link now.", html)
-        self.assertNotIn("## Section", html)
+        # Headings render when present, and the excerpt, with its entities decoded, rather than the start of the text.
+        self.assertIn("posts, research", html)
+        self.assertIn("Issue 6&#39;s first section.", html)
+        self.assertNotIn("greeting", html)
 
 
 if __name__ == "__main__":

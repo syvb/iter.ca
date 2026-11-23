@@ -7,7 +7,7 @@ title = "Writehaven notes"
 
 [Inkhaven](https://www.inkhaven.blog/) is pretty cool – you have to write a 500 word blog post every day (or leave). But 500 words isn’t *that* many – if you can type 1 word every 2 seconds, you can hit your daily word count in just 17 minutes. What if we made Inkhaven but way more demanding? I did!
 
-[Mikhail Samin](https://contact.ms/) and I ran two ~10 hours events that were kinda like a mini-Inkhaven, called Writehaven[^1] in London for. You had to write/edit at least 400 words per hour using our custom website that tracked everything, and if you failed you got kicked out. (Editing words also count to your total, and words still count if you deleted them after ~30 seconds.) This post has my thoughts on running/participating in that!
+[Mikhail Samin](https://contact.ms/) and I ran two ~10 hours events that were kinda like a mini-Inkhaven, called Writehaven[^1] in London. You had to write/edit at least 400 words per hour using our custom website that tracked everything, and if you failed you got kicked out. (Editing words also count to your total, and words still count if you deleted them after ~30 seconds.) This post has my thoughts on running/participating in that!
 
 Overall I liked it a lot and I think we should probably run more events like this! Maybe we should even do some events where you have to do some task other than writing in hour-intervals – e.g. research – but it seems harder to operationalize that.
 

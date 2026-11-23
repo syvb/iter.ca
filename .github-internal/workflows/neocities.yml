@@ -76,9 +76,9 @@ jobs:
           echo "full=$full" >> "$GITHUB_OUTPUT"
       - name: Setup node
         if: ${{ steps.generation.outputs.full == 'true' }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
       - name: Install stable toolchain
         if: ${{ steps.generation.outputs.full == 'true' }}
         uses: actions-rs/toolchain@v1

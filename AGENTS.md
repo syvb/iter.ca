@@ -28,7 +28,7 @@ rm -rf public
 hugo-bin/hugo -v -t smitop
 ```
 
-The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 22, stable Rust, wasm-pack, ImageMagick, zopfli, and Chrome for the social card). Orbs already have these tools, with a newer Node.js that also works.
+The Action checks out full Git history for Hugo's Git data. If the checkout is shallow, fetch the full history before building. Fast builds skip `./subrepos.sh`; only run it when testing full asset generation, following the additional tool setup in the workflow (Node.js 26, stable Rust, wasm-pack, ImageMagick, zopfli, and Chrome for the social card). Orbs already have these tools.
 
 **Amp agents in orbs only** (other agents, and Amp running elsewhere, skip this): after a change that shows up on the site, consider serving a build in a portal so the user can try it. Build as above, then run `amp orb service start site --command 'python3 -m http.server $PORT --directory public' --portal` and share the portal URL it prints. It serves whatever is in `public/`, so rebuild after later changes; the server needs no restart.
 

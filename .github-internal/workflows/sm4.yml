@@ -24,9 +24,9 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@master
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
       - name: Build
         run: |
           cd sm4

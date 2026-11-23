@@ -1,4 +1,3 @@
-const fetch = require("node-fetch");
 const plainText = require("./plaintext");
 
 // themes/smitop/layouts/partials/date.html shows times from here on in San Francisco time, and earlier ones in UTC

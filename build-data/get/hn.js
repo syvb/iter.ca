@@ -1,5 +1,3 @@
-const fetch = require("node-fetch");
-
 (async () => {
     const userData = await (await fetch("https://hacker-news.firebaseio.com/v0/user/smitop.json")).json();
     const posts = userData.submitted;

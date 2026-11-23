@@ -30,11 +30,6 @@ jobs:
           mkdir build-data/get/tokens
           echo $ITCH_TOKEN > build-data/get/tokens/itch.txt
           echo $BUTTONDOWN_API_KEY > build-data/get/tokens/buttondown.txt
-      - name: Install build-data deps
-        run: |
-          cd build-data/get
-          yarn
-          cd ..
       - name: Regen
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

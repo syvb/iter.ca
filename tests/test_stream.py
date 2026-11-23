@@ -18,8 +18,8 @@ def lw_reply(posts, comments=()):
 
 
 def lw_fetch(reply, ok=True):
-    """A node-fetch stub that answers the LessWrong GraphQL request with reply."""
-    return (f"module.exports = async () => ({{ok: {json.dumps(ok)}, status: {200 if ok else 502}, "
+    """A fetch stub that answers the LessWrong GraphQL request with reply."""
+    return (f"globalThis.fetch = async () => ({{ok: {json.dumps(ok)}, status: {200 if ok else 502}, "
             f"json: async () => ({json.dumps(reply)})}});\n")
 
 
@@ -46,9 +46,9 @@ class StreamTest(unittest.TestCase):
     def install(self, name, fetch):
         shutil.copy2(ROOT / f"build-data/get/{name}.js", self.get)
         shutil.copy2(ROOT / "build-data/get/plaintext.js", self.get)
-        module = self.get / "node_modules/node-fetch"
-        module.mkdir(parents=True, exist_ok=True)
-        (module / "index.js").write_text(fetch)
+        stub = self.root / "fetch.js"
+        stub.write_text(fetch)
+        self.env["NODE_OPTIONS"] = f'--require "{stub}"'
 
     def importer(self, name, fetch):
         self.install(name, fetch)
@@ -70,7 +70,7 @@ const posts = {
     22: {id: 22, deleted: true},
     13: {id: 13, type: "comment", text: "Older comment", time: 100},
 };
-module.exports = async url => ({json: async () => url.includes("/user/")
+globalThis.fetch = async url => ({json: async () => url.includes("/user/")
     ? {submitted: [31, 22, 13]}
     : posts[url.match(/item\\/(\\d+)/)[1]]});
 """)
@@ -86,7 +86,7 @@ const items = Array.from({length: 205}, (_, i) => ({
     html_url: `https://github.com/example/repo/pull/${i + 1}`,
     url: `https://api.github.com/repos/example/repo/issues/${i + 1}`,
 }));
-module.exports = async url => {
+globalThis.fetch = async url => {
     const params = new URL(url).searchParams;
     const page = Math.max(1, Number(params.get("page")));
     const size = Math.min(100, Number(params.get("per_page")));
@@ -174,7 +174,7 @@ const pages = {
     next: {feed: [post("reply", {reply: {}})], cursor: "end"},
     end: {feed: []},
 };
-module.exports = async url => ({ok: true, status: 200,
+globalThis.fetch = async url => ({ok: true, status: 200,
     json: async () => pages[new URL(url).searchParams.get("cursor") || ""]});
 """)
         self.assertEqual([(row["Id"], row["BskyType"]) for row in rows],
@@ -196,7 +196,7 @@ const pages = {
     "/journals/2024-06-07": page("2024-06-07", "<li>Trip<ul><li>Talk</li></ul></li>"),
     "/pages/irrops": page("IRROPs", "<li>means IRRegular <strong>OP</strong>erations &amp; more</li>"),
 };
-module.exports = async url => {
+globalThis.fetch = async url => {
     const body = pages[new URL(url).pathname];
     return {ok: !!body, status: body ? 200 : 404,
         headers: {get: name => name === "last-modified" ? "Mon, 24 Feb 2025 19:14:19 GMT" : null},
@@ -233,7 +233,7 @@ const pages = {
     next: {nodes: [repo("fork", {isFork: true}), repo("empty", {description: null})],
            pageInfo: {hasNextPage: false, endCursor: null}},
 };
-module.exports = async (url, options) => {
+globalThis.fetch = async (url, options) => {
     const {query, variables} = JSON.parse(options.body);
     if (!query.includes("privacy: PUBLIC")) throw new Error("asked for private repositories");
     return {ok: true, status: 200,

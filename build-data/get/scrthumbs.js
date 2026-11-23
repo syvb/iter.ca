@@ -1,4 +1,3 @@
-const fetch = require("node-fetch");
 const fs = require("fs");
 
 (async () => {
@@ -8,7 +7,7 @@ const fs = require("fs");
 
     const projs = p1.concat(p2);
     projs.forEach(async proj => {
-        const thumbBuf = await (await fetch(`https://cdn2.scratch.mit.edu/get_image/project/${proj.id}_282x218.png?v=${Date.now()}`)).buffer();
+        const thumbBuf = Buffer.from(await (await fetch(`https://cdn2.scratch.mit.edu/get_image/project/${proj.id}_282x218.png?v=${Date.now()}`)).arrayBuffer());
         fs.writeFileSync(`${__dirname}/../../static/scr-thumbs/${proj.id}.png`, thumbBuf);
     });
 })();

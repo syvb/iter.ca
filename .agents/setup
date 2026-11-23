@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Prepares an Amp orb for this repo: Hugo for builds, build-data deps for regen.sh, and the
-# tools subrepos.sh needs for full asset generation (see .github/workflows/neocities.yml).
+# Prepares an Amp orb for this repo: Hugo for builds and the tools subrepos.sh needs for full
+# asset generation (see .github/workflows/neocities.yml).
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -72,15 +72,10 @@ install_rust() {
     (cd binformats && cargo fetch --quiet)
 }
 
-node_deps() {
-    (cd build-data/get && yarn install --frozen-lockfile --non-interactive --silent)
-}
-
 run "Install system packages" apt_packages
 run "Install Hugo $hugo_version extended" install_hugo
 run "Link Chrome for og/gen.js" link_chrome
 run "Install Rust and wasm-pack" install_rust
-run "Install build-data/get dependencies" node_deps
 
 "$bin_dir/hugo" version
 cargo --version

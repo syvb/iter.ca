@@ -1,6 +1,5 @@
 process.env.TZ = "Etc/Utc"; // don't have date differences on CI
 
-const fetch = require("node-fetch");
 const fs = require("fs");
 
 const TOKEN = fs.readFileSync("tokens/itch.txt", "utf-8").trim();

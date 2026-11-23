@@ -1,5 +1,3 @@
-const fetch = require("node-fetch");
-
 // "This is not considered a secret, and may be safely embed in client side code or distributed binaries"
 const KEY = "8TxspKDh8c))qWIuZj6cYQ((";
 

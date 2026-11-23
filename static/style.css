@@ -372,8 +372,7 @@ h1 {
 
 /* The homepage's lists of stream items (partials/homecols.html). On a wide screen they are a row of columns; on a
    narrower one each is a card, the first as wide as the page and the rest three to a row, or one to a row on a phone. */
-.home-cols,
-.home-newsletter {
+.home-cols {
     --home-rule: #c2c2c2;
     --home-card-head: #e7e7e7;
     max-width: 96rem;
@@ -425,9 +424,9 @@ h1 {
     font-size: 85%;
 }
 
-/* The homepage's newsletter shelf (partials/newsletter-shelf.html), below the columns. */
+/* The homepage's newsletter shelf (partials/newsletter-shelf.html), an item of .home-cols after the first list: under
+   that list when the lists are columns, and after all of them otherwise. */
 .home-newsletter {
-    margin-top: 1rem;
     overflow-wrap: anywhere;
 }
 
@@ -531,6 +530,11 @@ h1 {
     .home-col ul {
         padding: 0.3rem 0.75rem 0.5rem;
     }
+    /* With nothing beside the first list, there's no room under it, so the newsletter goes last. */
+    .home-newsletter {
+        grid-column: 1 / -1;
+        order: 1;
+    }
     /* The first list (Highlights) is short and has no dates, so beside another card it would be stretched to that
        card's height and stand mostly empty. Instead it spans the row, its items in two columns. Nested rather than
        one query with (not ...), which older browsers skip. */
@@ -549,31 +553,42 @@ h1 {
         .home-col:first-child li {
             break-inside: avoid;
         }
-    }
-}
-
-@media (min-width: 40rem) {
-    .home-newsletter-body {
-        grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
-        gap: 1.5rem;
-        align-items: stretch;
-        padding: 0 0.75rem;
-    }
-    .home-newsletter-preview {
-        padding: 0.6rem 0 0.75rem;
-    }
-    .home-newsletter-sub {
-        border-left: 1px solid var(--home-rule);
-        padding: 0.6rem 0 0.75rem 1.25rem;
+        /* the newsletter card is as wide as the page, with the subscribe button beside the latest issue */
+        .home-newsletter-body {
+            grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+            gap: 1.5rem;
+            align-items: stretch;
+            padding: 0 0.75rem;
+        }
+        .home-newsletter-preview {
+            padding: 0.6rem 0 0.75rem;
+        }
+        .home-newsletter-sub {
+            border-left: 1px solid var(--home-rule);
+            padding: 0.6rem 0 0.75rem 1.25rem;
+        }
     }
 }
 
 @media (min-width: 72rem) {
+    /* The other lists span two rows, so the first row is as tall as the first list (the shortest) and the newsletter
+       fills the space under it in the second. */
     .home-cols {
         grid-template-columns: none;
+        grid-template-rows: auto 1fr;
         grid-auto-flow: column;
         grid-auto-columns: minmax(0, 1fr);
         gap: 2rem;
+    }
+    .home-col {
+        grid-row: 1 / span 2;
+    }
+    .home-col:first-child {
+        grid-row: 1;
+    }
+    .home-newsletter {
+        grid-area: 2 / 1;
+        align-self: start;
     }
     .home-col h2 {
         padding-bottom: 0.2rem;
@@ -582,18 +597,13 @@ h1 {
     .home-newsletter-head {
         padding-bottom: 0.2rem;
     }
-    .home-newsletter {
-        margin-top: 2rem;
-    }
     .home-newsletter-body {
-        gap: 2rem;
-        padding: 0;
+        gap: 0.6rem;
+        padding-top: 0.55rem;
     }
-    .home-newsletter-preview {
-        padding: 0.55rem 0 0.15rem;
-    }
-    .home-newsletter-sub {
-        padding: 0.55rem 0 0.15rem 1.5rem;
+    /* a column is too narrow for the excerpt, which would run six lines and push Subscribe under the fold */
+    .home-newsletter-excerpt {
+        display: none;
     }
 }
 
@@ -1507,8 +1517,7 @@ summary h2 {
         background: #26260f;
     }
 
-    .home-cols,
-    .home-newsletter {
+    .home-cols {
         --home-rule: #383838;
         --home-card-head: #1e1e1e;
     }

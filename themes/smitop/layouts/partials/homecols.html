@@ -71,5 +71,10 @@
             {{- end }}
         </ul>
     </div>
+    {{- /* style.css puts the newsletter shelf under the first list when the lists are columns, and after them all
+         otherwise */}}
+    {{- if eq $i 0 }}
+    {{ partial "newsletter-shelf.html" $ }}
+    {{- end }}
     {{- end }}
 </div>

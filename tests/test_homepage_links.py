@@ -30,6 +30,7 @@ class Homepage(HTMLParser):
         self.in_list = False
         self.in_date = False
         self.in_link = False
+        self.in_shelf = False  # in the newsletter shelf, which is among the lists but isn't one
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
@@ -43,6 +44,10 @@ class Homepage(HTMLParser):
                 self.target["href"] = self.hrefs[-1]
         elif tag == "img":
             self.open = None
+        elif tag == "section" and "home-newsletter" in classes:
+            self.in_shelf = True
+        elif self.in_shelf:
+            return
         elif tag == "div" and (self.depth or "home-cols" in classes):
             self.depth += 1
             if "home-col" in classes:
@@ -73,7 +78,9 @@ class Homepage(HTMLParser):
             if self.open is not None:
                 self.empty.append(self.open)
                 self.open = None
-        if not self.depth:
+        if tag == "section":
+            self.in_shelf = False
+        if not self.depth or self.in_shelf:
             return
         if tag == "div":
             self.depth -= 1

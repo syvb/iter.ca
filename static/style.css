@@ -375,7 +375,7 @@ h1 {
 }
 
 /* The homepage's lists of stream items (partials/homecols.html). On a wide screen they are a row of columns; on a
-   narrower one each is a card, two to a row, or one to a row on a phone. */
+   narrower one each is a card, the first as wide as the page and the rest three to a row, or one to a row on a phone. */
 .home-cols {
     --home-rule: #c2c2c2;
     --home-card-head: #e7e7e7;
@@ -439,11 +439,24 @@ h1 {
     .home-col ul {
         padding: 0.3rem 0.75rem 0.5rem;
     }
-}
-
-@media (min-width: 40rem) {
-    .home-cols {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* The first list (Highlights) is short and has no dates, so beside another card it would be stretched to that
+       card's height and stand mostly empty. Instead it spans the row, its items in two columns. Nested rather than
+       one query with (not ...), which older browsers skip. */
+    @media (min-width: 40rem) {
+        .home-cols {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .home-col:first-child {
+            grid-column: 1 / -1;
+        }
+        .home-col:first-child ul {
+            columns: 2;
+            column-gap: 1.5rem;
+        }
+        /* an item that wraps stays in one column */
+        .home-col:first-child li {
+            break-inside: avoid;
+        }
     }
 }
 

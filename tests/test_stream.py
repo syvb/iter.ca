@@ -284,6 +284,26 @@ globalThis.fetch = async url => {{
 """)
                 self.assertEqual([row["Id"] for row in rows], ids)
 
+    def test_scratch_retries_once_then_keeps_previous_projects(self):
+        previous = [{"Type": "scrproj", "Id": "scr0", "Verbose": 1},
+                    {"Type": "itch", "Id": "itch-1"}]
+        self.data.write_text(json.dumps(previous))
+        for failures, ids in [(1, ["scr1", "scr41"]), (2, ["scr0"])]:
+            with self.subTest(failures=failures):
+                # each page has one project, and the second page fails this many times
+                rows = self.importer("scrprojs", f"""
+let failures = {failures};
+globalThis.setTimeout = resolve => resolve();
+globalThis.fetch = async url => {{
+    const offset = Number(new URL(url).searchParams.get("offset"));
+    const reply = offset === 40 && failures-- > 0
+        ? {{code: "TooManyRequests", message: ""}}
+        : [{{id: offset + 1, title: "Project", description: "", history: {{shared: "2020-01-01T00:00:00.000Z"}}}}];
+    return {{ok: Array.isArray(reply), status: Array.isArray(reply) ? 200 : 429, json: async () => reply}};
+}};
+""")
+                self.assertEqual([row["Id"] for row in rows], ids)
+
     def test_github_repos_are_public_non_forks_with_the_start_of_their_readme(self):
         self.env["GITHUB_TOKEN"] = "token"
         rows = self.importer("ghrepos", """

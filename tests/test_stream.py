@@ -253,6 +253,37 @@ globalThis.fetch = async url => {
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertEqual(self.data.read_bytes(), self.original)
 
+    def test_se_posts_are_newest_first_and_survive_api_errors(self):
+        previous = [{"Type": "SePost", "Id": "se-stackoverflow-0", "Verbose": 1},
+                    {"Type": "itch", "Id": "itch-1"}]
+        self.data.write_text(json.dumps(previous))
+        for failures, ids in [
+            (1, ["se-stackoverflow-2", "se-meta.stackoverflow-2",
+                 "se-stackoverflow-1", "se-meta.stackoverflow-1"]),
+            (2, ["se-stackoverflow-0"]),
+        ]:
+            with self.subTest(failures=failures):
+                # every account has two pages, each with a post created at its page number,
+                # and the second page fails this many times
+                rows = self.importer("se", f"""
+let failures = {failures};
+globalThis.setTimeout = resolve => resolve();
+globalThis.fetch = async url => {{
+    const {{pathname, searchParams}} = new URL(url);
+    const page = searchParams.get("page");
+    const reply = pathname.endsWith("/associated")
+        ? {{items: [{{site_url: "https://stackoverflow.com", user_id: 7, answer_count: 1}}]}}
+        : pathname.endsWith("/sites")
+        ? {{items: ["stackoverflow", "meta.stackoverflow"].map(site =>
+            ({{site_url: `https://${{site}}.com`, api_site_parameter: site}}))}}
+        : page === "2" && failures-- > 0
+        ? {{error_id: 502, error_name: "throttle_violation", error_message: "too many requests"}}
+        : {{items: [{{post_id: Number(page), creation_date: Number(page)}}], has_more: page === "1"}};
+    return {{ok: !reply.error_id, status: reply.error_id ? 400 : 200, json: async () => reply}};
+}};
+""")
+                self.assertEqual([row["Id"] for row in rows], ids)
+
     def test_github_repos_are_public_non_forks_with_the_start_of_their_readme(self):
         self.env["GITHUB_TOKEN"] = "token"
         rows = self.importer("ghrepos", """

@@ -16,6 +16,8 @@
     <meta name="twitter:site" content="@_smitop">
     <meta name="twitter:creator" content="@_smitop">
     <meta name="rating" content="General">
+    {{- $octStill := printf "/avatar/oct-still.webp?rel=%s" (substr (sha256 (readFile "static/avatar/oct-still.webp")) 0 8) }}
+    <link rel="preload" as="image" href="{{ $octStill }}" media="(prefers-reduced-motion: no-preference)" fetchpriority="high">
     <link rel="preload" href="/fonts/source-serif-4-home.woff2" as="font" type="font/woff2" crossorigin>
     {{- /* Inline the shared stylesheet on the homepage only. Match its roman faces' CSS weight range so unicode-range
         falls through to their files for other characters. The homepage itself uses only regular and bold.
@@ -62,7 +64,7 @@
                 <div>
                     <div id="oct-box">
                         <a href="avatar/"><img src="/avatar/a256.png" alt="avatar" id="avatar" class="u-photo" width="160" height="160" loading="lazy"></a>
-                        <img src="/avatar/oct-still.webp?rel={{ substr (sha256 (readFile "static/avatar/oct-still.webp")) 0 8 }}" alt="" id="oct-still">
+                        <img src="{{ $octStill }}" alt="" id="oct-still">
                         <canvas id="oct" aria-hidden="true"></canvas>
                         <div id="oct-hit" aria-hidden="true"></div>
                         <canvas id="sparks" aria-hidden="true"></canvas>

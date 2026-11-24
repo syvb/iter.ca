@@ -1,7 +1,8 @@
-// Ctrl-K or ⌘K opens a box that searches the text of every page of the site and of the items in its full stream, most
-// of which link to other sites (pull requests, Stack Exchange posts, HN comments), and of the items only search has (my
-// GitHub repositories, the pages of kb.iter.ca). The first time it opens on a page, it loads /search.json, which Hugo
-// writes at build time (themes/smitop/layouts/index.searchindex.json). style.css styles the box.
+// Ctrl-K or ⌘K, or the topbar's Search link, opens a box that searches the text of every page of the site and of the
+// items in its full stream, most of which link to other sites (pull requests, Stack Exchange posts, HN comments), and of
+// the items only search has (my GitHub repositories, the pages of kb.iter.ca). The first time it opens on a page, it
+// loads /search.json, which Hugo writes at build time (themes/smitop/layouts/index.searchindex.json). style.css styles
+// the box.
 (function () {
   var LIMIT = 40; // how many results are shown
   var PREVIEW = 200; // about how many characters of a page a result shows
@@ -22,11 +23,22 @@
     // do what the browser would, such as going to the address bar.
     if (e.repeat) return;
     if (dialog && dialog.open) return dialog.close();
+    open();
+  });
+
+  // The link is in the topbar (themes/smitop/layouts/partials/topbar.html).
+  addEventListener("click", function (e) {
+    if (!e.target.closest || !e.target.closest("#search-link")) return;
+    e.preventDefault();
+    open();
+  });
+
+  function open() {
     if (!dialog) build();
     dialog.showModal();
     input.select();
     load();
-  });
+  }
 
   function build() {
     dialog = document.createElement("dialog");

@@ -1439,7 +1439,7 @@ summary h2 {
     }
 }
 
-/* The search box that Ctrl-K or ⌘K opens (static/search/search.js) */
+/* The search box that Ctrl-K or ⌘K or the topbar's Search link opens (static/search/search.js) */
 #search {
     width: min(40rem, calc(100vw - 2rem));
     max-height: min(40rem, calc(100vh - 4rem));

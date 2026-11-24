@@ -154,6 +154,7 @@
         {{ end }}
         <div class="meta-other">
           {{ partial "footer-meta-other.html" . }}
+          <div id="word-count">{{ lang.FormatNumberCustom 0 .WordCount }} words</div>
         </div>
       </div>
       {{ if (eq .Params.ai "partial") }}

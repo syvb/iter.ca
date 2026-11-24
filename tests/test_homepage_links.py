@@ -311,6 +311,9 @@ class HomepageLinksTest(unittest.TestCase):
                      **({"Headings": ["posts", "research"]} if d == 6 else {}))
                 for d in range(1, 7)
             ]
+            # an email that isn't a numbered issue, which the shelf doesn't count
+            issues.append(item(0, "A special announcement", Type="buttondown",
+                               Uri="https://buttondown.com/z/archive/announcement/"))
             (root / "data/data.json").write_text(json.dumps(issues))
             config = root / "config.json"
             config.write_text(json.dumps({"dataDir": str(root / "data")}))

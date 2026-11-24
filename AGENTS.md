@@ -4,7 +4,7 @@ This is the my private monorepo. The primary thing this repo does is generate co
 
 ## Regeneration
 
-You may run `./regen.sh` locally to test regeneration of `data/data.json`. Do not commit or push locally regenerated output; only the GitHub Action in `.github/workflows/regen.yml` should commit and push regeneration changes. Keep local test output out of commits without discarding pre-existing changes. The Action runs automatically on pushes to `notes/` and on a daily schedule, and can also be dispatched manually.
+You may run `./regen.sh` locally to test regeneration of `data/data.json` and `content/update/`, which holds copies of the public "iter.ca update #N" emails from Buttondown (the source of truth), served at `/update/N/`. Never edit `content/update/` by hand: every regen replaces it. Regen also writes to Buttondown: it sets the canonical URL of each email whose copy iter.ca already serves to that copy, which makes Buttondown's archive page redirect there. Do not commit or push locally regenerated output; only the GitHub Action in `.github/workflows/regen.yml` should commit and push regeneration changes. Keep local test output out of commits without discarding pre-existing changes. The Action runs automatically on pushes to `notes/` and on a daily schedule, and can also be dispatched manually.
 
 ## Adding posts
 

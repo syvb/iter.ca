@@ -136,8 +136,53 @@ figure {
     margin: 0;
 }
 
+/* Centered, as its caption is, when it's narrower than the page, as a newsletter's often are. */
 figure > img {
-    margin-bottom: 0.2em;
+    margin: 0 auto 0.2em;
+}
+
+/* A newsletter (content/update/) shows its tables, such as of photos side by side, as Buttondown does: columns of the
+   same width that fit the page, with what's in each at its top. */
+table.buttondown-block-styled {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+table.buttondown-block-styled td {
+    vertical-align: top;
+}
+table.buttondown-block-styled p {
+    padding-bottom: 0;
+}
+table.buttondown-block-styled img {
+    max-width: 100%;
+}
+
+/* A newsletter's card for a page (Buttondown's, for a bare link on a line of its own) has styles of its own, which
+   take its border to be inside its width. */
+.embedded-link {
+    text-decoration: none;
+}
+.embedded-link div {
+    box-sizing: border-box;
+}
+
+/* An issue's links to the issues before and after it: the earlier one at the left and the later one at the right,
+   even when it's the only one. */
+.update-nav {
+    display: flex;
+    gap: 1em;
+    padding-bottom: 1rem;
+}
+.update-nav a[rel="next"] {
+    margin-left: auto;
+    text-align: right;
+}
+
+/* A newsletter's tweet, once Twitter's script draws it, is centered as a figure is. */
+#content .twitter-tweet {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Image-first Bayesian network embeds from /bn */
@@ -208,7 +253,7 @@ kbd {
    color, visited or not. It's placed down from the top of the link's box, whose height above the text is the font's
    ascent, so its offsets fit Source Serif 4: the dot's top is at cap height, the arrow's tip a little above it, and
    both end just below x-height. */
-:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a, .home-col h2 a) {
+:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a, .home-col h2 a, .embedded-link, .update-nav a) {
     padding-right: 0.42em;
     background-image: radial-gradient(circle closest-side, currentColor calc(100% - 0.6px), transparent);
     background-repeat: no-repeat;
@@ -217,7 +262,7 @@ kbd {
 }
 
 /* The arrow is a line along its top, a line down its right side, and a diagonal into that corner. */
-:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, .home-col h2 a, .home-newsletter-num, #newsletter-open) {
+:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, .home-col h2 a, .home-newsletter-num, #newsletter-open, .embedded-link) {
     padding-right: 0.55em;
     background-image:
         linear-gradient(currentColor, currentColor),
@@ -650,8 +695,9 @@ li > ul, li > ol {
     padding-bottom: 0;
 }
 
-/* The footnote list follows a rule, not a paragraph whose padding would set it apart. */
-.footnotes > ol {
+/* The footnote list follows a rule, not a paragraph whose padding would set it apart. A newsletter's footnotes (Buttondown's)
+   are in a .footnote. */
+.footnotes > ol, .footnote > ol {
     margin-top: 1em;
 }
 
@@ -1065,8 +1111,11 @@ dl {
     overflow-wrap: anywhere;
 }
 
+/* A width rather than a flex basis: sizing a list page's column to its entries, WebKit counts a date as wide as its
+   text, not its basis, so the column came out too narrow and every title wrapped. */
 .list-date {
-    flex: 0 0 11em;
+    flex: none;
+    width: 11em;
     display: block;
 }
 
@@ -1346,6 +1395,11 @@ summary h2 {
         left: -8px; /* body margin */
         width: calc(100% + 8px * 2);
     }
+    /* but a photo in a newsletter's table stays in its column */
+    #content .buttondown-block-styled img {
+        left: 0;
+        width: auto;
+    }
 }
 
 @media (max-width: 470px) {
@@ -1577,6 +1631,15 @@ summary h2 {
     details, .sidenote {
         border-color: #666666;
         background: #1c1c1c;
+    }
+
+    /* A newsletter's card for a page sets its colors for a white page, in style attributes. */
+    .embedded-link > div {
+        border-color: #666666 !important;
+        background: #1c1c1c !important;
+    }
+    .embedded-link > div > div {
+        color: #dddddd !important;
     }
 
     .sidenote-label {

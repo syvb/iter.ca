@@ -57,11 +57,14 @@ jobs:
           tar xvzf hugo-bin/hugo.tar.gz -C hugo-bin
       # Blog/notes updates stay fast and never delete files. Daily/manual runs
       # (or changes to generation itself) build the complete tree before cleanup.
+      # So does a Regen run that changes the newsletter copies, whose images
+      # subrepos.sh copies.
       - name: Choose full or fast generation
         id: generation
         env:
           EVENT_NAME: ${{ github.event_name }}
           BEFORE: ${{ github.event.before }}
+          REGEN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           full=false
           if [[ "$EVENT_NAME" != push && "$EVENT_NAME" != workflow_run ]]; then
@@ -72,6 +75,8 @@ jobs:
             elif grep -qE '^(subrepos\.sh|static/pngcomp/gen\.sh|static/where/gen\.js|og/|binformats/)' <<< "$changed"; then
               full=true
             fi
+          elif ! git diff --quiet "$REGEN_SHA" "$GITHUB_SHA" -- content/update; then
+            full=true
           fi
           echo "full=$full" >> "$GITHUB_OUTPUT"
       - name: Setup node

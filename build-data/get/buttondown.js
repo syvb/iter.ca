@@ -31,7 +31,27 @@ function partText(part, html) {
         .reduce((text, block) => text ? text + (UNENDED.test(text) ? ", " : " ") + block : block, "");
 }
 
+// Each publicly archived "iter.ca update #N" email is copied to the site as content/update/N.html, at iter.ca/update/N/,
+// and its item links there. Buttondown stays the source of truth: every regen rewrites the directory, so an edited,
+// renamed, or deleted email changes its copy too.
+const UPDATES = "../../content/update";
+const UPDATE_SUBJECT = /^iter\.ca update #(\d+)\b/i;
+const PUBLIC_ARCHIVE = ["enabled", "archive_only"];
+
+const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
+const decodeEntities = text => text.replace(/&(?:#(\d+)|#x([\da-f]+)|(\w+));/gi, (entity, dec, hex, name) =>
+    dec ? String.fromCodePoint(dec) : hex ? String.fromCodePoint(parseInt(hex, 16)) : ENTITIES[name.toLowerCase()] ?? entity);
+
+// What a link to a copy shows of it, as Buttondown's archive did: the email's description, or else the start of its
+// text before its first heading (or of all of it, if that's none), cut at a word to about what a search result shows.
+function description(email, render) {
+    if (email.description) return email.description;
+    const text = decodeEntities(partText(render.split(/<h[1-6]\b/i)[0], true) || partText(render, true));
+    return text.length <= 160 ? text : text.slice(0, 161).replace(/\s+\S*$/, "").replace(/[,;:]$/, "") + "…";
+}
+
 (async () => {
+    const pages = new Map();
     for (const status of ["sent", "in_flight"]) {
         let url = `https://api.buttondown.email/v1/emails?status=${status}`;
         while (url) {
@@ -79,9 +99,70 @@ function partText(part, html) {
                 };
                 if (headings.length > 0) item.Headings = headings;
                 if (excerpt) item.Excerpt = excerpt;
+                const number = email.subject?.match(UPDATE_SUBJECT)?.[1];
+                if (number && PUBLIC_ARCHIVE.includes(email.archival_mode)) {
+                    // Two emails can't share a page, and keeping either would leave the other's link on the wrong
+                    // email, so the regen fails before anything is written, until one is renamed in Buttondown.
+                    const other = pages.get(Number(number));
+                    if (other) {
+                        throw new Error(`"${other.subject}" and "${email.subject}" are both update #${Number(number)}`);
+                    }
+                    item.Uri = `https://iter.ca/update/${Number(number)}/`;
+                    pages.set(Number(number), email);
+                }
                 console.log(JSON.stringify(item));
             });
             url = res.next;
+        }
+    }
+    // A copy is Buttondown's own rendering of the email, as its archive shows it, whether it's written in Markdown or
+    // HTML: a bare link on a line of its own is a card for the page it links to, or the tweet. All of them are fetched
+    // before any is written, so a failed fetch leaves the copies as they were.
+    const renders = new Map();
+    for (const [number, email] of pages) {
+        const res = await fetch(`https://api.buttondown.email/v1/emails/${email.id}/renders?target=html`, {
+            headers: { Authorization: `Token ${TOKEN}` },
+        });
+        if (!res.ok) throw new Error(`Buttondown couldn't render "${email.subject}": ${res.status}`);
+        renders.set(number, (await res.json()).content.trim());
+    }
+    fs.rmSync(UPDATES, { recursive: true, force: true });
+    fs.mkdirSync(UPDATES, { recursive: true });
+    for (const [number, email] of pages) {
+        const render = renders.get(number);
+        // Its preview image is the one Buttondown's archive had, else its first image. iter.ca shows a copy of each
+        // Buttondown image in it (partials/buttondown-images.html).
+        const image = email.image || render.match(/<img\b[^>]*?\ssrc="([^"]+)"/i)?.[1].replaceAll("&amp;", "&");
+        // JSON strings are TOML strings. With no layout of its own, a copy is shown as a post is, which ends with the
+        // newsletter's subscribe link. It's listed on /update/ only: the site's other lists have its item instead.
+        const frontMatter = [
+            `title = ${JSON.stringify(email.subject)}`,
+            `date = ${JSON.stringify(new Date(email.publish_date).toISOString())}`,
+            `description = ${JSON.stringify(description(email, render))}`,
+            ...(image ? [`image = ${JSON.stringify(image)}`] : []),
+            `type = "post"`,
+            `[_build]`,
+            `list = "local"`,
+        ];
+        fs.writeFileSync(`${UPDATES}/${number}.html`, `+++\n${frontMatter.join("\n")}\n+++\n${render}\n`);
+    }
+    // Once iter.ca serves a copy, its email's canonical URL in Buttondown is set to the copy, which makes Buttondown's
+    // archive page for the email redirect there and its archive and RSS link there. Not before then, or the redirect
+    // would go to a page that isn't up yet: a new issue's copy is set a regen after the one that makes it. Setting one
+    // can fail without failing the regen; the next regen tries again.
+    for (const [number, email] of pages) {
+        const url = `https://iter.ca/update/${number}/`;
+        if (email.canonical_url === url) continue;
+        try {
+            if (!(await fetch(url, { method: "HEAD" })).ok) continue;
+            const res = await fetch(`https://api.buttondown.email/v1/emails/${email.id}`, {
+                method: "PATCH",
+                headers: { Authorization: `Token ${TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ canonical_url: url }),
+            });
+            if (!res.ok) throw new Error(`status ${res.status}`);
+        } catch (error) {
+            console.error(`::warning::Couldn't set the canonical URL of "${email.subject}" in Buttondown: ${error.message}`);
         }
     }
 })();

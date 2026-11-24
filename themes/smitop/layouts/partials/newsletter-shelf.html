@@ -7,7 +7,9 @@
     {{- $issues = $issues | append . -}}
 {{- end -}}
 {{- with $issues -}}
-{{- $total := len . -}}
+{{- /* the numbered issues ("iter.ca update #N", as build-data/get/buttondown.js finds them), not any other email */ -}}
+{{- $total := 0 -}}
+{{- range . }}{{ if findRE `(?i)^iter\.ca update #\d+\b` (.Title | default "") }}{{ $total = add $total 1 }}{{ end }}{{ end -}}
 {{- $latest := index . 0 -}}
 {{- $earlier := first 4 (after 1 .) -}}
 {{- /* the excerpt is text already, but for its HTML entities */ -}}
@@ -20,7 +22,7 @@
     <div class="home-newsletter-body">
         <div class="home-newsletter-preview">
             <div class="home-newsletter-issue">
-                <a href="{{ $latest.Uri }}">{{ $latest.Title }}</a>
+                <a href="{{ $latest.Uri | relURL }}">{{ $latest.Title }}</a>
                 <span class="home-col-date">{{ partial "date.html" (dict "t" (int $latest.Date.Unix) "f" "Jan 2, 2006") }}</span>
             </div>
             {{- with $latest.Headings }}
@@ -36,11 +38,12 @@
                 {{- $num := findRE `#\d+` ($iss.Title | default "") 1 -}}
                 {{- $label := cond (gt (len $num) 0) (index $num 0) (partial "date.html" (dict "t" (int $iss.Date.Unix) "f" "Jan 2")) -}}
                 {{- if gt $i 0 }}<span class="home-newsletter-sep" aria-hidden="true">·</span>{{ end -}}
-                <a href="{{ $iss.Uri }}" class="home-newsletter-num" title="{{ $iss.Title }}">{{ $label }}</a>
+                <a href="{{ $iss.Uri | relURL }}" class="home-newsletter-num" title="{{ $iss.Title }}">{{ $label }}</a>
                 {{- end }}
                 <span class="home-newsletter-sep" aria-hidden="true">·</span>
                 {{- end }}
-                <a href="https://buttondown.com/z/archive/" class="home-newsletter-all">all {{ $total }}</a>
+                {{- /* the site's copies of the issues (content/update/), if regen has made any */}}
+                <a href="{{ with $.Site.GetPage "/update" }}{{ .RelPermalink }}{{ else }}https://buttondown.com/z/archive/{{ end }}" class="home-newsletter-all">all {{ $total }}</a>
             </div>
         </div>
         <div class="home-newsletter-sub">

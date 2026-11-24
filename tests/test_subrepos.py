@@ -1,5 +1,6 @@
 """Run all asset generation in disposable checkouts, without network or builds."""
 
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -88,6 +89,12 @@ class SubreposTest(unittest.TestCase):
         (self.root / "static/where").mkdir()
         shutil.copy2(ROOT / "static/where/gen.js", self.root / "static/where")
         shutil.copytree(ROOT / "og", self.root / "og")
+        # a newsletter copy, with Buttondown's images in its preview image and its body
+        (self.root / "content/update").mkdir(parents=True)
+        (self.root / "content/update/16.html").write_text(
+            '+++\nimage = "https://assets.buttondown.email/images/preview.png"\n+++\n'
+            '<figure><img src="https://assets.buttondown.email/images/photo-1.jpg?w=960&amp;fit=max" width="600">'
+            '</figure><a href="https://example.com/images/other.jpg">not Buttondown\'s</a>\n')
         tools = self.root / "tools"
         tools.mkdir()
         for command in ["wget", "git", "wasm-pack", "cargo", "convert", "node", "zopflipng", "sleep"]:
@@ -117,6 +124,12 @@ class SubreposTest(unittest.TestCase):
         for name in ["ext/611px-Circuit-playground-sideview.jpg", "ext/inds-main.jpg",
                      "ext/lighthaven-night.jpg"]:
             self.assertEqual((static / name).read_text(), "converted fixture", name)
+        # each Buttondown image, fetched as the page had it, under its name there
+        self.assertEqual(sorted(path.name for path in (static / "ext/buttondown").iterdir()),
+                         ["photo-1.jpg", "preview.png"])
+        for url in ["https://assets.buttondown.email/images/photo-1.jpg?w=960&fit=max",
+                    "https://assets.buttondown.email/images/preview.png"]:
+            self.assertTrue((self.root / "state" / hashlib.sha1(url.encode()).hexdigest()).exists(), url)
         self.assertTrue((static / "segme/pkg/segme.js").is_file())
         self.assertEqual((static / "where/index.html").read_text(), "where fixture")
         self.assertFalse((static / "where/stays.json").exists())
@@ -177,6 +190,7 @@ class SubreposTest(unittest.TestCase):
             ("cargo", ""),
             ("wget", "comp.html"),
             ("wget", "script.google.com"),
+            ("wget", "photo-1.jpg"),
             ("node", "gen.js"),
         ]
         for command, match in cases:

@@ -1,0 +1,8 @@
+{{- /* A newsletter issue's (content/update/) links to the issues before and after it. They're from the section's own
+     pages: .PrevInSection skips the issues, which only the section lists. Of a list oldest first, Hugo's Next is the page
+     before this one and its Prev the page after. */ -}}
+{{- $issues := .CurrentSection.RegularPages.ByDate -}}
+<nav class="update-nav" aria-label="Other updates">
+  {{ with $issues.Next . }}<a href="{{ .RelPermalink }}" rel="prev">← {{ .Title }}</a>{{ end }}
+  {{ with $issues.Prev . }}<a href="{{ .RelPermalink }}" rel="next">{{ .Title }} →</a>{{ end }}
+</nav>

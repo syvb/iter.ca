@@ -41,5 +41,7 @@ jobs:
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "Regen script"
+          # -a commits changes to tracked files only, and buttondown.js also adds and deletes copies of emails
+          git add -A content/update
           git diff-index --quiet HEAD -- || git commit -am "Automatic regen"
           git push

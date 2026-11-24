@@ -38,11 +38,19 @@ class GenerationModeTest(unittest.TestCase):
             (root / "post.md").write_text("Latest post")
             git("commit", "-qam", "Another post")
             multi_commit_push = git("rev-parse", "HEAD")
+            (root / "content/update").mkdir(parents=True)
+            (root / "content/update/1.html").write_text("A newsletter copy")
+            git("add", ".")
+            git("commit", "-qm", "Automatic regen")
+            regen = git("rev-parse", "HEAD")
             for event, before, head, full in [
                 ("push", baseline, post, "false"),
                 ("push", post, multi_commit_push, "true"),
                 ("push", "0" * 40, post, "true"),
-                ("workflow_run", "", multi_commit_push, "false"),
+                # a Regen run, from the commit it ran on: fast unless it changed the newsletter copies, whose
+                # images only a full run copies
+                ("workflow_run", post, multi_commit_push, "false"),
+                ("workflow_run", multi_commit_push, regen, "true"),
                 ("schedule", "", post, "true"),
                 ("workflow_dispatch", "", post, "true"),
             ]:
@@ -50,7 +58,7 @@ class GenerationModeTest(unittest.TestCase):
                     output = root / "output"
                     output.write_text("")
                     result = subprocess.run(["bash", "-euo", "pipefail", "-c", script], cwd=root,
-                                            env=dict(os.environ, EVENT_NAME=event, BEFORE=before,
+                                            env=dict(os.environ, EVENT_NAME=event, BEFORE=before, REGEN_SHA=before,
                                                      GITHUB_SHA=head, GITHUB_OUTPUT=str(output)),
                                             capture_output=True, text=True)
                     self.assertEqual(result.returncode, 0, result.stderr)

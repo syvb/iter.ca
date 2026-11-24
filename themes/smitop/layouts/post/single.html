@@ -15,9 +15,21 @@
       (with AI)
     {{ end }}
     · <time itemprop="datePublished" datetime="{{ partial "date.html" (dict "t" .Date "f" "2006-01-02") }}" class="dt-published">{{ partial "date.html" (dict "t" .Date "f" "Jan 2, 2006") }}</time>
+    {{ if eq .Section "update" }}
+      ·&nbsp;<a href="{{ .CurrentSection.RelPermalink }}">All&nbsp;updates</a>
+    {{ end }}
     </div>
     <div>
       <article itemprop="articleBody" id="content" class="e-content">
+        {{ if in (string .Content) `class="twitter-tweet"` }}
+          {{/* Twitter's script, which a tweet in a newsletter loads after it, draws the tweet dark on a dark page. */}}
+          <script>
+            if (matchMedia("(prefers-color-scheme: dark)").matches) {
+              document.head.appendChild(Object.assign(document.createElement("meta"),
+                { name: "twitter:widgets:theme", content: "dark" }));
+            }
+          </script>
+        {{ end }}
         {{ if .Params.cw }}
           <div class="cw">
             ⚠️ {{ .Params.cw | markdownify }}
@@ -29,12 +41,19 @@
           {{ .TableOfContents }}
         {{ end }}
         {{ $cta := printf "%s" (partial "cta.html" .) }}
+        {{/* A newsletter issue (content/update/) ends with links to the issues before and after it, above its footnotes. */}}
+        {{ if eq .Section "update" }}
+          {{ $cta = printf "%s%s" $cta (partial "update-nav.html" .) }}
+        {{ end }}
         {{ if (eq .Params.fmat_id nil) }}
           {{ $content := printf "%s" .Content }}
           {{/* Mark inline code with a run of 30+ characters without a space, such as a URL, so style.css can break it anywhere. */}}
           {{ $content = replaceRE `<code>((?:[^<\n]*\s)?(?:&#?\w+;|[^<&\s]){30}[^<\n]*)</code>` `<code class="long">$1</code>` $content }}
-          {{ if findRE `<div class="footnotes"` $content }}
-            {{ replaceRE `(<div class="footnotes")` (printf "%s$1" $cta) $content | safeHTML }}
+          {{ $content = partial "buttondown-images.html" $content }}
+          {{/* Hugo's footnotes, or a newsletter's (Buttondown's class is "footnote") */}}
+          {{ if findRE `<div class="footnotes?"` $content }}
+            {{/* $$ is a $ in the replacement, as in an issue's title */}}
+            {{ replaceRE `(<div class="footnotes?")` (printf "%s$1" (replace $cta "$" "$$")) $content | safeHTML }}
           {{ else }}
             {{ $content | safeHTML }}
             {{ $cta | safeHTML }}

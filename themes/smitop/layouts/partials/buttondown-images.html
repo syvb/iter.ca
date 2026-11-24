@@ -1,0 +1,3 @@
+{{- /* HTML or a URL with each Buttondown image in it, such as a newsletter copy's (content/update/), pointing at the copy of
+     the image that subrepos.sh makes in static/ext/buttondown/, named as it is on Buttondown, without the query. */ -}}
+{{- return replaceRE `https://assets\.buttondown\.email/images/([^/"'?<>\s]+)(?:\?[^"'<>\s]*)?` "/ext/buttondown/$1" . -}}

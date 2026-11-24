@@ -43,8 +43,9 @@
         <meta property="og:description" content="{{ . }}">
       {{ end }}
       {{ if (ne .Params.image nil) }}
-        <meta name="twitter:image" content="{{ .Params.image | absURL }}">
-        <meta property="og:image" content="{{ .Params.image | absURL }}">
+        {{ $image := partial "buttondown-images.html" .Params.image | absURL }}
+        <meta name="twitter:image" content="{{ $image }}">
+        <meta property="og:image" content="{{ $image }}">
       {{ end }}
       {{ with .Params.image_alt }}
         <meta name="twitter:image:alt" content="{{ . }}">
@@ -58,12 +59,13 @@
         "itemListElement": [{
           "@type": "ListItem",
           "position": 1,
-          {{ if (eq .Type "p") }}
+          {{/* by section: a newsletter copy (content/update/) is of type post, to be shown as one */}}
+          {{ if (eq .Section "p") }}
             "name": "Page",
             {{ else }}
-            "name": "{{ .Type | title }}",
+            "name": "{{ .Section | title }}",
           {{ end }}
-          "item": "{{ .Site.BaseURL }}{{ .Type }}/"
+          "item": "{{ .Site.BaseURL }}{{ .Section }}/"
         },{
           "@type": "ListItem",
           "position": 2,

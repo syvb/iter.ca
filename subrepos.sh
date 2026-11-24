@@ -104,6 +104,15 @@ rm -rf segmerepo
     fetch sessions-terminal-devices.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239836443&secret=e3fcb4a34f'
     fetch sessions-posthog.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55239691781&secret=19f1442acf'
     fetch_compressed lighthaven-night.jpg 'https://www.flickr.com/photo_download.gne?size=o&id=55241304261&secret=64d147b08b'
+    # Every Buttondown image the site shows, as the newsletter copies (content/update/) do, under its name on Buttondown
+    # (themes/smitop/layouts/partials/buttondown-images.html).
+    mkdir -p buttondown
+    mapfile -t urls < <(grep -rhoEs "https://assets\.buttondown\.email/images/[^/\"'?<>[:space:]]+(\?[^\"'<>[:space:]]*)?" \
+        ../../content | sed 's/&amp;/\&/g' | sort -u)
+    for url in "${urls[@]}"; do
+        name="${url%%\?*}"
+        fetch "buttondown/${name##*/}" "$url"
+    done
 )
 
 rm -rf fmat

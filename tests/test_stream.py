@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -212,6 +213,138 @@ globalThis.fetch = async url => ({{json: async () =>
             "buttondown-nested": (["Travel", "SF"], "I stayed in SF."),
             "buttondown-plain": (None, "Hi everyone! I've been in SF."),
         })
+
+    def test_buttondown_copies_public_updates_to_the_site(self):
+        (self.get / "tokens").mkdir()
+        (self.get / "tokens/buttondown.txt").write_text("token\n")
+        updates = self.root / "content/update"
+        updates.mkdir(parents=True)
+        # a copy of an email that's since been deleted or renamed
+        (updates / "99.html").write_text('+++\ntitle = "iter.ca update #99"\n+++\n<p>Gone.</p>\n')
+        # each email's raw body, and Buttondown's rendering of it, which the copy is
+        emails = [
+            ("iter.ca update #13", "enabled", "<p>Welcome to update <em>thirteen</em>.</p>\n\nhttps://iter.ca/post/x/",
+             '<p>Welcome to update <em>thirteen</em> &amp; its photos.</p>'
+             '<a href="https://iter.ca/post/x/" class="embedded-link">X</a><h2>Photos</h2>'
+             '<figure><img src="https://assets.buttondown.email/images/a-1.jpg?w=960&amp;fit=max">'
+             '<figcaption>A photo &amp; more</figcaption></figure><p>Done.<sup id="fnref:1"><a class="footnote-ref" '
+             'href="#fn:1">1</a></sup></p><div class="footnote"><hr /><ol><li id="fn:1"><p>A note.</p></li></ol></div>'),
+            ("iter.ca update #2", "enabled", "Hi!\n\n- I did **a thing**\n", "<p>Hi!</p><ul><li>I did <strong>a thing</strong></li></ul>"),
+            ("iter.ca update #7", "enabled_for_subscribers", "<p>Only for subscribers.</p>", None),
+            ("A special announcement", "enabled", "<p>Not an update.</p>", None),
+        ]
+        # an email's own description and preview image, which #13 doesn't have
+        fields = {"iter.ca update #2": {"description": "Update two.",
+                                        "image": "https://assets.buttondown.email/images/two.png"}}
+        patches = self.root / "patches.jsonl"
+
+        # a stub of Buttondown's API with these emails, and of iter.ca serving the pages in live; it records the
+        # changes made to emails in patches
+        def fetch(emails, render_ok=True, live=(), patch_ok=True):
+            results = [{"id": f"em_{i}", "slug": f"slug-{i}", "subject": subject, "archival_mode": mode, "body": body,
+                        "publish_date": f"2026-11-{12 - i}T00:00:00Z", "canonical_url": "",
+                        "absolute_url": f"https://buttondown.com/z/archive/slug-{i}/", **fields.get(subject, {})}
+                       for i, (subject, mode, body, _) in enumerate(emails)]
+            renders = {f"em_{i}": render for i, (*_, render) in enumerate(emails) if render}
+            return f"""
+globalThis.fetch = async (url, options = {{}}) => {{
+    if (url.startsWith("https://iter.ca/")) return {{ok: {json.dumps(list(live))}.includes(url)}};
+    if (options.method === "PATCH") {{
+        require("fs").appendFileSync({json.dumps(str(patches))}, JSON.stringify(
+            {{url, headers: options.headers, body: JSON.parse(options.body)}}) + "\\n");
+        return {{ok: {json.dumps(patch_ok)}, status: {200 if patch_ok else 403}}};
+    }}
+    const render = url.match(/emails\\/(\\w+)\\/renders\\?target=html$/);
+    const ok = !render || {json.dumps(render_ok)};
+    return {{ok, status: ok ? 200 : 503, json: async () => render
+        ? {{content: {json.dumps(renders)}[render[1]]}}
+        : {{results: url.includes("status=sent") ? {json.dumps(results)} : [], next: null}}}};
+}};
+"""
+        # a failed render, or two emails with the same number, fails the import and leaves the copies as they were
+        for stub in [fetch(emails, render_ok=False),
+                     fetch(emails + [("iter.ca update #2: correction", "enabled", "<p>Oops.</p>", "<p>Oops.</p>")])]:
+            self.install("buttondown", stub)
+            failed = subprocess.run(["node", "buttondown.js"], cwd=self.get, env=self.env, capture_output=True,
+                                    text=True, timeout=30)
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertEqual(sorted(path.name for path in updates.iterdir()), ["99.html"])
+
+        # a change to an email that fails doesn't fail the import
+        self.install("buttondown", fetch(emails, live=["https://iter.ca/update/13/"], patch_ok=False))
+        warned = subprocess.run(["node", "buttondown.js"], cwd=self.get, env=self.env, capture_output=True, text=True,
+                                timeout=30)
+        self.assertEqual(warned.returncode, 0, warned.stderr)
+        self.assertIn('::warning::Couldn\'t set the canonical URL of "iter.ca update #13" in Buttondown', warned.stderr)
+        self.assertEqual(len(warned.stdout.splitlines()), 4)
+        patches.unlink()
+
+        rows = self.importer("buttondown", fetch(emails, live=["https://iter.ca/update/13/"]))
+        # an email whose copy iter.ca serves gets the copy as its canonical URL; one whose copy isn't up yet doesn't
+        self.assertEqual([json.loads(line) for line in patches.read_text().splitlines()], [{
+            "url": "https://api.buttondown.email/v1/emails/em_0",
+            "headers": {"Authorization": "Token token", "Content-Type": "application/json"},
+            "body": {"canonical_url": "https://iter.ca/update/13/"},
+        }])
+        self.assertEqual({row["Title"]: row["Uri"] for row in rows}, {
+            "iter.ca update #13": "https://iter.ca/update/13/",
+            "iter.ca update #2": "https://iter.ca/update/2/",
+            "iter.ca update #7": "https://buttondown.com/z/archive/slug-2/",
+            "A special announcement": "https://buttondown.com/z/archive/slug-3/",
+        })
+        self.assertEqual(sorted(path.name for path in updates.iterdir()), ["13.html", "2.html"])
+
+        self.data.write_text(json.dumps(rows))
+        for name in ["homecols.toml", "voverrides.yml", "cta.toml"]:
+            shutil.copy2(ROOT / "data" / name, self.root / "data")
+        config = self.root / "config.json"
+        config.write_text(json.dumps({"dataDir": str(self.root / "data")}))
+        result = subprocess.run([
+            "hugo", "-t", "smitop", "--enableGitInfo=false",
+            "--config", f"{ROOT / 'config.toml'},{config}",
+            "--contentDir", str(self.root / "content"),
+            "--destination", str(self.root / "public"),
+            "--cacheDir", str(self.root / "cache"),
+        ], cwd=ROOT, capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        public = self.root / "public"
+        thirteen = (public / "update/13/index.html").read_text()
+        self.assertIn("iter.ca update #13</h1>", thirteen)
+        self.assertIn('<p>Welcome to update <em>thirteen</em> &amp; its photos.</p>'
+                      '<a href="https://iter.ca/post/x/" class="embedded-link">', thirteen)
+        two = (public / "update/2/index.html").read_text()
+        self.assertIn("<li>I did <strong>a thing</strong></li>", two)
+        # each is shown with iter.ca's copies of its Buttondown images (which subrepos.sh makes)
+        self.assertIn('<img src="/ext/buttondown/a-1.jpg">', thirteen)
+        self.assertNotIn("assets.buttondown.email", thirteen)
+        # a link to an issue shows its description, or else the start of its text, and its preview image, or else its
+        # first image; it's in the newsletter's section, and the sitemap
+        for page, text, image in [(thirteen, "Welcome to update thirteen &amp; its photos. X", "a-1.jpg"),
+                                  (two, "Update two.", "two.png")]:
+            self.assertIn(f'<meta property="og:description" content="{text}">', page)
+            self.assertIn(f'<meta property="og:image" content="https://iter.ca/ext/buttondown/{image}">', page)
+            breadcrumbs = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)[1])
+            self.assertEqual(breadcrumbs["itemListElement"][0]["item"], "https://iter.ca/update/")
+        sitemap = (public / "sitemap.xml").read_text()
+        self.assertIn("<loc>https://iter.ca/update/13/</loc>", sitemap)
+        self.assertIn("<loc>https://iter.ca/update/2/</loc>", sitemap)
+        # each issue links to the ones before and after it, of those copied, above its footnotes, and to the list of
+        # them at its top
+        self.assertIn('<a href="/update/2/" rel="prev">← iter.ca update #2</a>', thirteen)
+        self.assertLess(thirteen.index('class="update-nav"'), thirteen.index('<div class="footnote">'))
+        self.assertLess(thirteen.index('<a href="/update/">All&nbsp;updates</a>'), thirteen.index('id="content"'))
+        self.assertNotIn('rel="next"', thirteen)
+        self.assertIn('<a href="/update/13/" rel="next">iter.ca update #13 →</a>', two)
+        self.assertNotIn('rel="prev"', two)
+        # /update/ lists the copies, the homepage's newsletter shelf links to them, and search finds each update once,
+        # by its item
+        self.assertEqual(re.findall(r'href="https://iter.ca(/update/\d+/)"', (public / "update/index.html").read_text()),
+                         ["/update/13/", "/update/2/"])
+        home = (public / "index.html").read_text()
+        self.assertIn('href="/update/13/"', home)
+        self.assertIn('<a href="/update/" class="home-newsletter-all">', home)
+        search = json.loads((public / "search.json").read_text())
+        self.assertEqual([entry.get("type") for entry in search if entry["url"] == "/update/13/"], ["Newsletter"])
 
     KB_FETCH = """
 const manifest = {

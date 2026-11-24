@@ -16,7 +16,18 @@
     <meta name="twitter:site" content="@_smitop">
     <meta name="twitter:creator" content="@_smitop">
     <meta name="rating" content="General">
-    {{ partial "style.html" }}
+    <link rel="preload" href="/fonts/source-serif-4-home.woff2" as="font" type="font/woff2" crossorigin>
+    {{- /* Inline the shared stylesheet on the homepage only. Match its roman faces' CSS weight range so unicode-range
+        falls through to their files for other characters. The homepage itself uses only regular and bold.
+        To rebuild the subset in static/fonts with FontTools:
+        pyftsubset source-serif-4-latin.woff2 --unicodes=U+0020-007E,U+00A0,U+00B7,U+2000-206F --layout-features='*'
+        fonttools varLib.instancer --no-recalc-timestamp source-serif-4-latin.subset.woff2 wght=400:700 -o source-serif-4-home.woff2 */}}
+    {{- $style := resources.FromString "home.css" (readFile "static/style.css") | minify }}
+    <style>
+        {{ $style.Content | safeCSS }}
+        @font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 200 900; font-display: swap;
+            src: url(/fonts/source-serif-4-home.woff2) format("woff2"); unicode-range: U+0020-007E, U+00A0, U+00B7, U+2000-206F; }
+    </style>
     {{ partial "search.html" }}
     <meta name="google-site-verification" content="LGtQWHbgC8bJSz0orWP71nxayoCJV2F-XH8y0HUFAJ4" />
     <link rel="me" href="https://news.ycombinator.com/user?id=smitop" type="text/html">

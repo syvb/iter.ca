@@ -1485,18 +1485,48 @@ summary h2 {
     display: none;
 }
 
-#search-results {
-    margin: 0;
+/* The results and the button that shows more of them, which scroll together */
+.search-scroll {
     padding: 0 0 0.5rem;
-    list-style: none;
     overflow-y: auto;
     overscroll-behavior: contain;
 }
 
+#search-results {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.search-more {
+    display: block;
+    width: calc(100% - 2rem);
+    margin: 0.25rem 1rem 0;
+    padding: 0.4rem;
+    border: 1px solid #c2c2c2;
+    border-radius: 4px;
+    background: #f8f8f8;
+    color: inherit;
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.search-more:hover {
+    border-color: #999999;
+    background: #eeeeee;
+}
+
+.search-more[hidden] {
+    display: none;
+}
+
+/* A word too long for the box, such as an environment variable in a preview, wraps instead of being cut off. */
 #search-results a {
     display: block;
     padding: 0.5rem 1rem;
     text-decoration: none;
+    overflow-wrap: anywhere;
 }
 
 #search-results [aria-selected="true"] a {
@@ -1524,6 +1554,38 @@ summary h2 {
     font-size: 0.875rem;
     line-height: 1.4;
     color: #444444;
+}
+
+.search-missing {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.8rem;
+    color: #555555;
+}
+
+/* With ?debug, how the query was read, under the status, and how each result was scored */
+.search-debug {
+    display: block;
+    margin-top: 0.15rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #555555;
+}
+
+/* It keeps its height, up to 30vh, and the results get the rest. */
+div.search-debug {
+    flex: none;
+    max-height: 30vh;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.4rem 1rem;
+    border-bottom: 1px solid #c2c2c2;
+}
+
+div.search-debug:empty {
+    display: none;
 }
 
 #search mark {
@@ -1698,12 +1760,26 @@ summary h2 {
         border-bottom-color: #383838;
     }
 
-    .search-status, .search-type, .search-date {
+    .search-status, .search-type, .search-date, .search-missing, .search-debug {
         color: #aaaaaa;
+    }
+
+    div.search-debug {
+        border-bottom-color: #383838;
     }
 
     #search-results [aria-selected="true"] a {
         background: #2e2e2e;
+    }
+
+    .search-more {
+        border-color: #555555;
+        background: #262626;
+    }
+
+    .search-more:hover {
+        border-color: #888888;
+        background: #303030;
     }
 
     .search-preview {

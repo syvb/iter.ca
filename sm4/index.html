@@ -1,10 +1,10 @@
 <!--
 SPDX-License-Identifier: Apache-2.0
-SPDX-FileCopyrightText: Copyright 2023 loops
+SPDX-FileCopyrightText: Copyright 2026 loops
 
 --------------------
 
-Copyright 2023 loops
+Copyright 2026 loops
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,146 +22,543 @@ limitations under the License.
 
 Previously on sm4.ca:
 - https://sm4.ca/dots.html
+- https://sm4.ca/automata.html
 
 --><!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>sm4.ca</title>
         <style>
-            body {
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                background-color: black;
-                overflow: hidden;
+            html, body {
                 margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background-color: #000;
             }
             .link {
-                position: absolute;
-                width: 100vw;
-                height: 100vh;
+                position: fixed;
+                inset: 0;
                 z-index: 6;
+                display: block;
             }
-            #automata-canvas {
+            #canvas {
+                display: block;
                 width: 100vw;
                 height: 100vh;
-                image-rendering: pixelated;
-                image-rendering: crisp-edges;
             }
         </style>
     </head>
     <body>
-        <a href="https://iter.ca/" class="link"></a>
-        <canvas id="automata-canvas"></canvas>
+        <a href="https://iter.ca/" class="link" aria-label="iter.ca"></a>
+        <canvas id="canvas"></canvas>
         <script>
-            const MODES = {
-                "cont": Symbol("MODES.cont"),
-                "discrete": Symbol("MODES.discrete"),
+            const params = new URLSearchParams(location.search);
+            const isMono = params.has("mono");
+            const isChaos = params.has("chaos");
+
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d", { alpha: false });
+
+            const TARGET_PIXELS = 96000;
+            const AGENT_COUNT = 12000;
+            const TAU = Math.PI * 2;
+
+            const CONFIG = isChaos ? {
+                sensorAngle: 0.55,
+                turnSpeed: 0.48,
+                stepSize: 1.55,
+                baseSensorDist: 10.0,
+                deposit: 0.9,
+                decay: 0.905,
+                selfW: 0.9,
+                preyW: 0.72,
+                predW: -1.0,
+            } : {
+                sensorAngle: 0.44,
+                turnSpeed: 0.35,
+                stepSize: 1.25,
+                baseSensorDist: 8.8,
+                deposit: 0.88,
+                decay: 0.915,
+                selfW: 1.0,
+                preyW: 0.48,
+                predW: -0.68,
             };
-            const mode = location.search === "?discrete" ? MODES.discrete : MODES.cont;
 
-            const randomColor = () => [Math.floor(Math.random() * 360), 1, 0.5];
-            function hsl2rgb([h,s,l])  {
-                // https://stackoverflow.com/a/64090995/10113238
-                let a =s*Math.min(l,1-l);
-                let f = (n,k=(n+h/30)%12) => l - a*Math.max(Math.min(k-3,9-k,1),-1);
-                return [f(0)*255,f(8)*255,f(4)*255];
-            }
-            function averageColors(colors) {
-                // https://stackoverflow.com/a/8170595/10113238 and https://stackoverflow.com/q/13959276/10113238
-                let x = 0;
-                let y = 0;
-                colors.forEach(color => {
-                    x += Math.cos(color / 180 * Math.PI);
-                    y += Math.sin(color / 180 * Math.PI);
-                });
-                x /= colors.length;
-                y /= colors.length;
-                return ((Math.atan2(y, x) * 180 / Math.PI) + 3600) % 360;
-            }
+            const COS_SA = Math.cos(CONFIG.sensorAngle);
+            const SIN_SA = Math.sin(CONFIG.sensorAngle);
 
-            const HEIGHT = 60;
-            const WIDTH = Math.round((innerWidth / innerHeight) * HEIGHT);
-            let spots = Array(HEIGHT).fill().map(_ => Array(WIDTH).fill().map(_ => randomColor()));
-
-            const canvas = document.getElementById("automata-canvas");
-            canvas.height = HEIGHT;
-            canvas.width = WIDTH;
-            const ctx = canvas.getContext("2d");
-
-            let mouseCoords = [0, 0];
-            document.addEventListener("mousemove", e => {
-                mouseCoords = [
-                    e.clientX,
-                    e.clientY,
+            function computeDims() {
+                const vw = Math.max(1, innerWidth);
+                const vh = Math.max(1, innerHeight);
+                const scale = Math.sqrt(TARGET_PIXELS / (vw * vh));
+                return [
+                    Math.max(80, Math.min(600, Math.round(vw * scale))),
+                    Math.max(80, Math.min(600, Math.round(vh * scale))),
                 ];
-            });
-            let scrolled = 0;
-            document.addEventListener("wheel", e => {
+            }
+
+            let [W, H] = computeDims();
+            let size = W * H;
+            canvas.width = W;
+            canvas.height = H;
+
+            let trails = [new Float32Array(size), new Float32Array(size), new Float32Array(size)];
+            let scratch = [new Float32Array(size), new Float32Array(size), new Float32Array(size)];
+            let imageData = ctx.createImageData(W, H);
+
+            // Agent state stored in flat typed arrays for fast stepping
+            const ax = new Float32Array(AGENT_COUNT);
+            const ay = new Float32Array(AGENT_COUNT);
+            const aa = new Float32Array(AGENT_COUNT);
+            const as = new Uint8Array(AGENT_COUNT);
+
+            function seedAgents() {
+                // Full-viewport flowing wave field so frame 0 opens organic and balanced
+                const phase = Math.random() * TAU;
+                const fx = (TAU * 2) / W;
+                const fy = (TAU * 2) / H;
+                for (let i = 0; i < AGENT_COUNT; i++) {
+                    const s = i % 3;
+                    const x = Math.random() * W;
+                    const y = Math.random() * H;
+                    as[i] = s;
+                    ax[i] = x;
+                    ay[i] = y;
+                    const wave = Math.sin(x * fx + phase + s * 2.094) + Math.cos(y * fy - phase + s * 2.094);
+                    aa[i] = wave * 1.4 + (Math.random() - 0.5) * 1.2;
+                }
+            }
+            seedAgents();
+
+            // Interaction state
+            let pointerX = W * 0.5;
+            let pointerY = H * 0.5;
+            let pointerVx = 0;
+            let pointerVy = 0;
+            let pointerStrength = 0;
+            let pointerSpeciesPhase = 0;
+            let emitCursor = 0;
+            let pendingSegments = [];
+            let hasPrevPointer = false;
+            let scrollTotal = 0;
+            let hueShift = Math.random() * 360;
+
+            function updatePointer(clientX, clientY) {
+                const nx = (clientX / Math.max(1, innerWidth)) * W;
+                const ny = (clientY / Math.max(1, innerHeight)) * H;
+                if (hasPrevPointer) {
+                    const dx = nx - pointerX;
+                    const dy = ny - pointerY;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > 0.25 && dist < Math.max(W, H) * 0.5) {
+                        pendingSegments.push([pointerX, pointerY, nx, ny]);
+                        if (pendingSegments.length > 24) pendingSegments.shift();
+                        pointerVx = Math.max(-18, Math.min(18, pointerVx * 0.4 + dx * 0.6));
+                        pointerVy = Math.max(-18, Math.min(18, pointerVy * 0.4 + dy * 0.6));
+                        pointerSpeciesPhase = (pointerSpeciesPhase + dist * 0.006) % 3;
+                    }
+                }
+                pointerX = nx;
+                pointerY = ny;
+                hasPrevPointer = true;
+                pointerStrength = 1;
+            }
+            window.addEventListener("pointermove", e => {
+                updatePointer(e.clientX, e.clientY);
+            }, { passive: true });
+            window.addEventListener("pointerleave", () => {
+                hasPrevPointer = false;
+            }, { passive: true });
+            window.addEventListener("touchstart", e => {
+                if (e.touches.length > 0) {
+                    hasPrevPointer = false;
+                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            window.addEventListener("touchmove", e => {
+                if (e.touches.length > 0) {
+                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            window.addEventListener("touchend", () => {
+                hasPrevPointer = false;
+            }, { passive: true });
+            window.addEventListener("wheel", e => {
                 e.preventDefault();
-                console.log(e)
-                scrolled += e.deltaY;
-            }, {passive: true});
+                scrollTotal += e.deltaY;
+                hueShift = (hueShift + e.deltaY * 0.12) % 360;
+                if (hueShift < 0) hueShift += 360;
+            }, { passive: false });
 
-            function distance([x1, y1], [x2, y2]) {
-                return Math.hypot(x1 - x2, y1 - y2);
-            }
-            const MAX_DISTANCE = distance([0, 0], [WIDTH, HEIGHT]);
-            function step(again = true) {
-                let cursorSpot = [mouseCoords[0] / (innerWidth / WIDTH), mouseCoords[1] / (innerHeight / HEIGHT)];
-                const cursorColor = (((scrolled * 0.1) % 360) + 360) % 360;
-                let newSpots = Array(HEIGHT).fill().map(_ => Array(WIDTH).fill().map(_ => null));
+            let resizeTimer = 0;
+            window.addEventListener("resize", () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    const [newW, newH] = computeDims();
+                    if (newW === W && newH === H) return;
+                    const oldW = W;
+                    const oldH = H;
+                    const oldTrails = trails;
+                    W = newW;
+                    H = newH;
+                    size = W * H;
+                    canvas.width = W;
+                    canvas.height = H;
+                    trails = [new Float32Array(size), new Float32Array(size), new Float32Array(size)];
+                    scratch = [new Float32Array(size), new Float32Array(size), new Float32Array(size)];
+                    imageData = ctx.createImageData(W, H);
 
-                for (let x = 0; x < WIDTH; x++) {
-                    for (let y = 0; y < HEIGHT; y++) {
-                        const above = y === 0 ? spots[HEIGHT - 1][x] : spots[y - 1][x];
-                        const below = y === (HEIGHT - 1) ? spots[0][x] : spots[y + 1][x];
-                        const left = x === 0 ? spots[y][WIDTH - 1] : spots[y][x - 1];
-                        const right = x === (WIDTH - 1) ? spots[y][0] : spots[y][x + 1];
-                        let newVal = spots[y][x];
-                        const rand = Math.random();
-                        const dist = distance([x, y], cursorSpot);
-                        if (dist <= 2) {
-                            newSpots[y][x] = [cursorColor, spots[y][x][1], spots[y][x][2]];
-                            continue;
+                    const sx = oldW / W;
+                    const sy = oldH / H;
+                    for (let y = 0; y < H; y++) {
+                        const oy = Math.min(oldH - 1, (y * sy) | 0);
+                        const rowOut = y * W;
+                        const rowIn = oy * oldW;
+                        for (let x = 0; x < W; x++) {
+                            const ox = Math.min(oldW - 1, (x * sx) | 0);
+                            const idxIn = rowIn + ox;
+                            const idxOut = rowOut + x;
+                            trails[0][idxOut] = oldTrails[0][idxIn];
+                            trails[1][idxOut] = oldTrails[1][idxIn];
+                            trails[2][idxOut] = oldTrails[2][idxIn];
                         }
-                        const chance = 0.1;
-                        if (rand < chance) newVal = above;
-                        else if (rand < chance*2) newVal = below;
-                        else if (rand < chance*3) newVal = left;
-                        else if (rand < chance*4) newVal = right;
-                        if (mode === MODES.discrete) {
-                            newSpots[y][x] = [newVal[0], spots[y][x][1], spots[y][x][2]];
-                        } else {
-                            newSpots[y][x] = [averageColors([newVal[0], spots[y][x][0]]), spots[y][x][1], spots[y][x][2]];
+                    }
+                    const axScale = W / oldW;
+                    const ayScale = H / oldH;
+                    for (let i = 0; i < AGENT_COUNT; i++) {
+                        ax[i] = (ax[i] * axScale) % W;
+                        ay[i] = (ay[i] * ayScale) % H;
+                    }
+                    hasPrevPointer = false;
+                    pendingSegments.length = 0;
+                }, 150);
+            });
+
+            function hsl2rgb(h, s, l) {
+                h = ((h % 360) + 360) % 360;
+                const a = s * Math.min(l, 1 - l);
+                const f = n => {
+                    const k = (n + h / 30) % 12;
+                    return l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                };
+                return [f(0), f(8), f(4)];
+            }
+
+            function step() {
+                const t0 = trails[0];
+                const t1 = trails[1];
+                const t2 = trails[2];
+                const { turnSpeed, stepSize, baseSensorDist, deposit, decay, selfW, preyW, predW } = CONFIG;
+                const sensorDist = baseSensorDist + Math.sin(scrollTotal * 0.003) * 3.2;
+
+                const hasPointer = pointerStrength > 0.015;
+                const pRadius = Math.min(W, H) * 0.30;
+                const pRadiusSq = pRadius * pRadius;
+                const pSpeed = Math.hypot(pointerVx, pointerVy);
+                const pDirAngle = pSpeed > 0.15 ? Math.atan2(pointerVy, pointerVx) : 0;
+                const activeSpecies = Math.floor(pointerSpeciesPhase) % 3;
+                const otherA = (activeSpecies + 1) % 3;
+                const otherB = (activeSpecies + 2) % 3;
+
+                // Continuous luminous cursor wake: clears a contrasting channel & seeds living agents along the stroke
+                function stampWake(cx, cy, dirA, strength, emitCount) {
+                    const dst = trails[activeSpecies];
+                    const cA = trails[otherA];
+                    const cB = trails[otherB];
+                    const px0 = cx | 0;
+                    const py0 = cy | 0;
+                    const brush = 11;
+                    const brushSq = brush * brush;
+                    for (let dy = -brush; dy <= brush; dy++) {
+                        let y = py0 + dy;
+                        if (y < 0) y += H;
+                        else if (y >= H) y -= H;
+                        const row = y * W;
+                        for (let dx = -brush; dx <= brush; dx++) {
+                            const d2 = dx * dx + dy * dy;
+                            if (d2 > brushSq) continue;
+                            let x = px0 + dx;
+                            if (x < 0) x += W;
+                            else if (x >= W) x -= W;
+                            const f = 1 - Math.sqrt(d2) / brush;
+                            const idx = row + x;
+                            // Clear competing channels broadly, ignite a bright core in the active species
+                            const clear = 1 - f * 0.72 * strength;
+                            cA[idx] *= clear;
+                            cB[idx] *= clear;
+                            dst[idx] += f * f * f * 3.8 * strength;
+                        }
+                    }
+
+                    // Relocate a stream of matching-species agents right into the cursor wake
+                    // (indexing by 3 * n + activeSpecies preserves exact 1/3 species balance)
+                    const speciesTotal = (AGENT_COUNT / 3) | 0;
+                    for (let k = 0; k < emitCount; k++) {
+                        const idx = emitCursor * 3 + activeSpecies;
+                        emitCursor = (emitCursor + 1) % speciesTotal;
+                        const spread = Math.random() * TAU;
+                        const rad = Math.random() * 4.5;
+                        let nx = cx + Math.cos(spread) * rad;
+                        let ny = cy + Math.sin(spread) * rad;
+                        if (nx < 0) nx += W; else if (nx >= W) nx -= W;
+                        if (ny < 0) ny += H; else if (ny >= H) ny -= H;
+                        ax[idx] = nx;
+                        ay[idx] = ny;
+                        aa[idx] = dirA + (Math.random() - 0.5) * 1.9;
+                    }
+                }
+
+                if (pendingSegments.length > 0) {
+                    let budget = 180;
+                    for (let s = 0; s < pendingSegments.length; s++) {
+                        const [x0, y0, x1, y1] = pendingSegments[s];
+                        const dx = x1 - x0;
+                        const dy = y1 - y0;
+                        const dist = Math.hypot(dx, dy);
+                        const segAngle = Math.atan2(dy, dx);
+                        const stamps = Math.max(1, Math.min(20, Math.ceil(dist / 3)));
+                        const perStamp = Math.max(2, Math.floor(budget / (stamps * pendingSegments.length)));
+                        for (let k = 1; k <= stamps; k++) {
+                            const f = k / stamps;
+                            stampWake(x0 + dx * f, y0 + dy * f, segAngle, 1, perStamp);
+                        }
+                    }
+                    pendingSegments.length = 0;
+                } else if (hasPointer) {
+                    stampWake(pointerX, pointerY, pDirAngle, pointerStrength * 0.7, Math.round(pointerStrength * 28));
+                }
+
+                // Sense, steer, move, deposit (angle-addition avoids 4 trig calls per agent)
+                for (let i = 0; i < AGENT_COUNT; i++) {
+                    const s = as[i];
+                    const selfT = s === 0 ? t0 : (s === 1 ? t1 : t2);
+                    const preyT = s === 0 ? t1 : (s === 1 ? t2 : t0);
+                    const predT = s === 0 ? t2 : (s === 1 ? t0 : t1);
+
+                    let x = ax[i];
+                    let y = ay[i];
+                    let a = aa[i];
+
+                    const ca = Math.cos(a);
+                    const sa = Math.sin(a);
+
+                    // Forward sensor
+                    let sx = x + ca * sensorDist;
+                    let sy = y + sa * sensorDist;
+                    if (sx < 0) sx += W; else if (sx >= W) sx -= W;
+                    if (sy < 0) sy += H; else if (sy >= H) sy -= H;
+                    let idx = ((sy | 0) * W) + (sx | 0);
+                    const sf = selfT[idx] * selfW + preyT[idx] * preyW + predT[idx] * predW;
+
+                    // Left sensor: cos(a - sa), sin(a - sa)
+                    const cl = ca * COS_SA + sa * SIN_SA;
+                    const slSin = sa * COS_SA - ca * SIN_SA;
+                    sx = x + cl * sensorDist;
+                    sy = y + slSin * sensorDist;
+                    if (sx < 0) sx += W; else if (sx >= W) sx -= W;
+                    if (sy < 0) sy += H; else if (sy >= H) sy -= H;
+                    idx = ((sy | 0) * W) + (sx | 0);
+                    const sl = selfT[idx] * selfW + preyT[idx] * preyW + predT[idx] * predW;
+
+                    // Right sensor: cos(a + sa), sin(a + sa)
+                    const cr = ca * COS_SA - sa * SIN_SA;
+                    const srSin = sa * COS_SA + ca * SIN_SA;
+                    sx = x + cr * sensorDist;
+                    sy = y + srSin * sensorDist;
+                    if (sx < 0) sx += W; else if (sx >= W) sx -= W;
+                    if (sy < 0) sy += H; else if (sy >= H) sy -= H;
+                    idx = ((sy | 0) * W) + (sx | 0);
+                    const sr = selfT[idx] * selfW + preyT[idx] * preyW + predT[idx] * predW;
+
+                    let turned = false;
+                    if (sf > sl && sf > sr) {
+                        // stay on course
+                    } else if (sf < sl && sf < sr) {
+                        a += (Math.random() < 0.5 ? -turnSpeed : turnSpeed);
+                        turned = true;
+                    } else if (sl > sr) {
+                        a -= turnSpeed;
+                        turned = true;
+                    } else if (sr > sl) {
+                        a += turnSpeed;
+                        turned = true;
+                    }
+                    a += (Math.random() - 0.5) * 0.05;
+
+                    // Fluid wake: drag + vortex swirl around active pointer
+                    let speedMul = 1;
+                    if (hasPointer) {
+                        let dx = x - pointerX;
+                        let dy = y - pointerY;
+                        if (dx > W * 0.5) dx -= W; else if (dx < -W * 0.5) dx += W;
+                        if (dy > H * 0.5) dy -= H; else if (dy < -H * 0.5) dy += H;
+                        const d2 = dx * dx + dy * dy;
+                        if (d2 < pRadiusSq && d2 > 0.5) {
+                            const dist = Math.sqrt(d2);
+                            const falloff = (1 - dist / pRadius) * pointerStrength;
+                            const targetAngle = pSpeed > 0.35
+                                ? pDirAngle
+                                : (Math.atan2(dy, dx) + 1.35);
+                            let diff = targetAngle - a;
+                            while (diff > Math.PI) diff -= TAU;
+                            while (diff < -Math.PI) diff += TAU;
+                            a += diff * falloff * 0.62;
+                            // Directly advect filaments along cursor motion + crisp radial parting
+                            const drag = falloff * falloff;
+                            x += pointerVx * drag * 0.6 + (dx / dist) * drag * 1.9;
+                            y += pointerVy * drag * 0.6 + (dy / dist) * drag * 1.9;
+                            speedMul = 1 + falloff * 1.6;
+                            turned = true;
+                        }
+                    }
+
+                    x += (turned ? Math.cos(a) : ca) * stepSize * speedMul;
+                    y += (turned ? Math.sin(a) : sa) * stepSize * speedMul;
+                    if (x < 0) x += W; else if (x >= W) x -= W;
+                    if (y < 0) y += H; else if (y >= H) y -= H;
+
+                    ax[i] = x;
+                    ay[i] = y;
+                    aa[i] = a;
+
+                    selfT[((y | 0) * W) + (x | 0)] += deposit;
+                }
+
+                // Separable 3-tap horizontal + 3-tap vertical diffusion & decay (toroidal)
+                const inv3 = 1 / 3;
+                const inv3Decay = decay / 3;
+                const wMinus1 = W - 1;
+                const hMinus1 = H - 1;
+                for (let c = 0; c < 3; c++) {
+                    const src = trails[c];
+                    const tmp = scratch[c];
+
+                    // Horizontal pass: src -> tmp
+                    for (let y = 0; y < H; y++) {
+                        const row = y * W;
+                        tmp[row] = (src[row + wMinus1] + src[row] + src[row + 1]) * inv3;
+                        for (let x = 1; x < wMinus1; x++) {
+                            tmp[row + x] = (src[row + x - 1] + src[row + x] + src[row + x + 1]) * inv3;
+                        }
+                        tmp[row + wMinus1] = (src[row + wMinus1 - 1] + src[row + wMinus1] + src[row]) * inv3;
+                    }
+
+                    // Vertical pass + decay: tmp -> src
+                    const lastRow = hMinus1 * W;
+                    for (let x = 0; x < W; x++) {
+                        src[x] = (tmp[lastRow + x] + tmp[x] + tmp[W + x]) * inv3Decay;
+                        src[lastRow + x] = (tmp[lastRow - W + x] + tmp[lastRow + x] + tmp[x]) * inv3Decay;
+                    }
+                    for (let y = 1; y < hMinus1; y++) {
+                        const row = y * W;
+                        const up = row - W;
+                        const dn = row + W;
+                        for (let x = 0; x < W; x++) {
+                            src[row + x] = (tmp[up + x] + tmp[row + x] + tmp[dn + x]) * inv3Decay;
                         }
                     }
                 }
-                spots = newSpots;
-                if (again) setTimeout(step, 0);
+
+                pointerStrength *= 0.945;
+                pointerVx *= 0.86;
+                pointerVy *= 0.86;
+                hueShift = (hueShift + 0.08) % 360;
             }
-            for (let i = 0; i < 5; i++) step(false);
+
             function render() {
-                const data = new ImageData(WIDTH, HEIGHT);
-                for (let x = 0; x < WIDTH; x++) {
-                    for (let y = 0; y < HEIGHT; y++) {
-                        let color = spots[y][x];
-                        if (!color.every(isFinite)) throw new Error("non-finite color");
-                        color = hsl2rgb(color);
-                        if (!color.every(b => b >= 0 && b < 256)) throw new Error("out of range color: " + color);
-                        const offset = (y * WIDTH * 4) + (x * 4);
-                        data.data[offset] = color[0];
-                        data.data[offset + 1] = color[1];
-                        data.data[offset + 2] = color[2];
-                        data.data[offset + 3] = 255; // alpha
-                    }
+                const t0 = trails[0];
+                const t1 = trails[1];
+                const t2 = trails[2];
+                const data = imageData.data;
+
+                // Harmonious luminous triad rotating gently with time & scroll
+                const c0 = isMono ? hsl2rgb(205, 0.35, 0.72) : hsl2rgb(hueShift, 0.95, 0.56);
+                const c1 = isMono ? hsl2rgb(195, 0.75, 0.52) : hsl2rgb(hueShift + 118, 0.92, 0.54);
+                const c2 = isMono ? hsl2rgb(225, 0.55, 0.42) : hsl2rgb(hueShift + 236, 0.95, 0.56);
+
+                const c0r = c0[0], c0g = c0[1], c0b = c0[2];
+                const c1r = c1[0], c1g = c1[1], c1b = c1[2];
+                const c2r = c2[0], c2g = c2[1], c2b = c2[2];
+
+                for (let i = 0, p = 0; i < size; i++, p += 4) {
+                    const a0 = t0[i];
+                    const a1 = t1[i];
+                    const a2 = t2[i];
+
+                    // Contrast-shaped soft-knee intensity per species
+                    const v0 = (a0 * a0) / (0.28 + 0.56 * a0 * a0 + 0.45 * a0);
+                    const v1 = (a1 * a1) / (0.28 + 0.56 * a1 * a1 + 0.45 * a1);
+                    const v2 = (a2 * a2) / (0.28 + 0.56 * a2 * a2 + 0.45 * a2);
+
+                    let r = v0 * c0r + v1 * c1r + v2 * c2r;
+                    let g = v0 * c0g + v1 * c1g + v2 * c2g;
+                    let b = v0 * c0b + v1 * c1b + v2 * c2b;
+
+                    // Subtle pearlescent sheen at overlaps + smooth filmic roll-off
+                    const peak = (v0 + v1 + v2) * 0.11;
+                    const bloom = peak * peak;
+                    r += bloom;
+                    g += bloom;
+                    b += bloom;
+
+                    data[p]     = (r / (1 + 0.52 * r)) * 255;
+                    data[p + 1] = (g / (1 + 0.52 * g)) * 255;
+                    data[p + 2] = (b / (1 + 0.52 * b)) * 255;
+                    data[p + 3] = 255;
                 }
-                ctx.putImageData(data, 0, 0);
-                requestAnimationFrame(render);
+
+                ctx.putImageData(imageData, 0, 0);
+
+                // Soft bioluminescent halo at the cursor while moving (fades out cleanly when still)
+                if (pointerStrength > 0.02) {
+                    const glowR = Math.min(W, H) * 0.14;
+                    const activeColor = [c0, c1, c2][Math.floor(pointerSpeciesPhase) % 3];
+                    const gr = Math.round(activeColor[0] * 255);
+                    const gg = Math.round(activeColor[1] * 255);
+                    const gb = Math.round(activeColor[2] * 255);
+                    const grad = ctx.createRadialGradient(pointerX, pointerY, 0, pointerX, pointerY, glowR);
+                    grad.addColorStop(0, `rgba(255,255,255,${(0.45 * pointerStrength).toFixed(3)})`);
+                    grad.addColorStop(0.28, `rgba(${gr},${gg},${gb},${(0.32 * pointerStrength).toFixed(3)})`);
+                    grad.addColorStop(1, "rgba(0,0,0,0)");
+                    ctx.save();
+                    ctx.globalCompositeOperation = "lighter";
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(pointerX, pointerY, glowR, 0, TAU);
+                    ctx.fill();
+                    ctx.restore();
+                }
             }
-            requestAnimationFrame(render);
-            step();
+
+            // Pre-warm so the very first frame opens with a living network
+            for (let i = 0; i < 32; i++) step();
+            render();
+
+            const STEP_MS = 1000 / 60;
+            let lastTime = performance.now();
+            let accum = 0;
+
+            function frame(now) {
+                accum += Math.min(64, now - lastTime);
+                lastTime = now;
+
+                let stepped = false;
+                let steps = 0;
+                while (accum >= STEP_MS && steps < 2) {
+                    step();
+                    accum -= STEP_MS;
+                    steps++;
+                    stepped = true;
+                }
+                if (stepped) render();
+                requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
         </script>
     </body>
 </html>

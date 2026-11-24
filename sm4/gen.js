@@ -20,4 +20,5 @@ for (const link in links) {
 
 fs.copyFileSync(__dirname + "/index.html", __dirname + "/public/index.html")
 fs.copyFileSync(__dirname + "/dots.html", __dirname + "/public/dots.html")
+fs.copyFileSync(__dirname + "/automata.html", __dirname + "/public/automata.html")
 fs.copyFileSync(__dirname + "/js.html", __dirname + "/public/js.html")

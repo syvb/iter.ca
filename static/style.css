@@ -1508,7 +1508,7 @@ summary h2 {
     font-weight: bold;
 }
 
-.search-type {
+.search-type, .search-date {
     font-weight: normal;
     font-size: 0.8rem;
     color: #555555;
@@ -1698,7 +1698,7 @@ summary h2 {
         border-bottom-color: #383838;
     }
 
-    .search-status, .search-type {
+    .search-status, .search-type, .search-date {
         color: #aaaaaa;
     }
 

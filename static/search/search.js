@@ -233,6 +233,13 @@
         highlight(label, f.page.label, 0, f.page.label.length, matches(patterns, f.page.label));
         title.append(" ", label);
       }
+      // The date isn't searched, so it isn't marked. A no-break space keeps it on the line with the label.
+      if (f.page.date) {
+        var date = document.createElement("span");
+        date.className = "search-date";
+        date.textContent = (f.page.label ? "· " : "") + f.page.date;
+        title.append(f.page.label ? "\u00a0" : " ", date);
+      }
       var preview = document.createElement("span");
       preview.className = "search-preview";
       showPreview(preview, f.page, patterns);

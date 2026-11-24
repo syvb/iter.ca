@@ -1,6 +1,6 @@
 # Feel free to contact me if you find any security issues in software from me.
 
-Contact: mailto:security@smitop.com
-Expires: 2024-07-01T14:36:00.000Z
+Contact: mailto:me@iter.ca
+Expires: 2027-11-01T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://smitop.com/.well-known/security.txt
+Canonical: https://iter.ca/.well-known/security.txt

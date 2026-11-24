@@ -115,7 +115,8 @@ jobs:
           cp public/404.html public/not_found.html
           # the next build keeps these comments for any source it can't fetch
           cp data/comments.json public/comments.json
-      # test_homepage_links runs `hugo` from PATH.
+      # test_homepage_links and test_site run `hugo` from PATH. test_site checks the site with the files
+      # subrepos.sh generated, so only full builds run it.
       - name: Run tests
         if: ${{ steps.generation.outputs.full == 'true' }}
         run: PATH="$PWD/hugo-bin:$PATH" python3 -B -m unittest discover -s tests -v

@@ -46,7 +46,8 @@ class StreamTest(unittest.TestCase):
 
     def install(self, name, fetch):
         shutil.copy2(ROOT / f"build-data/get/{name}.js", self.get)
-        shutil.copy2(ROOT / "build-data/get/plaintext.js", self.get)
+        for helper in ["plaintext.js", "updates.js"]:
+            shutil.copy2(ROOT / "build-data/get" / helper, self.get)
         stub = self.root / "fetch.js"
         stub.write_text(fetch)
         self.env["NODE_OPTIONS"] = f'--require "{stub}"'
@@ -345,6 +346,69 @@ globalThis.fetch = async (url, options = {{}}) => {{
         self.assertIn('<a href="/update/" class="home-newsletter-all">', home)
         search = json.loads((public / "search.json").read_text())
         self.assertEqual([entry.get("type") for entry in search if entry["url"] == "/update/13/"], ["Newsletter"])
+
+    def test_newsletter_drafts_are_checked_and_pointed_at_their_copies(self):
+        patches = self.root / "patches.jsonl"
+        # (status, subject, archival mode, the iter.ca links in Buttondown's rendering of it)
+        emails = [
+            ("sent", "iter.ca update #14", "enabled", []),
+            ("sent", "iter.ca update #15", "enabled", []),
+            # ready: its own copy isn't up yet, but the page it links to is
+            ("draft", "iter.ca update #16", "enabled", ["https://iter.ca/update/16/", "https://iter.ca/post/live/"]),
+            # #17 doesn't exist, it isn't archived publicly, and the page it links to is gone
+            ("draft", "iter.ca update #18", "enabled_for_subscribers", ["https://iter.ca/post/gone/"]),
+            ("draft", "iter.ca update 19", "enabled", []),
+            ("scheduled", "iter.ca update #15", "enabled", []),
+            ("draft", "A special announcement", "disabled", []),
+        ]
+
+        def run(emails, **env):
+            results = [{"id": f"em_{i}", "status": status, "subject": subject, "archival_mode": mode,
+                        "canonical_url": ""} for i, (status, subject, mode, _) in enumerate(emails)]
+            renders = {f"em_{i}": "".join(f'<p><a href="{link}">a link</a></p>' for link in links)
+                       for i, (*_, links) in enumerate(emails)}
+            self.install("buttondown-drafts", f"""
+globalThis.fetch = async (url, options = {{}}) => {{
+    if (url.startsWith("https://iter.ca/")) return {{ok: url === "https://iter.ca/post/live/", status: 404}};
+    if (options.headers?.Authorization !== "Token key") return {{ok: false, status: 401}};
+    if (options.method === "PATCH") {{
+        require("fs").appendFileSync({json.dumps(str(patches))}, JSON.stringify(
+            {{url, body: JSON.parse(options.body)}}) + "\\n");
+        return {{ok: true}};
+    }}
+    const render = url.match(/emails\\/(\\w+)\\/renders\\?target=html$/);
+    return {{ok: true, json: async () => render
+        ? {{content: {json.dumps(renders)}[render[1]]}}
+        : {{results: {json.dumps(results)}, next: null}}}};
+}};
+""")
+            return subprocess.run(["node", "buttondown-drafts.js"], cwd=self.get, capture_output=True, text=True,
+                                  timeout=30, env=dict(self.env, BUTTONDOWN_API_KEY="key", **env))
+
+        def patched():
+            changes = [json.loads(line) for line in patches.read_text().splitlines()] if patches.exists() else []
+            patches.unlink(missing_ok=True)
+            return changes
+
+        # every problem fails the run, and only the draft without one gets its copy as its canonical URL
+        result = run(emails)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertEqual(patched(), [{"url": "https://api.buttondown.email/v1/emails/em_2",
+                                      "body": {"canonical_url": "https://iter.ca/update/16/"}}])
+        errors = [line for line in result.stdout.splitlines() if line.startswith("::error::")]
+        for problem in ['"iter.ca update #18": no email is #17',
+                        '"iter.ca update #18": its archive is "enabled_for_subscribers"',
+                        '"iter.ca update #18": its link to https://iter.ca/post/gone/ is broken',
+                        '"iter.ca update 19": its subject doesn\'t start "iter.ca update #N"',
+                        '"iter.ca update #15": "iter.ca update #15" (sent) is #15 too']:
+            self.assertTrue(any(error.startswith(f"::error::{problem}") for error in errors), problem)
+        self.assertEqual(len(errors), 5, errors)
+        self.assertNotIn("announcement", "".join(errors))
+
+        # with only the ready draft it passes, and a check changes nothing
+        result = run(emails[:3], CHECK_ONLY="true")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(patched(), [])
 
     KB_FETCH = """
 const manifest = {

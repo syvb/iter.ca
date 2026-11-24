@@ -1,0 +1,48 @@
++++
+title = "iter.ca update #16"
+date = "2026-11-24T03:22:21.023Z"
+description = "Hi there readers of my weeklylish updates! It’s time for this week(ish)’s update. I’m writing this during Writehaven 2, which is over now that you’re reading it…"
+image = "https://assets.buttondown.email/images/efd79016-edf8-4c3c-83fe-a3d693c04ce4.png?w=960&fit=max"
+type = "post"
+[_build]
+list = "local"
++++
+<p>Hi there readers of my weeklylish updates! It’s time for this week(ish)’s update. I’m writing this during <a href="https://iter.ca/post/writehaven/" target="_blank">Writehaven 2</a>, which is over now that you’re reading it but was a pretty good writing party! I had to write 400 words every hour I was here.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
+<h2>posts</h2>
+<p>Originally I was trying to do a post every day, just like the <a href="https://inkhaven.blog" target="_blank">Inkhaven</a> people currently are, but then I failed that challenge. At least now when I publish all my Writehaven posts I’ll have caught up and have written the correct number of posts over the Inkhaven 3 timeframe.</p>
+<ul>
+<li><a href="https://iter.ca/post/nla-thoughtspace/" target="_blank">How I think of NLA explanations</a> on November 13, 2026</li>
+<li><a href="https://www.lesswrong.com/posts/WKt2mqJrsFuMiszed/trying-to-understand-that-compute-multiplier-graph" target="_blank">Trying to understand that compute multiplier graph</a> on November 14, 2026</li>
+<li><a href="https://iter.ca/post/ubo-uxss/" target="_blank">Universal XSS in uBlock Origin from website-driven element picker</a> on November 15, 2026</li>
+<li><a href="https://iter.ca/post/hidden-role-games/" target="_blank">Why I like hidden role games (even though they involve deception)</a> on November 16, 2026</li>
+<li><a href="https://www.lesswrong.com/posts/yQmzPMMeBLmGuZokr/i-m-worried-about-llms-accelerating-hardware-for-cheap-asi" target="_blank">I'm worried about LLMs accelerating hardware for cheap ASI</a> on November 17, 2026</li>
+<li><a href="https://iter.ca/post/writehaven/" target="_blank">Writehaven notes</a> on November 23, 2026</li>
+<li><a href="https://iter.ca/post/my-2026/" target="_blank">What I did in 2026</a> on November 23, 2026</li>
+</ul>
+<p>My post about <a href="https://iter.ca/post/ubo-uxss/" target="_blank">UXSS in uBlock Origin</a> had some discussion on <a href="https://news.ycombinator.com/item?id=50513160" target="_blank">Hacker News</a>. Apparently it also affected some other things that bundle uBO but don’t update it from addons.mozilla.org, such as <a href="https://tails.net/news/version_7.17.1/" target="_blank">Tails</a> and a few browser forks. I didn’t realize anybody was using uBO but not from AMO; perhaps I should have checked that and told the relevant people. Next time!</p>
+<h2>research</h2>
+<p>I tried <a href="https://x.com/_smitop/status/2122859608066973939" target="_blank">backpropagating through Qwen3-VL-8B's vision stack to the input image</a> for fun! Instead of training the model weights, I use gradient descent to train the <em>input</em> in order to make it match the soft tokens that come out of Qwen3’s vision stack. At first I could only get this to work for one of the early intermediate states, but eventually I tried using the Muon optimizer instead of Adam and it worked great! (I probably could’ve gotten Adam to work too if I’d twiddled with the hyperparameters more; Muon is good but it’s not <em>that</em> good.) You can <a href="https://huggingface.co/spaces/syvb/qwen3-vl-soft-token-inversion" target="_blank">try it yourself on your own images</a> if you want to play with it! (Hugging Face has a cool serverless GPU thing that I used!)</p>
+<figure><img src="https://assets.buttondown.email/images/efd79016-edf8-4c3c-83fe-a3d693c04ce4.png?w=960&amp;fit=max" alt="" class="" width="600" draggable="false"><figcaption>On the left is the target image, deepstack8 is part-way through, main is the final soft token. If you squint you can make out the original image on the right.</figcaption></figure>
+
+<p>(Qwen3-VL uses a slightly non-standard vision stack where it takes the residual stream from the middle of the vision encoder and adds it to the residual stream of the LLM partway through, in addition to treating the final output as a soft token. So “deepstack8” which is part-way through the vision stack is actually used for something beyond getting to main.)</p>
+<p>I looked into if the upwards inflection in AI capabilities progress earlier this year was because of a quirk of the Epoch Capabilities Index (ECI): specifically, the way it assumes that benchmarks have a logistic saturation curve, which would have more of an impact now that many benchmarks are being saturated. Nope - it turns out AI capabilities really are inflecting upwards, even if you change the ECI’s assumption about benchmark saturation curves it still is.</p>
+<p>I didn’t get too much done aside from that though :(. Hopefully I’ll be more productive next week! I think I’ll look at figuring out better ways of doing layer-diff-based NLAs (natural language autoencoders), and possibly making my existing attention-head-output-NLA better!</p>
+<h2>iter.ca</h2>
+<p>I’ve made some improvements to my homepage! I’m not going to go all the way to my <a href="https://iter.ca/new-home/" target="_blank">vibed-up prototype</a>, but I’ve been incorporating some improvements. The octahedron is now clickable and spinnable. I’ve also gone from a big list to four lists by category. Let me know what you think about the current design. I’ve been considering a few ways to make it even easier to find the content you’re looking for.</p>
+<p>I also made some more minor improvements to the rest of the website: there are now indicators on links to tell you if they’re external or not, the RSS feed now includes external posts that are included on the home page, and the comments load faster (baked in instead of loaded when you load the page, although the comments haven’t been used much - probably because Bluesky-based comments are too high effort). I also added full-text-search - if you hit Ctrl/Cmd-K, it opens a box where you can search through everything I’ve written, even stuff on other websites! Best of all, my website now has a dark mode! If your device is set to dark mode, my website will adapt and become dark too!!</p>
+<p>I’ve been using <a href="https://ampcode.com" target="_blank">Amp</a> for most of the implementation work for my website; it works pretty well! I’m a big Amp fan!</p>
+<h2>london</h2>
+<p>I’ve been enjoying London! I went to the ACX meetup which was fun, and I wandered around St Pancras station for a bit afterwards. I feel like I should be London-maxxing more though. Perhaps I should even go beyond London-maxxing and visit other places in the UK. I’ve heard good things about Edinburgh and Oxford (to be fair, I’ve also heard bad things)!</p>
+<figure><img src="https://assets.buttondown.email/images/e292985c-4954-497a-baeb-51c5f0f387e8.jpg?w=960&amp;fit=max" width="600" draggable="false"><figcaption>London, near St Pancras station</figcaption></figure>
+
+<h2>looking forward</h2>
+<p>I’m going to leave London in mid-December to go back to Toronto; I’ve been considering making a stop in Paris on my way back. (I can even take the Eurostar train that connects London and Paris!)</p>
+<p>Hopefully I’ll get some good research in this week!</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Well actually I was the host so the rules didn’t really apply to me, but it would’ve been weird for me to not meet my own word requirements.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>

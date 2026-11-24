@@ -2,6 +2,7 @@ process.env.TZ = "Etc/Utc"; // don't have date differences on CI
 
 const fs = require("fs");
 const plainText = require("./plaintext");
+const { PUBLIC_ARCHIVE, updateNumber, updateUrl } = require("./updates");
 
 const TOKEN = fs.readFileSync("tokens/buttondown.txt", "utf-8").trim();
 
@@ -35,8 +36,6 @@ function partText(part, html) {
 // and its item links there. Buttondown stays the source of truth: every regen rewrites the directory, so an edited,
 // renamed, or deleted email changes its copy too.
 const UPDATES = "../../content/update";
-const UPDATE_SUBJECT = /^iter\.ca update #(\d+)\b/i;
-const PUBLIC_ARCHIVE = ["enabled", "archive_only"];
 
 const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
 const decodeEntities = text => text.replace(/&(?:#(\d+)|#x([\da-f]+)|(\w+));/gi, (entity, dec, hex, name) =>
@@ -99,16 +98,16 @@ function description(email, render) {
                 };
                 if (headings.length > 0) item.Headings = headings;
                 if (excerpt) item.Excerpt = excerpt;
-                const number = email.subject?.match(UPDATE_SUBJECT)?.[1];
+                const number = updateNumber(email.subject);
                 if (number && PUBLIC_ARCHIVE.includes(email.archival_mode)) {
                     // Two emails can't share a page, and keeping either would leave the other's link on the wrong
                     // email, so the regen fails before anything is written, until one is renamed in Buttondown.
-                    const other = pages.get(Number(number));
+                    const other = pages.get(number);
                     if (other) {
-                        throw new Error(`"${other.subject}" and "${email.subject}" are both update #${Number(number)}`);
+                        throw new Error(`"${other.subject}" and "${email.subject}" are both update #${number}`);
                     }
-                    item.Uri = `https://iter.ca/update/${Number(number)}/`;
-                    pages.set(Number(number), email);
+                    item.Uri = updateUrl(number);
+                    pages.set(number, email);
                 }
                 console.log(JSON.stringify(item));
             });
@@ -148,10 +147,11 @@ function description(email, render) {
     }
     // Once iter.ca serves a copy, its email's canonical URL in Buttondown is set to the copy, which makes Buttondown's
     // archive page for the email redirect there and its archive and RSS link there. Not before then, or the redirect
-    // would go to a page that isn't up yet: a new issue's copy is set a regen after the one that makes it. Setting one
-    // can fail without failing the regen; the next regen tries again.
+    // would go to a page that isn't up yet: a new issue's copy is set a regen after the one that makes it, unless the Set
+    // up newsletter drafts workflow set it before it was sent. Setting one can fail without failing the regen; the next
+    // regen tries again.
     for (const [number, email] of pages) {
-        const url = `https://iter.ca/update/${number}/`;
+        const url = updateUrl(number);
         if (email.canonical_url === url) continue;
         try {
             if (!(await fetch(url, { method: "HEAD" })).ok) continue;

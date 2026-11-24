@@ -1,0 +1,28 @@
++++
+title = "iter.ca update #11"
+date = "2026-09-13T13:46:51.319Z"
+description = "Hi there everyone! It’s time for the eleventh episode of my episodic updates!"
+image = "https://assets.buttondown.email/images/229e542e-4064-4003-84f7-135be812252b.jpg?w=960&fit=max"
+type = "post"
+[_build]
+list = "local"
++++
+<p>Hi there everyone! It’s time for the eleventh episode of my episodic updates!</p>
+<h2>London</h2>
+<p>I’m still in London; it’s a pretty cool city to explore! I might visit Canary Wharf and the area around there next.</p>
+<table class="buttondown-block-styled"><tbody><tr><td colspan="1" rowspan="1"><p data-pm-slice="1 1 []"></p><figure><img src="https://assets.buttondown.email/images/229e542e-4064-4003-84f7-135be812252b.jpg?w=960&amp;fit=max" width="600" draggable="false"><figcaption>A park</figcaption></figure></td><td colspan="1" rowspan="1"><figure><img src="https://assets.buttondown.email/images/86000c4d-f07f-4118-8ea8-455b4c9abeb6.jpg?w=960&amp;fit=max" width="600" draggable="false"><figcaption>Some buildings by a river</figcaption></figure></td></tr></tbody></table>
+<h2>Research</h2>
+<p>I wrote up some of my thoughts on making NLAs but for the gap between layers.</p>
+
+<a href="https://iter.ca/post/delta-nla/" class="embedded-link">            <div style="width: 100%;                    background: #fff;                    border: 1px #ced3d9 solid;                    border-radius: 5px;                    margin-top: 1em;                    overflow: auto;                    margin-bottom: 1em">                        <div style="color: #393f48; padding-left: 1em; padding-right: 1em;">                <h4 class="link-title"                    style="margin-bottom: 0em;                           line-height: 1.25em;                           margin-top: 1em;                           font-size: 14px">Thoughts on interpreting residual updates</h4>                                    <h4 class="link-description"                        style="font-size: 14px;                               font-weight: 300;                               margin-top: 0;                               margin-bottom: 1em">What I&#x27;m thinking about and planning to work on over the next few weeks</h4>                            </div>        </div>    </a>
+<p>Currently I think before getting those things to work, I should figure out how to make it so NLA explanations are more faithful representations of the actual underlying state. Right now NLAs kinda work because there’s a lot of stuff in the activation, and the NLA only needs to gesture in the right direction. But residual stream updates have much less content in them, and I think it’s much harder to faithfully verbalize them.</p>
+<p>I think part of the solution here is to make the NLA explanations more causally linked to the activations (or activation deltas for what I want to eventually get to). I’m not sure what a good way to do this is though. Currently I like the idea of having an LLM try to make predictions about the model based on the explanation. (Not sure exactly how to operationalize this re: deciding what questions to ask it.) However I fear this is harder to do for delta NLAs, because the effects of individual updates are much smaller. (It’s probably a lot slower to RL, since you need to run an LLM to compute the reward. Although you can use an LLM that much smaller than the one you’re trying to interpret.) But probably worth trying for normal NLAs to see what happens, then trying to use that to make a good delta NLA.</p>
+<h2>Security research</h2>
+<p>I finally got to write about some of the LLM harness Git security stuff I did earlier this year! The issues I found weren’t that bad, but I had a lot of fun exploring Git internals while working on this.</p>
+
+<a href="https://iter.ca/post/llm-agent-git/" class="embedded-link">            <div style="width: 100%;                    background: #fff;                    border: 1px #ced3d9 solid;                    border-radius: 5px;                    margin-top: 1em;                    overflow: auto;                    margin-bottom: 1em">                        <div style="color: #393f48; padding-left: 1em; padding-right: 1em;">                <h4 class="link-title"                    style="margin-bottom: 0em;                           line-height: 1.25em;                           margin-top: 1em;                           font-size: 14px">Agent harness security and Git</h4>                                    <h4 class="link-description"                        style="font-size: 14px;                               font-weight: 300;                               margin-top: 0;                               margin-bottom: 1em">Git and agent harnesses stuff</h4>                            </div>        </div>    </a>
+<p>There’s some other fun security stuff that I’ve done that I’ll be able to write up in a few months.</p>
+<h2>Looking forward</h2>
+<p>I’m still going to be in London for a while; it seems pretty likely I’ll be here until at least November or December. It’s not as good as SF but it’s still a pretty good place. I’m going to spend some more time exploring London over the coming week. Please let me know if you have any advice for what I should do here!</p>
+<p>I’m going to try to do a lot more writing over the coming month or two. Writing about research seems like a pretty useful way to help me think through it more, and it’s also useful to be able to feed my thoughts to LLMs. Hopefully I’ll do enough interesting stuff to be able to make these updates more frequent; I might even be able to achieve my Inkhaven level of daily posting!</p>
+<p style="height:16px; margin:0px !important;" class="empty-line"></p>

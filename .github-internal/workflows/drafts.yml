@@ -1,0 +1,31 @@
+name: Set up newsletter drafts
+
+# Run by hand before sending an iter.ca update: checks the updates drafted or scheduled in Buttondown and sets each
+# one's canonical URL to its copy on iter.ca (build-data/get/buttondown-drafts.js). It fails if one has a problem, which
+# the run's page names.
+on:
+  workflow_dispatch:
+    inputs:
+      check_only:
+        description: Only check the drafts, without changing them
+        type: boolean
+        default: false
+
+jobs:
+  drafts:
+    runs-on: ubuntu-24.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+      - name: Check and set up drafts
+        working-directory: build-data/get
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          CHECK_ONLY: ${{ inputs.check_only }}
+        run: node buttondown-drafts.js

@@ -681,7 +681,8 @@ a.playground {
 
 /* A post's table of contents (toc = 1): a box above the post, or on a screen wide enough for margin notes, a list in
    the left margin, mirroring them (see .margin-notes). It isn't floated beside the post, which would squeeze the
-   justified text next to it into a narrow column. */
+   justified text next to it into a narrow column. With toc = "margin", there's only the list in the margin: a narrower
+   screen or a printout has no table of contents. */
 #TableOfContents {
     background: rgb(231, 231, 231);
     border: 1px solid gray;
@@ -1246,6 +1247,13 @@ summary h2 {
     .footnote-ref-hover {
         background: #fff8d4;
         box-shadow: 0 0 0 0.15em #fff8d4;
+    }
+}
+
+/* Everywhere the query above doesn't match. */
+@media not screen and (min-width: 77rem) {
+    .toc-margin-only {
+        display: none;
     }
 }
 

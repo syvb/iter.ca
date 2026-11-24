@@ -23,7 +23,9 @@
             ⚠️ {{ .Params.cw | markdownify }}
           </div>
         {{ end }}
-        {{ if .Params.toc }}
+        {{ if eq .Params.toc "margin" }}
+          <div class="toc-margin-only">{{ .TableOfContents }}</div>
+        {{ else if .Params.toc }}
           {{ .TableOfContents }}
         {{ end }}
         {{ $cta := printf "%s" (partial "cta.html" .) }}

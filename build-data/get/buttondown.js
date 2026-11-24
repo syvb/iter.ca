@@ -160,7 +160,8 @@ function description(email, render) {
                 headers: { Authorization: `Token ${TOKEN}`, "Content-Type": "application/json" },
                 body: JSON.stringify({ canonical_url: url }),
             });
-            if (!res.ok) throw new Error(`status ${res.status}`);
+            // Buttondown says why, such as that the API key can only read emails
+            if (!res.ok) throw new Error(`status ${res.status}: ${(await res.text()).slice(0, 300)}`);
         } catch (error) {
             console.error(`::warning::Couldn't set the canonical URL of "${email.subject}" in Buttondown: ${error.message}`);
         }

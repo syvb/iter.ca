@@ -85,7 +85,9 @@ const annotate = (level, message) =>
                 annotate("notice", `${name} is ready: set its canonical URL to ${url}; ${after}`);
             } else {
                 failed = true;
-                annotate("error", `${name}: Buttondown couldn't set its canonical URL to ${url} (${res.status})`);
+                // Buttondown says why, such as that the API key can only read emails
+                annotate("error", `${name}: Buttondown couldn't set its canonical URL to ${url} (${res.status}: ${
+                    (await res.text()).slice(0, 300)})`);
             }
         }
     }

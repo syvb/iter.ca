@@ -253,7 +253,8 @@ globalThis.fetch = async (url, options = {{}}) => {{
     if (options.method === "PATCH") {{
         require("fs").appendFileSync({json.dumps(str(patches))}, JSON.stringify(
             {{url, headers: options.headers, body: JSON.parse(options.body)}}) + "\\n");
-        return {{ok: {json.dumps(patch_ok)}, status: {200 if patch_ok else 403}}};
+        return {{ok: {json.dumps(patch_ok)}, status: {200 if patch_ok else 403},
+                text: async () => '{{"code": "permission_denied"}}'}};
     }}
     const render = url.match(/emails\\/(\\w+)\\/renders\\?target=html$/);
     const ok = !render || {json.dumps(render_ok)};
@@ -276,7 +277,8 @@ globalThis.fetch = async (url, options = {{}}) => {{
         warned = subprocess.run(["node", "buttondown.js"], cwd=self.get, env=self.env, capture_output=True, text=True,
                                 timeout=30)
         self.assertEqual(warned.returncode, 0, warned.stderr)
-        self.assertIn('::warning::Couldn\'t set the canonical URL of "iter.ca update #13" in Buttondown', warned.stderr)
+        self.assertIn('::warning::Couldn\'t set the canonical URL of "iter.ca update #13" in Buttondown: status 403: '
+                      '{"code": "permission_denied"}', warned.stderr)
         self.assertEqual(len(warned.stdout.splitlines()), 4)
         patches.unlink()
 

@@ -36,6 +36,7 @@ class Page(HTMLParser):
     def __init__(self, html):
         super().__init__()
         self.title, self.ids, self.urls, self.in_title = None, set(), [], False
+        self.redirect = False
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
@@ -43,6 +44,9 @@ class Page(HTMLParser):
         self.ids.update(value for name, value in attrs.items() if name == "id" or (tag == "a" and name == "name"))
         self.urls += [attrs[name] for name in ("href", "src") if attrs.get(name) is not None]
         self.urls += [candidate.split()[0] for candidate in (attrs.get("srcset") or "").split(",") if candidate.strip()]
+        if (tag == "meta" and (attrs.get("http-equiv") or "").lower() == "refresh"
+                and re.search(r"\burl\s*=", attrs.get("content") or "", re.I)):
+            self.redirect = True
         if tag == "meta" and (attrs.get("property") or attrs.get("name")) in ("og:image", "twitter:image"):
             self.urls.append(attrs.get("content") or "")
         if tag == "title" and self.title is None:
@@ -69,30 +73,28 @@ class SiteTest(unittest.TestCase):
         cls.content = [row for row in csv.DictReader(io.StringIO(hugo("list", "all")))
                        if row["draft"] == "false" and datetime.fromisoformat(row["publishDate"]) <= now]
         hugo("-t", "smitop", "-d", str(cls.public), "--cacheDir", str(Path(temp.name) / "cache"))
-        cls.pages = {file: Page(file.read_text(errors="replace")) for file in cls.public.rglob("*.html")}
+        # Neocities serves dir/index.html at /dir/ and flat.html at /flat without a redirect.
+        cls.files = {}
+        for file in cls.public.rglob("*"):
+            if file.is_file():
+                path = "/" + file.relative_to(cls.public).as_posix()
+                cls.files[path.removesuffix("index.html" if file.name == "index.html" else ".html")] = file
+        cls.pages = {path: Page(file.read_text(errors="replace")) for path, file in cls.files.items()
+                     if file.suffix == ".html"}
 
-    def served(self, url):
-        """The file in the build that serves a URL on the site."""
-        file = self.public / unquote(urlsplit(url).path).lstrip("/")
-        return file / "index.html" if file.is_dir() else file
-
-    def test_links_and_images_go_somewhere(self):
+    def test_links_and_images_go_directly_to_their_targets(self):
         broken = []
-        for file, page in self.pages.items():
-            path = str(file.relative_to(self.public))
+        direct = self.files.keys() - {path for path, page in self.pages.items() if page.redirect}
+        for path, page in self.pages.items():
             # pages copied from static/ are apps, whose scripts can read a fragment that names no element
-            app = (ROOT / "static" / path).exists()
+            app = (ROOT / "static" / self.files[path].relative_to(self.public)).exists()
             for url in page.urls:
-                # such as a card image's https://iter.ca//image.png
-                if url.startswith(SITE + "//"):
-                    broken.append((path, url))
+                parts = urlsplit(urljoin(SITE + path, url))
+                if parts.hostname != "iter.ca":
                     continue
-                target_url = urljoin(f"{SITE}/{path}", url)
-                if not target_url.startswith(SITE + "/"):
-                    continue
-                target = self.served(target_url)
-                fragment = unquote(urlsplit(target_url).fragment)
-                if not target.exists():
+                target = unquote(parts.path) or "/"
+                fragment = unquote(parts.fragment)
+                if parts.scheme != "https" or target not in direct:
                     broken.append((path, url))
                 # #search is the topbar's Search link, which search.js opens the search box for
                 elif (fragment and fragment != "search" and not app and target in self.pages
@@ -104,14 +106,13 @@ class SiteTest(unittest.TestCase):
         # the date Hugo gives a page without one, which stream pages showed for such pages, and a post whose front
         # matter it can't read, as with a stray line before the +++
         zero = re.compile(r"\b(?:Jan(?:uary)? 0?1,? 0001|0001-01-01)\b")
-        self.assertEqual(sorted(str(file.relative_to(self.public)) for file in self.pages
-                                if zero.search(file.read_text(errors="replace"))), [])
+        self.assertEqual(sorted(path for path in self.pages if zero.search(self.files[path].read_text(errors="replace"))), [])
 
     def test_tab_titles_are_titles_as_written(self):
         # *asterisks* and all: only titles in the page itself set them in italics
         wrong = []
         for row in self.content:
-            page = self.pages.get(self.served(row["permalink"]))
+            page = self.pages.get(unquote(urlsplit(row["permalink"]).path))
             if row["title"] and page and (page.title or "").strip() != row["title"]:
                 wrong.append((row["path"], row["title"], page.title))
         self.assertEqual(wrong, [])

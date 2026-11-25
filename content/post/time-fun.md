@@ -24,8 +24,8 @@ First, here are some cool graphs Claude made (a sunburst chart and a stacked bar
 .tt-embed { width: 100%; border: 0; display: block; margin: 1em 0; }
 </style>
 <div class="tt-breakout">
-  <iframe class="tt-embed" src="tagtime-2021-sunburst-v3.html" style="height: 760px;" loading="lazy" title="Sunburst of 2021 time categories"></iframe>
-  <iframe class="tt-embed" src="tagtime-2021-monthly-v3.html" style="height: 620px;" loading="lazy" title="Monthly time breakdown for 2021"></iframe>
+  <iframe class="tt-embed" src="tagtime-2021-sunburst-v3" style="height: 760px;" loading="lazy" title="Sunburst of 2021 time categories"></iframe>
+  <iframe class="tt-embed" src="tagtime-2021-monthly-v3" style="height: 620px;" loading="lazy" title="Monthly time breakdown for 2021"></iframe>
 </div>
 <script>
 addEventListener("message", e => {

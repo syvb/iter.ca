@@ -1,6 +1,6 @@
 NoteType=Game
 Date=Sept 1, 2019
-Uri=https://smitop.com/square-game/
+Uri=https://iter.ca/square-game/
 Title=Square game
 
 A game that involves squares.

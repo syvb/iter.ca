@@ -68,7 +68,8 @@
                 {{- if (eq .Item.Type "note") -}}
                     {{- .Item.Text | safeHTML -}}
                 {{- else if (eq .Item.Type "hn") -}}
-                    {{- .Item.Text | safeHTML | truncate 150 -}}
+                    {{- /* HN encodes slashes. Update the link target, not the URL quoted in the comment. */ -}}
+                    {{- replace .Item.Text `<a href="https:&#x2F;&#x2F;smitop.com&#x2F;` `<a href="https://iter.ca/` | safeHTML | truncate 150 -}}
                 {{- else if (eq .Item.Type "gh-pr") -}}
                     {{- .Item.Text | safeHTML | markdownify | plainify | htmlUnescape | truncate 150 -}}
                 {{- else -}}

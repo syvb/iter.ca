@@ -1,5 +1,5 @@
 Date=Oct 24, 2019
-Uri=https://smitop.com/shift-key.html
+Uri=https://iter.ca/shift-key
 Title=Is your shift key pressed?
 NoteType=Web app
 

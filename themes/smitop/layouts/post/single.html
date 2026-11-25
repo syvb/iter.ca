@@ -50,6 +50,9 @@
           {{/* Mark inline code with a run of 30+ characters without a space, such as a URL, so style.css can break it anywhere. */}}
           {{ $content = replaceRE `<code>((?:[^<\n]*\s)?(?:&#?\w+;|[^<&\s]){30}[^<\n]*)</code>` `<code class="long">$1</code>` $content }}
           {{ $content = partial "buttondown-images.html" $content }}
+          {{ if eq .Section "update" }}
+            {{ $content = partial "buttondown-links.html" $content }}
+          {{ end }}
           {{/* Hugo's footnotes, or a newsletter's (Buttondown's class is "footnote") */}}
           {{ if findRE `<div class="footnotes?"` $content }}
             {{/* $$ is a $ in the replacement, as in an issue's title */}}

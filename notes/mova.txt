@@ -1,6 +1,6 @@
 NoteType=Game
 Date=Jan 3 2020
-Uri=https://smitop.com/mova.html
+Uri=https://iter.ca/mova
 Title=Mova
 
 A game where you avoid tiny squares.

@@ -1,0 +1,17 @@
+{{- /* In the blog's copy of an email, link directly to iter.ca pages. */ -}}
+{{- $html := replaceRE `(<a\b[^>]*?\shref=")http://iter\.ca([/?#"])` `${1}https://iter.ca${2}` . -}}
+{{- $html = replaceRE `(<a\b[^>]*?\shref="https://iter\.ca/(?:post/[\w-]+|segme))([?#"])` `${1}/${2}` $html -}}
+
+{{- /* Drop campaign tags on both internal and external links. Work on the raw query so other parameters
+     keep their order and encoding, and a fragment that mentions utm_ stays intact. */ -}}
+{{- $anchor := `(<a\b[^>]*?\shref=")([^"]*\?[^"]*utm_[^"]*)"` -}}
+{{- range findRE $anchor $html | uniq -}}
+  {{- $url := replaceRE $anchor "$2" . | htmlUnescape -}}
+  {{- $query := (urls.Parse $url).RawQuery -}}
+  {{- $keep := replaceRE `&utm_[^&]*` "" (print "&" $query) | strings.TrimPrefix "&" -}}
+  {{- if ne $keep $query -}}
+    {{- $url = replace $url (print "?" $query) (cond (eq $keep "") "" (print "?" $keep)) 1 -}}
+    {{- $html = replace $html . (print (replaceRE $anchor "$1" .) (htmlEscape $url) `"`) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $html -}}

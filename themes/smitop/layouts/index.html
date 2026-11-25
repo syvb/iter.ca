@@ -32,21 +32,38 @@
     </style>
     {{ partial "search.html" }}
     <meta name="google-site-verification" content="LGtQWHbgC8bJSz0orWP71nxayoCJV2F-XH8y0HUFAJ4" />
-    <link rel="me" href="https://news.ycombinator.com/user?id=smitop" type="text/html">
+    {{- /* profiles for both the rel=me links and the Person's sameAs */}}
+    {{- $profiles := slice
+        "https://news.ycombinator.com/user?id=smitop"
+        "https://opengameart.org/users/smitop"
+        "https://archive.org/details/@smitop"
+        "https://scratch.mit.edu/users/smitop/"
+        "https://github.com/syvb"
+        "https://twitter.com/_smitop"
+        "https://sr.ht/~smitop/"
+        "https://t.me/someloops"
+        "https://wasteof.money/users/smitop"
+        "https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/"
+        "https://bsky.app/profile/iter.ca"
+        "https://www.lesswrong.com/users/loops"
+        "https://crates.io/users/syvb"
+        "https://huggingface.co/syvb" }}
     <link rel="me" href="mailto:me@iter.ca">
-    <link rel="me" href="https://opengameart.org/users/smitop" type="text/html">
-    <link rel="me" href="https://archive.org/details/@smitop" type="text/html">
-    <link rel="me" href="https://scratch.mit.edu/users/smitop/" type="text/html">
-    <link rel="me" href="https://github.com/syvb" type="text/html">
-    <link rel="me" href="https://twitter.com/_smitop" type="text/html">
-    <link rel="me" href="https://sr.ht/~smitop/" type="text/html">
-    <link rel="me" href="https://t.me/someloops" type="text/html">
-    <link rel="me" href="https://wasteof.money/users/smitop" type="text/html">
-    <link rel="me" href="https://www.youtube.com/channel/UCg9cKCFNaVDYmXK2u-FxX1w/" type="text/html">
-    <link rel="me" href="https://bsky.app/profile/iter.ca" type="text/html">
-    <link rel="me" href="https://www.lesswrong.com/users/loops" type="text/html">
-    <link rel="me" href="https://crates.io/users/syvb" type="text/html">
-    <link rel="me" href="https://huggingface.co/syvb" type="text/html">
+    {{- range $profiles }}
+    <link rel="me" href="{{ . }}" type="text/html">
+    {{- end }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Smitty van Bodegom",
+        "alternateName": ["loops", "smitop"],
+        "url": {{ .Permalink }},
+        "image": {{ "avatar/a500.png" | absURL }},
+        "email": "me@iter.ca",
+        "sameAs": {{ $profiles }}
+    }
+    </script>
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}">
     <link rel="shortcut icon" href="/avatar/a32.png" type="image/png">
     <link rel="canonical" href="{{ .Permalink }}" />

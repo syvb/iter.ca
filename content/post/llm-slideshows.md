@@ -1,7 +1,7 @@
 +++
 title = "LLMs are pretty good at making slideshows now"
 description = "I've used LLM agents to make slideshows and they're good"
-tags = ["ai"]
+tags = ["ai", "anthropic"]
 date = "2026-04-23T00:00:00Z"
 +++
 

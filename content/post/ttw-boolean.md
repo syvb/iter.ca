@@ -1,7 +1,7 @@
 +++
 date = "2021-03-15T05:00:00Z"
 description = "Let's write some Rust to parse and evaluate Boolean expressions."
-tags = ["internet", "programming", "ttw", "rust"]
+tags = ["internet", "programming", "ttw", "rust", "tutorial"]
 title = "Writing a Boolean expression parser in Rust"
 toc = 1
 +++

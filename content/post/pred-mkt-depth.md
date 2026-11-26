@@ -1,7 +1,7 @@
 +++
 date = "2026-04-06T00:00:00Z"
 description = "Cost to move the price matters not volume"
-tags = ["crypto"]
+tags = ["crypto", "predictionmarkets"]
 title = "Judge prediction markets by depth, not volume"
 +++
 

@@ -1,7 +1,7 @@
 +++
 date = "2026-04-03T00:00:00Z"
 description = "how????!?"
-tags = ["programming"]
+tags = ["programming", "security", "anthropic"]
 title = "How the Claude Mythos leak happened"
 verbose = 1
 +++

@@ -1,7 +1,7 @@
 +++
 date = "2020-07-08T05:00:00+00:00"
 description = "But hey, at least Reddit gets less ad fraud!"
-tags = ["internet", "whiteops", "reddit"]
+tags = ["internet", "whiteops", "reddit", "programming", "javascript"]
 title = "Reddit's website uses DRM for fingerprinting"
 image = "/reddit-drm.png"
 image_alt = "Reddit asking for permission to use DRM"

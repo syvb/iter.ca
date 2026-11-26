@@ -1,7 +1,7 @@
 +++
 date = "2019-11-15T05:00:00Z"
 description = "A bookmarlet to amplify YouTube videos."
-tags = ["javascript", "youtube"]
+tags = ["javascript", "youtube", "programming"]
 title = "A bookmarklet to amplify YouTube"
 
 +++

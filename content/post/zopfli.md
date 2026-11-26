@@ -1,7 +1,7 @@
 +++
 date = "2021-12-16T00:00:00Z"
 description = "The Zopfli compression engine provides very good compression ratios."
-tags = ["png", "compression"]
+tags = ["png", "compression", "programming"]
 title = "Zopfli is *really* good at compressing PNGs"
 +++
 

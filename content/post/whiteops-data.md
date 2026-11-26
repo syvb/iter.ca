@@ -1,7 +1,7 @@
 +++
 date = "2020-07-08T04:00:00+00:00"
 description = "A long list of data collected by WhiteOps"
-tags = ["internet", "whiteops", "reddit"]
+tags = ["internet", "whiteops", "reddit", "programming", "javascript"]
 title = "Data WhiteOps collects"
 
 +++

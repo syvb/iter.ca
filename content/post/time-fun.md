@@ -1,7 +1,7 @@
 +++
 date = "2026-04-19T00:00:00Z"
 description = "Every hour of my time in 2021"
-tags = ["life"]
+tags = ["life", "ttw"]
 title = "How I spent my time in 2021"
 bsky = "https://bsky.app/profile/syvb-test.bsky.social/post/3mr5b6ohyqs25"
 +++

@@ -1,7 +1,7 @@
 +++
 date = "2026-04-01T00:00:00Z"
 description = "I tracked all my time for three years"
-tags = ["ttw"]
+tags = ["ttw", "productivity", "life"]
 title = "Tracking all my time, a retrospective"
 bsky = "https://bsky.app/profile/iter.ca/post/3mstuoul3ic2l"
 +++

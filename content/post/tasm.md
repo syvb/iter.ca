@@ -1,7 +1,7 @@
 +++
 date = "2026-04-24T00:00:00Z"
 description = "Notes on the Toronto AI Safety Meetup from 2024 to now."
-tags = ["ai"]
+tags = ["ai", "life"]
 title = "Morphing meetups and me"
 +++
 

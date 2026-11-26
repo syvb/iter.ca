@@ -1,7 +1,7 @@
 +++
 date = "2026-09-12T00:00:00Z"
 description = "Git and agent harnesses stuff"
-tags = ["security", "git"]
+tags = ["security", "git", "programming", "openai", "anthropic", "github"]
 title = "Agent harness security and Git"
 +++
 

@@ -1,7 +1,7 @@
 +++
 date = "2026-11-09T00:00:00Z"
 description = "I made a Bayesian network thing"
-tags = ["math"]
+tags = ["math", "stats"]
 title = "Modeling with Bayesian networks"
 bsky = "https://bsky.app/profile/did:plc:n3csajkwabhchilmzmrsnvlc/post/3n226mo2io223"
 +++

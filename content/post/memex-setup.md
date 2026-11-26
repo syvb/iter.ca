@@ -1,7 +1,7 @@
 +++
 date = "2026-04-05T00:00:00Z"
 description = "My personal place with all my notes/journals"
-tags = ["life"]
+tags = ["life", "productivity"]
 title = "My personal memex setup"
 toc = 1
 +++

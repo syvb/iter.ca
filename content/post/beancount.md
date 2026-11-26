@@ -1,7 +1,7 @@
 +++
 date = "2026-04-17T00:00:00Z"
 description = "Using Beancount to track all my personal finances in a text file"
-tags = ["life"]
+tags = ["life", "tax"]
 title = "How I used plain-text accounting"
 +++
 

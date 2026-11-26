@@ -1,7 +1,7 @@
 +++
 date = "2021-08-17T05:00:00Z"
 description = "I evaluate Codex, a large-scale language generation model intended to generate programming source code from OpenAI."
-tags = ["ai", "openai"]
+tags = ["ai", "openai", "programming"]
 title = "How good is Codex?"
 toc = 1
 +++

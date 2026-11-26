@@ -1,7 +1,7 @@
 +++
 date = "2024-07-24T00:00:00Z"
 description = "I show how safety safeguards in large language models can be bypassed by having the model roleplay as the user."
-tags = ["programming", "ai"]
+tags = ["programming", "ai", "security", "openai", "anthropic"]
 title = "Jailbreaking language models with user roleplay"
 cw = "This post has references to harmful activities."
 +++

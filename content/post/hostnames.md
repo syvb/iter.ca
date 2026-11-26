@@ -1,7 +1,7 @@
 +++
 date = "2021-12-08T00:00:00Z"
 description = "I analyze hundreds of publically available Tailscale hostnames."
-tags = ["tailscale"]
+tags = ["tailscale", "stats"]
 title = "Analyzing the public hostnames of Tailscale users"
 toc = true
 image = "/tsnet/category-pie.svg"

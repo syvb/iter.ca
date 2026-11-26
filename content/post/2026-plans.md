@@ -1,7 +1,7 @@
 +++
 date = "2026-04-02T00:00:00Z"
 description = "In which I describe my life plans"
-tags = ["life"]
+tags = ["life", "ai"]
 title = "What I plan on doing with my life"
 +++
 

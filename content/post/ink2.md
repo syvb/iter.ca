@@ -1,7 +1,7 @@
 +++
 date = "2026-04-30T00:00:00Z"
 description = "I went to the month-long writing retreat at Lighthaven"
-tags = ["life"]
+tags = ["life", "writing"]
 title = "Inkhaven 2 retrospective"
 image = "/ext/lighthaven-night.jpg"
 image_alt = "Lighthaven campus main courtyard at night from above"

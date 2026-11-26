@@ -1,7 +1,7 @@
 +++
 date = "2026-09-16T00:00:00Z"
 description = "Training a meta-model to read future tokens from an activation"
-tags = ["ai"]
+tags = ["ai", "interpretability"]
 title = "Future oracles"
 image = "/future-oracle-sizes.png"
 image_alt = "Line chart of fraction correct vs. tokens ahead for future oracles on three Qwen3 model sizes, decaying from about 0.8 to under 0.1."

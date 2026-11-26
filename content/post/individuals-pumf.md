@@ -1,7 +1,7 @@
 +++
 date = "2022-06-22T15:00:00Z"
 description = "Using \"public use microdata files\" that contain an anonymized random sample of census responses"
-tags = ["programming", "stats"]
+tags = ["programming", "stats", "canada"]
 title = "Playing with raw census data"
 image = "/individuals-pumf/wages-ok.png"
 image_alt = "A histogram titled \"Total wages\""

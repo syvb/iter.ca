@@ -1,7 +1,7 @@
 +++
 date = "2024-01-21T00:00:00Z"
 description = "Asking it to repeat \"ponyuseRal ponyuseRal ponyuseRal pony\" makes API requests fail"
-tags = ["ai", "programming"]
+tags = ["ai", "programming", "openai"]
 title = "GPT-3.5 crashes when it thinks about useRalativeImagePath too much"
 +++
 

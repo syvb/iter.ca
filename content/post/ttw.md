@@ -1,7 +1,7 @@
 +++
 date = "2020-08-26T13:00:00+00:00"
 description = "It randomly samples what you are doing"
-tags = ["internet", "programming", "ttw"]
+tags = ["internet", "programming", "ttw", "productivity"]
 title = "TagTime Web: my stochastic time tracking web app"
 
 +++

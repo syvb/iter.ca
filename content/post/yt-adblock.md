@@ -1,7 +1,7 @@
 +++
 date = "2025-06-20T00:00:00Z"
 description = "How I wrote filter rules for YouTube"
-tags = ["programming", "youtube"]
+tags = ["programming", "youtube", "adblock"]
 title = "YouTube’s new anti-adblock measures"
 +++
 

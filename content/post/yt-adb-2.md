@@ -1,7 +1,7 @@
 +++
 date = "2026-09-21T00:00:00Z"
 description = "fun adblock filter rules!"
-tags = ["programming", "youtube"]
+tags = ["programming", "youtube", "adblock"]
 title = "Patching protobufs poetically"
 +++
 

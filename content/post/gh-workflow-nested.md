@@ -1,7 +1,7 @@
 +++
 date = "2026-10-05T00:00:00Z"
 description = "how to modify workflows you shouldn't be able to"
-tags = ["programming", "github", "security"]
+tags = ["programming", "github", "security", "git"]
 title = "Bypassing the GitHub workflow permission with nested Git tags"
 +++
 

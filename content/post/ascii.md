@@ -1,7 +1,7 @@
 +++
 date = "2022-03-09T00:00:00Z"
 description = "ASCII control characters are quite useful"
-tags = ["ascii", "programming"]
+tags = ["ascii", "programming", "fileformat"]
 title = "Writing semantic ASCII"
 +++
 

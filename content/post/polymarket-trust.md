@@ -1,7 +1,7 @@
 +++
 date = "2026-03-14T00:00:00Z"
 description = "You actually do have to trust PM"
-tags = ["crypto", "programming"]
+tags = ["crypto", "programming", "security", "predictionmarkets"]
 title = "Polymarket isn't trustless"
 +++
 

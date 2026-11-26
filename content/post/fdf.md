@@ -1,7 +1,7 @@
 +++
 date = "2022-03-12T00:00:00Z"
 description = "How I manage my answers to PDF forms in Git"
-tags = ["programming", "fileformat", "pdf"]
+tags = ["programming", "fileformat", "pdf", "git", "tax", "canada"]
 title = "Tracking PDF forms as plain text"
 +++
 

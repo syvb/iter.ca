@@ -1,7 +1,7 @@
 +++
 date = "2021-07-31T05:00:00Z"
 description = "Nintendo's website wasn't updated because of a big update, but because I asked them to."
-tags = ["programming"]
+tags = ["programming", "nintendo"]
 title = "Accidentally causing a Switch rumor"
 +++
 

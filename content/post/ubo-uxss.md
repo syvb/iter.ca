@@ -1,7 +1,7 @@
 +++
 date = "2026-11-15T10:30:35-08:00"
 description = "One-click UXSS issue with uBlock Origin on Firefox through element picker"
-tags = ["security", "programming"]
+tags = ["security", "programming", "adblock"]
 title = "Universal XSS in uBlock Origin from website-driven element picker"
 image = "/ubo-epicker.png"
 image_alt = "uBlock Origin's element picker showing a cosmetic filter and the Pick, Preview, and Create buttons."

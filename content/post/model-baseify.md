@@ -1,7 +1,7 @@
 +++
 date = "2026-04-08T00:00:00Z"
 description = "How to get frontier chat models to be kinda like base models"
-tags = ["ai"]
+tags = ["ai", "tutorial", "anthropic"]
 title = "Getting chat-tuned models to act kinda like base models"
 +++
 

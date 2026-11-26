@@ -1,7 +1,7 @@
 +++
 date = "2020-06-14T04:00:00+00:00"
 description = "About how I made a simple clone of Google's knowledge graph."
-tags = ["search", "google"]
+tags = ["search", "google", "programming"]
 title = "Generating our own knowledge panels"
 
 +++

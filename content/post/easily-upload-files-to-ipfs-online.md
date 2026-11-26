@@ -1,7 +1,7 @@
 +++
 date = "2019-06-05T04:00:00+00:00"
 description = "Easily upload files to IPFS with my new online tool!"
-tags = ["ipfs", "infura", "storage"]
+tags = ["ipfs", "infura", "storage", "programming"]
 title = "Easily upload files to IPFS, online"
 
 +++

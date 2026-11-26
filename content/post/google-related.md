@@ -1,7 +1,7 @@
 +++
 date = "2021-11-10T00:00:00Z"
 description = "A box with related searches comes up at the worst possible moment"
-tags = ["google"]
+tags = ["google", "search"]
 title = "Google's new related search box optimizes for the wrong metric"
 +++
 

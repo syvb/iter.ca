@@ -2,7 +2,7 @@
 verbose = -1
 date = "2022-11-13T21:00:00Z"
 description = "Averaging hues is weird, you can't just take a normal average"
-tags = ["programming", "math"]
+tags = ["programming", "math", "tutorial"]
 title = "How to average hues"
 toc = 1
 no_stream_image = 1

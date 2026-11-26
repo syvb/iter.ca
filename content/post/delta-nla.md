@@ -1,7 +1,7 @@
 +++
 date = "2026-09-11T00:00:00Z"
 description = "What I'm thinking about and planning to work on over the next few weeks"
-tags = ["ai"]
+tags = ["ai", "interpretability"]
 title = "Thoughts on interpreting residual updates"
 +++
 

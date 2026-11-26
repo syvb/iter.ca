@@ -1,7 +1,7 @@
 +++
 date = "2026-11-13T20:28:46-08:00"
 description = "quick NLA thoughts"
-tags = ["ai"]
+tags = ["ai", "interpretability"]
 title = "How I think of NLA explanations"
 +++
 

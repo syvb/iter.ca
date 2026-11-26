@@ -1,7 +1,7 @@
 +++
 date = "2026-04-12T00:00:01Z"
 description = "what if we used the area labeled \"Do not use this area\"?"
-tags = ["tax"]
+tags = ["tax", "canada"]
 title = "Secret fields on Canadian income tax returns"
 +++
 

@@ -1,7 +1,7 @@
 +++
 date = "2026-04-12T00:00:00Z"
 description = "Random thoughts that came to mind about Inkhaven"
-tags = ["meta", "productivity"]
+tags = ["meta", "productivity", "writing", "life"]
 title = "Scattered thoughts on Inkhaven"
 +++
 

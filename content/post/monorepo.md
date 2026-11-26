@@ -1,7 +1,7 @@
 +++
 date = "2026-04-15T00:00:00Z"
 description = "I've had a monorepo since 2019 with a bunch of stuff"
-tags = ["programming"]
+tags = ["programming", "meta"]
 title = "My personal monorepo"
 +++
 

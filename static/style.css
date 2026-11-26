@@ -248,12 +248,13 @@ kbd {
 /* A link in a post or page, or in the lists on the homepage and stream pages, ends with a mark of where it goes: a
    raised dot for iter.ca (a path here, iter.ca, or kb.iter.ca) and an arrow for any other site. Links within the page
    (#...), such as footnote references, links around an image, mailto links, the generated lists of posts, and the
-   headings of the homepage's lists (which look like headings, not links) get none.
+   headings of the homepage's lists and newsletter shelf and the shelf's issue count (which don't look like links) get
+   none.
    The mark is drawn in the link's own padding, so a line can't break between the link and its mark, and in the link's
    color, visited or not. It's placed down from the top of the link's box, whose height above the text is the font's
    ascent, so its offsets fit Source Serif 4: the dot's top is at cap height, the arrow's tip a little above it, and
    both end just below x-height. */
-:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a, .home-col h2 a, .embedded-link, .update-nav a) {
+:is(#content, #homepage-content, .stream) a:is([href^="/"]:not([href^="//"]), [href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"]):not(:has(img), .reclist a, :is(.home-col h2, .home-newsletter-head) a, .embedded-link, .update-nav a) {
     padding-right: 0.42em;
     background-image: radial-gradient(circle closest-side, currentColor calc(100% - 0.6px), transparent);
     background-repeat: no-repeat;
@@ -262,7 +263,7 @@ kbd {
 }
 
 /* The arrow is a line along its top, a line down its right side, and a diagonal into that corner. */
-:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, .home-col h2 a, .home-newsletter-num, #newsletter-open, .embedded-link) {
+:is(#content, #homepage-content, .stream) a:is([href^="http://"], [href^="https://"]):not([href^="https://iter.ca/"], [href="https://iter.ca"], [href^="https://kb.iter.ca/"], :has(img), .reclist a, :is(.home-col h2, .home-newsletter-head) a, .home-newsletter-num, #newsletter-open, .embedded-link) {
     padding-right: 0.55em;
     background-image:
         linear-gradient(currentColor, currentColor),
@@ -439,13 +440,14 @@ h1 {
     font-size: 1.3em;
 }
 
-/* A heading links to where its list's "more..." goes, and looks like a heading. */
-.home-col h2 a {
+/* A heading links to where its list's "more..." (or the newsletter shelf's "all N") goes, and looks like a heading. The
+   shelf's issue count links there too, and looks like the text it is. */
+:is(.home-col h2, .home-newsletter-head) a {
     color: inherit;
     text-decoration: none;
 }
 
-.home-col h2 a:hover {
+:is(.home-col h2, .home-newsletter-head) a:hover {
     text-decoration: underline;
 }
 

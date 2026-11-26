@@ -14,10 +14,14 @@
 {{- $earlier := first 4 (after 1 .) -}}
 {{- /* the excerpt is text already, but for its HTML entities */ -}}
 {{- $excerpt := $latest.Excerpt | default "" | htmlUnescape | truncate 220 -}}
+{{- /* the site's copies of the issues (content/update/), if regen has made any */ -}}
+{{- $all := "https://buttondown.com/z/archive/" -}}
+{{- with $.Site.GetPage "/update" }}{{ $all = .RelPermalink }}{{ end -}}
 <section class="home-newsletter" aria-labelledby="home-newsletter-heading">
     <div class="home-newsletter-head">
-        <h2 id="home-newsletter-heading">Newsletter</h2>
-        <span class="home-newsletter-meta">{{ $total }} {{ cond (eq $total 1) "issue" "issues" }}</span>
+        {{- /* like the headings of the lists, it and the count link to where its "all N" link goes */}}
+        <h2 id="home-newsletter-heading"><a href="{{ $all }}">Newsletter</a></h2>
+        <span class="home-newsletter-meta"><a href="{{ $all }}">{{ $total }} {{ cond (eq $total 1) "issue" "issues" }}</a></span>
     </div>
     <div class="home-newsletter-body">
         <div class="home-newsletter-preview">
@@ -42,8 +46,7 @@
                 {{- end }}
                 <span class="home-newsletter-sep" aria-hidden="true">·</span>
                 {{- end }}
-                {{- /* the site's copies of the issues (content/update/), if regen has made any */}}
-                <a href="{{ with $.Site.GetPage "/update" }}{{ .RelPermalink }}{{ else }}https://buttondown.com/z/archive/{{ end }}" class="home-newsletter-all">all {{ $total }}</a>
+                <a href="{{ $all }}" class="home-newsletter-all">all {{ $total }}</a>
             </div>
         </div>
         <div class="home-newsletter-sub">

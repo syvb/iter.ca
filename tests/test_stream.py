@@ -229,6 +229,8 @@ globalThis.fetch = async url => ({{json: async () =>
              '<a class="embedded-link" href="http://iter.ca/post/x?utm_source=z&amp;via=email&amp;utm_medium=email'
              '&amp;n=2&amp;utm_campaign=update-13#photos">X</a><h2>Photos</h2>'
              '<a href="https://example.org/photo?utm_content=caption#source">Photo credit</a>'
+             # a URL Go can't parse, with a % that starts no escape
+             '<a href="https://example.org/100%?utm_source=z">All of it</a>'
              '<figure><img src="https://assets.buttondown.email/images/a-1.jpg?w=960&amp;fit=max">'
              '<figcaption>A photo &amp; more</figcaption></figure><p>Done.<sup id="fnref:1"><a class="footnote-ref" '
              'href="#fn:1">1</a></sup></p><div class="footnote"><hr /><ol><li id="fn:1"><p>A note.</p></li></ol></div>'),
@@ -317,7 +319,8 @@ globalThis.fetch = async (url, options = {{}}) => {{
         self.assertIn("iter.ca update #13</h1>", thirteen)
         self.assertIn('<p>Welcome to update <em>thirteen</em> &amp; its photos.</p>'
                       '<a class="embedded-link" href="https://iter.ca/post/x/?via=email&amp;n=2#photos">', thirteen)
-        self.assertIn('<a href="https://example.org/photo#source">Photo credit</a>', thirteen)
+        self.assertIn('<a href="https://example.org/photo#source">Photo credit</a>'
+                      '<a href="https://example.org/100%">All of it</a>', thirteen)
         two = (public / "update/2/index.html").read_text()
         self.assertIn("<li>I did <strong>a thing</strong></li>", two)
         # each is shown with iter.ca's copies of its Buttondown images (which subrepos.sh makes)

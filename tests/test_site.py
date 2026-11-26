@@ -112,7 +112,8 @@ class SiteTest(unittest.TestCase):
         # *asterisks* and all: only titles in the page itself set them in italics
         wrong = []
         for row in self.content:
-            page = self.pages.get(unquote(urlsplit(row["permalink"]).path))
+            # keyed as pages are, by the URL Neocities serves them at
+            page = self.pages.get(unquote(urlsplit(row["permalink"]).path).removesuffix(".html"))
             if row["title"] and page and (page.title or "").strip() != row["title"]:
                 wrong.append((row["path"], row["title"], page.title))
         self.assertEqual(wrong, [])

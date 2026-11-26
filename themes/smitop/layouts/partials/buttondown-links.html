@@ -3,11 +3,12 @@
 {{- $html = replaceRE `(<a\b[^>]*?\shref="https://iter\.ca/(?:post/[\w-]+|segme))([?#"])` `${1}/${2}` $html -}}
 
 {{- /* Drop campaign tags on both internal and external links. Work on the raw query so other parameters
-     keep their order and encoding, and a fragment that mentions utm_ stays intact. */ -}}
+     keep their order and encoding, and a fragment that mentions utm_ stays intact. The query is what follows a ? before
+     any #, or "" without one; urls.Parse would fail the build on a URL it can't parse, such as one with a stray %. */ -}}
 {{- $anchor := `(<a\b[^>]*?\shref=")([^"]*\?[^"]*utm_[^"]*)"` -}}
 {{- range findRE $anchor $html | uniq -}}
   {{- $url := replaceRE $anchor "$2" . | htmlUnescape -}}
-  {{- $query := (urls.Parse $url).RawQuery -}}
+  {{- $query := replaceRE `(?s)^(?:[^?#]*\?([^#]*))?.*` "$1" $url -}}
   {{- $keep := replaceRE `&utm_[^&]*` "" (print "&" $query) | strings.TrimPrefix "&" -}}
   {{- if ne $keep $query -}}
     {{- $url = replace $url (print "?" $query) (cond (eq $keep "") "" (print "?" $keep)) 1 -}}

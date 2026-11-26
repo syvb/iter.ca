@@ -1103,6 +1103,13 @@ dl {
     padding-bottom: 0;
 }
 
+/* The date column already lines up the entries, so a list page's own list has no bullets and no indent, which leaves
+   its titles room to fit on one line. A nested list, like each tag's on /tags/, keeps both, as do phones (below). */
+#content > .reclist {
+    padding-left: 0;
+    list-style: none;
+}
+
 .list-entry {
     display: flex;
     text-align: left;
@@ -1114,10 +1121,11 @@ dl {
 }
 
 /* A width rather than a flex basis: sizing a list page's column to its entries, WebKit counts a date as wide as its
-   text, not its basis, so the column came out too narrow and every title wrapped. */
+   text, not its basis, so the column came out too narrow and every title wrapped. 6.5em fits the widest short date,
+   "May 17 2021" at 5.5em, with a gap. */
 .list-date {
     flex: none;
-    width: 11em;
+    width: 6.5em;
     display: block;
 }
 
@@ -1407,6 +1415,11 @@ summary h2 {
 @media (max-width: 470px) {
     .list-entry {
         display: block;
+    }
+    /* With each date above its title, the bullets show where an entry starts. */
+    #content > .reclist {
+        padding-left: revert;
+        list-style: revert;
     }
     .stream {
         display: block;

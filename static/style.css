@@ -405,12 +405,16 @@ h1 {
 .stream.mini .stream-item > div {
     display: inline;
 }
-.stream.mini .stream-item .stream-item-type {
+/* An item with a title links that, so its type label goes; an item without one (a Bluesky post, an HN comment) has
+   its type as an h2 holding its only link, which stays. */
+.stream.mini .stream-item div.stream-item-type {
     display: none;
 }
 .stream.mini .stream-item h2 {
     font-size: 100%;
     font-weight: 400;
+    font-family: inherit;
+    line-height: inherit;
 }
 .stream.mini .stream-item a {
     font-weight: bold;
